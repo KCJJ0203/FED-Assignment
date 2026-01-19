@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hawker Centre Management</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <main class="container">
+        <section class="content">
+            <div class="icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <button class="btn sign-in" id="signInButton">Sign In</button>
+            <button class="btn register">Register</button>
+            <button class="btn guest" id="continueAsGuest">Continue as guest</button>
+        </section>
+    </main>
+    <script type="module">
+      const continueAsGuestButton = document.getElementById("continueAsGuest");
+      continueAsGuestButton.addEventListener("click", () => {
+        localStorage.setItem("userType", "guest");
+        window.location.href = "Customer%20%26%20Guest/index.html";
+      });
+
+      const signInButton = document.getElementById("signInButton");
+      signInButton.addEventListener("click", () => {
+        window.location.href = "login.html";
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body class="login-page">
+    <header class="login-header">
+        <a class="back" href="index.html" aria-label="Back">&larr;</a>
+        <h1>Sign In</h1>
+        <div class="spacer" aria-hidden="true"></div>
+    </header>
+    <main class="login">
+        <form class="login-form">
+            <label class="field">
+                <span class="sr-only">Email</span>
+                <input type="email" name="email" placeholder="EMAIL" autocomplete="email" required>
+            </label>
+            <label class="field">
+                <span class="sr-only">Password</span>
+                <input type="password" name="password" placeholder="PASSWORD" autocomplete="current-password" required>
+            </label>
+            <a class="forgot" href="#">Forgot password?</a>
+            <button class="login-btn" type="submit">LOGIN</button>
+            <p class="signup">Don't have account? <a href="#">Sign up Here</a></p>
+        </form>
+    </main>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+      import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+        authDomain: "fed-assignment-9c219.firebaseapp.com",
+        projectId: "fed-assignment-9c219",
+        storageBucket: "fed-assignment-9c219.firebasestorage.app",
+        messagingSenderId: "287410844855",
+        appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
+        measurementId: "G-CJBDRY9RQ5"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const form = document.querySelector(".login-form");
+      const emailInput = form.querySelector('input[name="email"]');
+      const passwordInput = form.querySelector('input[name="password"]');
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        try {
+          await signInWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value);
+          const uid = auth.currentUser.uid;
+          const snap = await getDoc(doc(db, "users", uid));
+
+          if (!snap.exists()) {
+            alert("No userType found for this account.");
+            return;
+          }
+
+          const userType = snap.data().userType;
+          localStorage.setItem("userType", userType);
+
+          if (userType === "customer") window.location.href = "Customer%20%26%20Guest/index.html";
+          if (userType === "vendor") window.location.href = "Vendor/index.html";
+          if (userType === "nea") window.location.href = "NEA/index.html";
+        } catch (err) {
+          alert(err.message);
+          console.error(err);
+        }
+      });
+    </script>
+</body>
+</html>

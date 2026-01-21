@@ -19,9 +19,32 @@ const db = getFirestore(app);
 const form = document.querySelector(".login-form");
 const emailInput = form.querySelector('input[name="email"]');
 const passwordInput = form.querySelector('input[name="password"]');
+const errorEl = form.querySelector(".form-error");
+
+const errorMessages = {
+  "auth/invalid-email": "Enter a valid email address.",
+  "auth/missing-password": "Enter your password.",
+  "auth/user-not-found": "No account found for that email.",
+  "auth/wrong-password": "Email or password is incorrect.",
+  "auth/invalid-credential": "Email or password is incorrect.",
+  "auth/too-many-requests": "Too many attempts. Try again later."
+};
+
+const setError = (message) => {
+  if (!errorEl) {
+    return;
+  }
+  errorEl.textContent = message;
+  errorEl.hidden = !message;
+};
+
+[emailInput, passwordInput].forEach((input) => {
+  input.addEventListener("input", () => setError(""));
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  setError("");
 
   try {
     await signInWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value);
@@ -29,7 +52,7 @@ form.addEventListener("submit", async (e) => {
     const snap = await getDoc(doc(db, "users", uid));
 
     if (!snap.exists()) {
-      alert("No userType found for this account.");
+      setError("No account profile found for this account.");
       return;
     }
 
@@ -45,11 +68,10 @@ form.addEventListener("submit", async (e) => {
     } else if (userType === "admin") {
       window.location.href = "admin/index.html";
     } else {
-      alert("User type missing or not recognized. Please return to home and try again.");
-      window.location.href = "index.html";
+      setError("User type missing or not recognized. Please contact support.");
     }
   } catch (err) {
-    alert(err.message);
+    setError(errorMessages[err.code] || "Login failed. Please try again.");
     console.error(err);
   }
 });

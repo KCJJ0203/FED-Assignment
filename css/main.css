@@ -157,6 +157,17 @@ body.login-page {
     border-color: #fff;
 }
 
+.form-error {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid #ff8a8a;
+    border-radius: 6px;
+    background-color: rgba(255, 80, 80, 0.15);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+}
+
 .forgot {
     color: #c9d2ff;
     font-size: 12px;

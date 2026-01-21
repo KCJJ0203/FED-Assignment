@@ -1,0 +1,198 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap");
+
+:root {
+    --guest-bg-top: #2b56d0;
+    --guest-bg-mid: #2148c0;
+    --guest-bg-bottom: #1c3da6;
+    --nav-bg: #ffffff;
+    --nav-muted: #7a879c;
+    --nav-active: #2148c0;
+    --nav-shadow: 0 -10px 24px rgba(10, 25, 66, 0.18);
+    --nav-radius: 22px;
+    --nav-border: #e8edff;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: "Sora", "Segoe UI", sans-serif;
+    color: #ffffff;
+    background: linear-gradient(180deg, var(--guest-bg-top), var(--guest-bg-mid) 40%, var(--guest-bg-bottom) 100%);
+}
+
+.app-shell {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.guest-main {
+    flex: 1;
+    padding: 24px 20px 120px;
+}
+
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--nav-bg);
+    border-top: 1px solid var(--nav-border);
+    border-top-left-radius: var(--nav-radius);
+    border-top-right-radius: var(--nav-radius);
+    box-shadow: var(--nav-shadow);
+    padding: 10px 18px calc(16px + env(safe-area-inset-bottom));
+    animation: nav-rise 0.55s ease-out;
+}
+
+.nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--nav-muted);
+    font-size: 11px;
+    letter-spacing: 0.2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 0 2px;
+    min-height: 44px;
+    transition: color 0.2s ease;
+}
+
+.nav-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: inherit;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-icon svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+.nav-link.is-active {
+    color: var(--nav-active);
+    font-weight: 600;
+}
+
+.nav-link.is-active .nav-icon {
+    background: rgba(33, 72, 192, 0.12);
+}
+
+.nav-label {
+    line-height: 1;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+@keyframes nav-rise {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (min-width: 900px) {
+    body {
+        background: #e9eefc;
+        padding: 24px;
+    }
+
+    .app-shell {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        max-width: 1180px;
+        margin: 0 auto;
+        min-height: calc(100vh - 48px);
+        border-radius: 26px;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--guest-bg-top), var(--guest-bg-mid) 40%, var(--guest-bg-bottom) 100%);
+        box-shadow: 0 26px 60px rgba(12, 25, 66, 0.22);
+    }
+
+    .guest-main {
+        grid-column: 2;
+        grid-row: 1;
+        padding: 40px 56px;
+    }
+
+    .bottom-nav {
+        position: static;
+        grid-column: 1;
+        grid-row: 1;
+        width: auto;
+        height: auto;
+        border: none;
+        border-right: 1px solid rgba(210, 218, 242, 0.8);
+        border-radius: 26px 0 0 26px;
+        box-shadow: none;
+        padding: 28px 18px;
+        background: #ffffff;
+    }
+
+    .nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-link {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        font-size: 13px;
+        padding: 8px 12px;
+        border-radius: 12px;
+    }
+
+    .nav-link.is-active {
+        background: rgba(33, 72, 192, 0.12);
+    }
+
+    .nav-link.is-active .nav-icon {
+        background: transparent;
+    }
+
+    .nav-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+    }
+}

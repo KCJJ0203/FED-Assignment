@@ -47,11 +47,10 @@ body {
     bottom: 0;
     background: var(--nav-bg);
     border-top: 1px solid var(--nav-border);
-    border-top-left-radius: var(--nav-radius);
-    border-top-right-radius: var(--nav-radius);
-    box-shadow: var(--nav-shadow);
+    border-radius: 0;
+    box-shadow: none;
     padding: 10px 18px calc(16px + env(safe-area-inset-bottom));
-    animation: nav-rise 0.55s ease-out;
+    animation: none;
 }
 
 .nav-list {
@@ -131,20 +130,20 @@ body {
 
 @media (min-width: 900px) {
     body {
-        background: #e9eefc;
-        padding: 24px;
+        background: linear-gradient(180deg, var(--guest-bg-top), var(--guest-bg-mid) 40%, var(--guest-bg-bottom) 100%);
+        padding: 0;
     }
 
     .app-shell {
         display: grid;
         grid-template-columns: 220px 1fr;
-        max-width: 1180px;
-        margin: 0 auto;
-        min-height: calc(100vh - 48px);
-        border-radius: 26px;
-        overflow: hidden;
+        max-width: none;
+        margin: 0;
+        min-height: 100vh;
+        border-radius: 0;
+        overflow: visible;
         background: linear-gradient(180deg, var(--guest-bg-top), var(--guest-bg-mid) 40%, var(--guest-bg-bottom) 100%);
-        box-shadow: 0 26px 60px rgba(12, 25, 66, 0.22);
+        box-shadow: none;
     }
 
     .guest-main {
@@ -161,7 +160,7 @@ body {
         height: auto;
         border: none;
         border-right: 1px solid rgba(210, 218, 242, 0.8);
-        border-radius: 26px 0 0 26px;
+        border-radius: 0;
         box-shadow: none;
         padding: 28px 18px;
         background: #ffffff;

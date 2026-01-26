@@ -9,7 +9,96 @@
 <body>
     <section class="app-shell" aria-label="Guest layout">
         <main class="guest-main">
-            <h1 class="sr-only">Browse Hawker Centres</h1>
+            <section id="hawker-flow" class="hawker-flow">
+                <h1 id="hawker-title" class="guest-title">Select a hawker centre</h1>
+                <div class="search-panel">
+                    <label class="sr-only" for="hawker-search">Search hawker centre</label>
+                    <div class="search-field">
+                        <span class="search-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M21 21l-4.3-4.3"></path>
+                            </svg>
+                        </span>
+                        <input id="hawker-search" class="search-input" type="search" placeholder="Hawker Centre" autocomplete="off">
+                        <button id="hawker-clear" class="search-clear" type="button" aria-label="Clear search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6L6 18"></path>
+                                <path d="M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <section class="quick-filters" aria-label="Quick filters">
+                    <h2 class="section-title">Quick Filters</h2>
+                    <div class="filter-chips" role="group" aria-label="Quick filter options">
+                        <button class="filter-chip" type="button" data-filter="popular">Popular</button>
+                        <button class="filter-chip" type="button" data-filter="government">Government-owned</button>
+                        <button class="filter-chip" type="button" data-filter="type-hc">HC</button>
+                        <button class="filter-chip" type="button" data-filter="type-mhc">MHC</button>
+                        <button class="filter-chip" type="button" data-filter="large">100+ Stalls</button>
+                        <button class="filter-chip" type="button" data-filter="market">Has Market Stalls</button>
+                    </div>
+                </section>
+
+                <section class="hawker-section">
+                    <h2 class="section-title">Suggested Hawker Centres</h2>
+                    <p id="hawker-status" class="guest-status" role="status" aria-live="polite">
+                        Loading hawker centres...
+                    </p>
+                    <ul id="hawker-list" class="hawker-list" role="list"></ul>
+                </section>
+            </section>
+
+            <section id="stall-section" class="stall-section is-hidden" aria-label="Stall selection">
+                <div class="stall-header">
+                    <button id="stall-back" class="back-button" type="button" aria-label="Back to hawker centres">
+                        <span class="back-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 18l-6-6 6-6"></path>
+                            </svg>
+                        </span>
+                        <span id="stall-hawker-name" class="back-text">Hawker Centre</span>
+                    </button>
+                </div>
+                <h2 id="stall-page-title" class="guest-title stall-title">Select a Stall</h2>
+                <div class="search-panel">
+                    <label class="sr-only" for="stall-search">Search stalls</label>
+                    <div class="search-field">
+                        <span class="search-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M21 21l-4.3-4.3"></path>
+                            </svg>
+                        </span>
+                        <input id="stall-search" class="search-input" type="search" placeholder="Stalls" autocomplete="off">
+                        <button id="stall-clear" class="search-clear" type="button" aria-label="Clear search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6L6 18"></path>
+                                <path d="M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <section class="quick-filters" aria-label="Stall quick filters">
+                    <h2 class="section-title">Quick Filters</h2>
+                    <div class="filter-chips" role="group" aria-label="Stall filter options">
+                        <button class="filter-chip" type="button" data-stall-filter="open">Open Now</button>
+                        <button class="filter-chip" type="button" data-stall-filter="grade-a">Grade A</button>
+                        <button class="filter-chip" type="button" data-stall-filter="popular">Popular</button>
+                    </div>
+                </section>
+
+                <section class="stall-list-section">
+                    <h2 class="section-title">Suggested Stalls</h2>
+                    <p id="stall-status" class="guest-status" role="status" aria-live="polite">
+                        Select a hawker centre to view stalls.
+                    </p>
+                    <div id="stall-list" class="stall-list" role="list"></div>
+                </section>
+            </section>
         </main>
 
         <footer class="bottom-nav">
@@ -67,5 +156,6 @@
             </nav>
         </footer>
     </section>
+    <script src="../js/customer-guest-hawkers.js" defer></script>
 </body>
 </html>

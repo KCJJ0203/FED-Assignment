@@ -40,6 +40,342 @@ body {
     padding: 24px 20px 120px;
 }
 
+.guest-title {
+    margin: 0 0 14px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.search-panel {
+    margin: 0 0 22px;
+}
+
+.search-field {
+    display: grid;
+    grid-template-columns: 20px 1fr 24px;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #ffffff;
+    color: #1c3da6;
+    box-shadow: 0 10px 20px rgba(9, 24, 71, 0.16);
+}
+
+.search-icon {
+    display: grid;
+    place-items: center;
+    color: #7a879c;
+}
+
+.search-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.search-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #1c3da6;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #7a879c;
+}
+
+.search-clear {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: none;
+    background: #e8edff;
+    color: #7a879c;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.search-clear.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-clear svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+}
+
+.section-title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.quick-filters {
+    margin-bottom: 8px;
+}
+
+.hawker-flow {
+    display: block;
+}
+
+.hawker-section {
+    margin-top: 6px;
+}
+
+.filter-chip {
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: transparent;
+    color: #ffffff;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.filter-chip.is-active {
+    background: #ffffff;
+    color: #2148c0;
+    border-color: #ffffff;
+}
+
+.guest-status {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.is-hidden {
+    display: none;
+}
+
+.hawker-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+}
+
+.hawker-item {
+    margin: 0;
+}
+
+.hawker-card {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    padding: 14px 0;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.hawker-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.hawker-card:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.hawker-card.is-selected {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    padding: 14px 12px;
+    border-bottom-color: transparent;
+}
+
+.hawker-item:last-child .hawker-card {
+    border-bottom: none;
+}
+
+.hawker-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15));
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.hawker-info {
+    display: grid;
+    gap: 4px;
+}
+
+.hawker-name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.hawker-meta {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.hawker-stalls {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.stall-section {
+    margin-top: 24px;
+}
+
+.stall-title {
+    margin-top: 4px;
+}
+
+.stall-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.back-button {
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    padding: 4px 0;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.back-button:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+    border-radius: 999px;
+}
+
+.back-icon {
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+}
+
+.back-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.back-text {
+    font-weight: 600;
+}
+
+.stall-list-section {
+    margin-top: 6px;
+}
+
+.stall-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+}
+
+.stall-card {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    padding: 14px 0;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.stall-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.stall-card:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+}
+
+.stall-card.is-selected {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    padding: 14px 12px;
+    border-bottom-color: transparent;
+}
+
+.stall-list .stall-card:last-child {
+    border-bottom: none;
+}
+
+.stall-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15));
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.stall-info {
+    display: grid;
+    gap: 4px;
+}
+
+.stall-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.stall-meta {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.stall-desc {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
 .bottom-nav {
     position: fixed;
     left: 0;
@@ -150,6 +486,18 @@ body {
         grid-column: 2;
         grid-row: 1;
         padding: 40px 56px;
+    }
+
+    .guest-title {
+        font-size: 26px;
+    }
+
+    .search-panel {
+        max-width: 520px;
+    }
+
+    .hawker-section {
+        max-width: 660px;
     }
 
     .bottom-nav {

@@ -209,3 +209,217 @@ header {
     padding-top: 20px;
 }
 .svg-chart { width: 100%; height: 100%; }
+
+
+/* ------------- ORDER MANAGEMENT ------------- */
+
+.orders-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.live-badge {
+    background-color: #E0E0E0;
+    color: #555;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 10px;
+}
+
+.btn-walkin {
+    background-color: #1A237E;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px rgba(26, 35, 126, 0.2);
+}
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    align-items: start;
+}
+
+.kanban-column {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 200px;
+    border-top: 5px solid #ccc;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.col-new { border-top-color: #FF5252; }
+.col-cooking { border-top-color: #FFB74D; }
+.col-ready { border-top-color: #2ECC71; }
+
+.col-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 16px;
+}
+
+.count-badge {
+    background-color: #F5F5F5;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #666;
+    font-weight: bold;
+}
+
+.order-card {
+    background-color: white;
+    border: 1px solid #F0F0F0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.badge-new {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #FF5252;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+.id-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.icon-box {
+    background-color: #F0F4FF;
+    color: #1A237E;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+.icon-box.walkin { background-color: #FFF3E0; color: #EF6C00; }
+
+.order-id {
+    font-size: 15px;
+    font-weight: 800;
+    color: #333;
+    line-height: 1.2;
+}
+
+.order-type {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+.type-delivery { color: #2962FF; }
+.type-walkin { color: #EF6C00; }
+
+.timer {
+    font-size: 12px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.timer.urgent { color: #FF5252; background: #FFF0F0; padding: 2px 6px; border-radius: 4px; }
+
+.order-items {
+    margin: 15px 0;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.5;
+}
+.note { color: #999; font-size: 12px; }
+
+.action-area { margin-top: 10px; }
+
+.btn-grey {
+    width: 100%;
+    background-color: #F3F4F6;
+    color: #1F2937;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.btn-grey:hover { background-color: #E5E7EB; }
+
+.btn-green {
+    background-color: #2ECC71;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.btn-green:hover { background-color: #27ae60; }
+
+.btn-outline {
+    background-color: white;
+    border: 1px solid #E5E7EB;
+    color: #374151;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+.btn-outline:hover { background-color: #F9FAFB; }
+
+.btn-group {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+}

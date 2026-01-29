@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stall Performance | HawkerHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon"><i class="fas fa-store"></i></div>
+                HawkerHub
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="orders.html"><i class="fas fa-clipboard-list"></i> Order Management</a></li>
+                <li><a href="menu.html"><i class="fas fa-utensils"></i> Menu Items</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar"></div>
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">Uncle Tan</div>
+                <div style="font-size: 12px; color: #777;">Stall #04-21</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div class="header-title">
+                <strong>Stall Performance</strong>
+            </div>
+            <div class="header-icons">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-bell"></i>
+                <i class="fas fa-cog"></i>
+                <div class="user-avatar" style="width: 30px; height: 30px;"></div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            
+            <div class="page-title">
+                <h2>Dashboard Overview</h2>
+                <p>Welcome back, Uncle Tan. Here is your stall's performance summary.</p>
+            </div>
+
+            <div class="grid-layout">
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-contract" style="color:#1A237E;"></i> Stall Rental</h3>
+                        <i class="fas fa-ellipsis-h" style="color: #ccc; cursor: pointer;"></i>
+                    </div>
+                    <div class="rental-info">
+                        <div class="info-row">
+                            <span>Stall Number</span>
+                            <strong>#04-21</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Status</span>
+                            <span class="status-pill">Active</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Lease Renewal</span>
+                            <strong>31 Dec 2026</strong>
+                        </div>
+                        <a href="#" class="link-btn">View Agreement Details &rarr;</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-dollar-sign" style="color:#1A237E;"></i> Daily Sales</h3>
+                        <span style="font-size: 12px; background: #eee; padding: 4px 8px; border-radius: 4px;">Today</span>
+                    </div>
+                    <div class="sales-grid">
+                        <div class="sales-box">
+                            <span class="sales-label"><i class="fas fa-wallet"></i> Revenue</span>
+                            <span class="sales-value">$450</span>
+                            <span class="trend up"><i class="fas fa-arrow-up"></i> +12.5% <span style="font-weight:normal; color:#777;">vs yesterday</span></span>
+                        </div>
+                        <div class="sales-box">
+                            <span class="sales-label"><i class="fas fa-receipt"></i> Orders</span>
+                            <span class="sales-value">85</span>
+                            <span class="trend up"><i class="fas fa-arrow-up"></i> +5 <span style="font-weight:normal; color:#777;">orders</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Popular Items</h3>
+                        <a href="#" style="font-size: 12px; text-decoration: none; color: blue;">View All</a>
+                    </div>
+                    
+                    <div class="item-row">
+                        <div class="item-header">
+                            <span>Chicken Rice</span>
+                            <span style="color:#777;">45 orders</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-row">
+                        <div class="item-header">
+                            <span>Roasted Rice</span>
+                            <span style="color:#777;">28 orders</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-fill" style="width: 60%; opacity: 0.7;"></div>
+                        </div>
+                    </div>
+
+                    <div class="item-row">
+                        <div class="item-header">
+                            <span>Char Siew Pork</span>
+                            <span style="color:#777;">12 orders</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-fill" style="width: 30%; opacity: 0.5;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock"></i> Traffic Trends</h3>
+                        <span style="font-size: 12px; color: #555;">● Today</span>
+                    </div>
+                    <div class="chart-container">
+                        <svg class="svg-chart" viewBox="0 0 100 50" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4A6CF7;stop-opacity:0.3" />
+                                    <stop offset="100%" style="stop-color:#4A6CF7;stop-opacity:0" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M0,50 Q25,50 35,10 Q60,40 100,25 L100,50 Z" fill="url(#grad1)" />
+                            <path d="M0,50 Q25,50 35,10 Q60,40 100,25" fill="none" stroke="#4A6CF7" stroke-width="2" />
+                            
+                            <circle cx="70" cy="20" r="1.5" stroke="#4A6CF7" stroke-width="0.5" fill="white" />
+                        </svg>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: #aaa; margin-top: 5px;">
+                        <span>10 AM</span>
+                        <span>12 PM</span>
+                        <span>2 PM</span>
+                        <span>4 PM</span>
+                        <span>6 PM</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

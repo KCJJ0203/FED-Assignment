@@ -9,7 +9,64 @@
 <body>
     <section class="app-shell" aria-label="Guest layout">
         <main class="guest-main">
-            <h1 class="sr-only">Cart</h1>
+            <section class="cart-shell" aria-label="Cart and checkout">
+                <header class="cart-header">
+                    <h1 class="guest-title">My Cart</h1>
+                    <p id="cart-summary" class="guest-status" role="status" aria-live="polite">Loading cart...</p>
+                </header>
+
+                <section class="cart-panel">
+                    <div id="cart-empty" class="empty-state is-hidden">
+                        <h2 class="empty-title">Your cart is empty</h2>
+                        <p class="empty-text">Add items from a stall menu to get started.</p>
+                        <a class="primary-button" href="index.html">Browse stalls</a>
+                    </div>
+                    <div id="cart-items" class="cart-items" role="list"></div>
+                </section>
+
+                <section class="cart-summary-sheet" aria-label="Order summary">
+                    <div class="totals-panel">
+                        <h2 class="section-title">Order Summary</h2>
+                        <div class="totals-row">
+                            <span>Subtotal</span>
+                            <span id="total-subtotal">$0.00</span>
+                        </div>
+                        <div class="totals-row">
+                            <span>Service fee</span>
+                            <span id="total-service">$0.00</span>
+                        </div>
+                        <div class="totals-row">
+                            <span>Delivery fee</span>
+                            <span id="total-delivery">$0.00</span>
+                        </div>
+                        <div class="totals-row total">
+                            <span>Total:</span>
+                            <span id="total-grand">$0.00</span>
+                        </div>
+                    </div>
+
+                    <section class="checkout-section" aria-labelledby="checkout-title">
+                        <h2 id="checkout-title" class="section-title">Checkout</h2>
+                        <form id="checkout-form" class="checkout-form" novalidate>
+                        <fieldset class="form-group" data-group="fulfillment">
+                            <legend>Order type</legend>
+                            <div class="radio-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="fulfillment" value="dinein" checked>
+                                    <span>Dine In</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="fulfillment" value="takeaway">
+                                    <span>Takeaway</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <button class="primary-button cart-place-button" type="submit">Place order</button>
+                    </form>
+                </section>
+                </section>
+            </section>
         </main>
 
         <footer class="bottom-nav">
@@ -67,5 +124,7 @@
             </nav>
         </footer>
     </section>
+    <script src="../js/customer-guest-cart-utils.js" defer></script>
+    <script src="../js/customer-guest-cart.js" defer></script>
 </body>
 </html>

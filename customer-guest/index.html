@@ -10,6 +10,7 @@
     <section class="app-shell" aria-label="Guest layout">
         <main class="guest-main">
             <section id="hawker-flow" class="hawker-flow">
+                <div class="stall-header stall-header-placeholder" aria-hidden="true"></div>
                 <h1 id="hawker-title" class="guest-title">Select a hawker centre</h1>
                 <div class="search-panel">
                     <label class="sr-only" for="hawker-search">Search hawker centre</label>
@@ -96,7 +97,15 @@
                     <p id="stall-status" class="guest-status" role="status" aria-live="polite">
                         Select a hawker centre to view stalls.
                     </p>
-                    <div id="stall-list" class="stall-list" role="list"></div>
+                    <ul id="stall-list" class="stall-list" role="list"></ul>
+                </section>
+
+                <section id="menu-section" class="menu-section" aria-label="Stall menu">
+                    <h2 class="section-title sr-only">Menu</h2>
+                    <p id="menu-status" class="guest-status" role="status" aria-live="polite">
+                        Select a stall to view menu.
+                    </p>
+                    <div id="menu-list" class="menu-list" role="list"></div>
                 </section>
             </section>
         </main>
@@ -156,6 +165,49 @@
             </nav>
         </footer>
     </section>
-    <script src="../js/customer-guest-hawkers.js" defer></script>
+    <div id="menu-modal" class="menu-modal is-hidden" aria-hidden="true">
+        <div class="menu-modal-dialog" role="dialog" aria-modal="true" aria-label="Menu item detail">
+            <div class="menu-modal-image">
+                <img id="menu-modal-img" alt="Menu item">
+                <button id="menu-modal-back" class="menu-modal-back" type="button" aria-label="Back to menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="menu-modal-body">
+                <h3 id="menu-modal-name" class="menu-modal-title"></h3>
+                <p id="menu-modal-stall" class="menu-modal-stall"></p>
+                <div class="menu-modal-meta">
+                    <span class="menu-modal-rating">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3.2l2.6 5.4 6 .9-4.3 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.3-4.2 6-.9L12 3.2z"></path>
+                        </svg>
+                        <span id="menu-modal-rating"></span>
+                    </span>
+                    <span class="menu-modal-time">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v5l3 2"></path>
+                        </svg>
+                        <span id="menu-modal-time">20 min</span>
+                    </span>
+                </div>
+                <p id="menu-modal-desc" class="menu-modal-desc"></p>
+                <div class="menu-modal-order">
+                    <div id="menu-modal-price" class="menu-modal-price"></div>
+                    <div class="menu-modal-qty">
+                        <button class="menu-modal-qty-btn" type="button" data-qty="minus">-</button>
+                        <span id="menu-modal-qty">1</span>
+                        <button class="menu-modal-qty-btn" type="button" data-qty="plus">+</button>
+                    </div>
+                </div>
+                <button id="menu-modal-add" class="menu-modal-add" type="button">Add to cart</button>
+            </div>
+        </div>
+    </div>
+    <div id="cart-toast" class="cart-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    <script src="../js/customer-guest-cart-utils.js" defer></script>
+    <script type="module" src="../js/customer-guest-hawkers.js"></script>
 </body>
 </html>

@@ -9,6 +9,9 @@
     const checkoutForm = document.getElementById("checkout-form");
     const deliveryFieldsEl = document.getElementById("delivery-fields");
     const formErrorEl = document.getElementById("form-error");
+    const paymentResultEl = document.getElementById("paymentResult");
+    const paymentMsgEl = document.getElementById("payment-msg");
+    const deliveryToggleEl = document.getElementById("deliveryToggle");
 
     if (!cartItemsEl || !cartSummaryEl || !subtotalEl || !serviceEl || !deliveryEl || !grandEl) {
         return;
@@ -29,7 +32,7 @@
         return selected ? selected.value : "";
     };
 
-    const isDeliverySelected = () => false;
+    const isDeliverySelected = () => Boolean(deliveryToggleEl && deliveryToggleEl.checked);
 
     const toggleDeliveryFields = () => {
         if (!deliveryFieldsEl) {
@@ -135,6 +138,18 @@
         cartItemsEl.appendChild(fragment);
     };
 
+    const clearFormError = () => {
+        if (formErrorEl) {
+            formErrorEl.textContent = "";
+        }
+    };
+
+    const clearPaymentMsg = () => {
+        if (paymentMsgEl) {
+            paymentMsgEl.textContent = "";
+        }
+    };
+
     const renderCart = (cart) => {
         const isEmpty = cart.items.length === 0;
         if (cartEmptyEl) {
@@ -145,6 +160,8 @@
         if (isEmpty) {
             cartSummaryEl.textContent = "Your cart is empty.";
             renderTotals(cart);
+            clearFormError();
+            clearPaymentMsg();
             return;
         }
 
@@ -153,6 +170,8 @@
         cartSummaryEl.textContent = `${itemCount} item(s) from ${stallCount} stall(s).`;
         renderCartItems(cart);
         renderTotals(cart);
+        clearFormError();
+        clearPaymentMsg();
     };
 
     const clearFormErrors = () => {
@@ -165,9 +184,8 @@
         checkoutForm.querySelectorAll(".is-invalid").forEach((el) => {
             el.classList.remove("is-invalid");
         });
-        if (formErrorEl) {
-            formErrorEl.textContent = "";
-        }
+        clearFormError();
+        clearPaymentMsg();
     };
 
     const setFieldError = (fieldId, message) => {
@@ -221,7 +239,7 @@
         const cart = window.GuestCart.readCart();
         if (cart.items.length === 0) {
             if (formErrorEl) {
-                formErrorEl.textContent = "Add items to your cart before placing an order.";
+                formErrorEl.textContent = "Your cart is empty. Add items before placing an order.";
             }
             return { valid: false };
         }
@@ -301,18 +319,21 @@
         if (!window.GuestCart) {
             return;
         }
+        clearPaymentMsg();
         const cart = window.GuestCart.readCart();
         const authUser = await getAuthUser();
         const isRegistered = Boolean(authUser);
         const userId = authUser ? authUser.uid : null;
+        const paymentStatus = paymentResultEl ? paymentResultEl.value : "success";
         const orders = window.GuestCart.buildOrdersFromCart(cart, {
             fulfillment,
             type: isRegistered ? "registered" : "guest",
-            userId
+            userId,
+            paymentStatus
         });
         if (orders.length === 0) {
             if (formErrorEl) {
-                formErrorEl.textContent = "Add items to your cart before placing an order.";
+                formErrorEl.textContent = "Your cart is empty. Add items before placing an order.";
             }
             return;
         }
@@ -327,6 +348,12 @@
         if (!savedOk) {
             if (formErrorEl) {
                 formErrorEl.textContent = "Could not save your order. Please try again.";
+            }
+            return;
+        }
+        if (paymentStatus === "fail") {
+            if (paymentMsgEl) {
+                paymentMsgEl.textContent = "Payment failed. Please try again.";
             }
             return;
         }
@@ -397,6 +424,13 @@
             if (event.target && (event.target.name === "fulfillment" || event.target.name === "payment")) {
                 clearGroupError(event.target.name);
             }
+            if (event.target && event.target.id === "paymentResult") {
+                clearPaymentMsg();
+            }
+            if (event.target && event.target.id === "deliveryToggle") {
+                clearFormError();
+                updateTotals();
+            }
             if (event.target && event.target.name === "fulfillment") {
                 toggleDeliveryFields();
                 updateTotals();
@@ -427,11 +461,8 @@
     }
 
     const initialCart = window.GuestCart ? window.GuestCart.readCart() : { items: [] };
-    if (checkoutForm && initialCart.deliveryFee > 0) {
-        const deliveryRadio = checkoutForm.querySelector("input[name=\"fulfillment\"][value=\"delivery\"]");
-        if (deliveryRadio) {
-            deliveryRadio.checked = true;
-        }
+    if (deliveryToggleEl && initialCart.deliveryFee > 0) {
+        deliveryToggleEl.checked = true;
     }
     toggleDeliveryFields(isDeliverySelected());
     renderCart(initialCart);

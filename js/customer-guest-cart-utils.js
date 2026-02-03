@@ -255,6 +255,7 @@
                 userId: Object.prototype.hasOwnProperty.call(options, "userId") ? options.userId : null,
                 type: options.type ? options.type : "guest",
                 fulfillment: options.fulfillment || "dinein",
+                paymentStatus: options.paymentStatus || "success",
                 items: group.items,
                 totals,
                 status: "placed",

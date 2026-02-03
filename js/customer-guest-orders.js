@@ -57,6 +57,7 @@
             const card = document.createElement("article");
             card.className = "order-card";
             card.dataset.orderId = order.orderId;
+            const paymentLabel = (order.paymentStatus || "success").toUpperCase();
 
             const header = document.createElement("div");
             header.className = "order-header";
@@ -73,11 +74,15 @@
             const fulfillmentLabel = order.fulfillment === "takeaway" ? "Takeaway" : "Dine In";
             meta.textContent = `${dateLabel} - ${order.orderId} • ${fulfillmentLabel}`;
 
-            headerInfo.append(title, meta);
+            const paymentMeta = document.createElement("p");
+            paymentMeta.className = "order-meta";
+            paymentMeta.textContent = `Payment: ${paymentLabel}`;
+
+            headerInfo.append(title, meta, paymentMeta);
 
             const status = document.createElement("span");
             status.className = "order-status";
-            status.textContent = order.status || "placed";
+            status.textContent = paymentLabel;
 
             header.append(headerInfo, status);
 
@@ -96,6 +101,18 @@
 
             const itemsList = document.createElement("div");
             itemsList.className = "order-items is-hidden";
+
+            const paymentRow = document.createElement("div");
+            paymentRow.className = "order-item-row";
+
+            const paymentName = document.createElement("span");
+            paymentName.textContent = "Payment";
+
+            const paymentValue = document.createElement("span");
+            paymentValue.textContent = paymentLabel;
+
+            paymentRow.append(paymentName, paymentValue);
+            itemsList.appendChild(paymentRow);
 
             (order.items || []).forEach((item) => {
                 const row = document.createElement("div");

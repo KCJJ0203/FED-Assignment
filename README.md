@@ -22,30 +22,31 @@ Orders are stored differently depending on user type:
 - Persistent cart in `localStorage` key `cart`. Structure handled by `js/customer-guest-cart-utils.js`.
 - Totals are computed and stored on the cart object.
 - Subtotal + 5% service fee (`SERVICE_RATE = 0.05`).
-- Delivery fee logic exists (`DELIVERY_FEE = 3`) but delivery selection is disabled in UI because `isDeliverySelected()` returns `false` in `js/customer-guest-cart.js`.
+- Delivery add-on toggle uses `DELIVERY_FEE = 3` and updates totals (`js/customer-guest-cart.js`).
 - Cart summary displays item count and stall count (computed using `stallId`). File: `js/customer-guest-cart.js`.
 - Per-stall grouping at checkout: items grouped by `stallId` and split into separate orders. Functions: `groupItemsByStall`, `buildOrdersFromCart` in `js/customer-guest-cart-utils.js`.
 
 ### Checkout Behavior
-- Checkout form includes fulfillment options only: `dinein` / `takeaway`. File: `customer-guest/cart.html`.
-- Validation is minimal: checks cart has items, otherwise shows "Add items to your cart before placing an order." Function: `validateForm()` in `js/customer-guest-cart.js`.
+- Checkout includes fulfillment options (`dinein` / `takeaway`), a payment result selector (success/fail), and a delivery toggle. File: `customer-guest/cart.html`.
+- Validation is minimal: checks cart has items, otherwise shows "Your cart is empty. Add items before placing an order." Function: `validateForm()` in `js/customer-guest-cart.js`.
 
 On submit steps:
 1. Build per-stall orders from cart (`buildOrdersFromCart`).
-2. If logged in, save orders to RTDB and clear cart.
-3. If guest, save orders to `localStorage` and clear cart.
-4. Write a success payload to `sessionStorage` and redirect to `orders.html`.
+2. Save orders to RTDB (registered) or `localStorage` (guest), including `paymentStatus`.
+3. If payment fails, save order with `paymentStatus = "fail"`, show "Payment failed. Please try again.", do not clear cart, and do not redirect.
+4. If payment succeeds, clear cart, write a success payload to `sessionStorage`, and redirect to `orders.html`.
 5. Success key: `guestOrderSuccess` containing `orderIds`, `total`, and `count`.
 
 ### Order History
 Guest order history:
 - Stored in `localStorage` key `guestOrders` (`GUEST_ORDERS_KEY`).
-- Stored as an array of order objects containing `orderId`, `type: "guest"`, `userId: null`, `fulfillment`, `items`, `totals`, `status`, `createdAt`, and stall/hawker metadata.
+- Stored as an array of order objects containing `orderId`, `type: "guest"`, `userId: null`, `fulfillment`, `paymentStatus`, `items`, `totals`, `status`, `createdAt`, and stall/hawker metadata.
 
 Registered order history:
 - Stored in Firebase RTDB under `orders/{uid}/{orderId}`.
 - Written in `js/customer-guest-cart.js` and loaded in `js/customer-guest-orders.js`.
 - If no auth user, orders page falls back to localStorage guest orders.
+- Orders are displayed newest-first using `createdAt`, and show `paymentStatus` (SUCCESS/FAIL).
 
 ## What We Used (Aligned With FED Topics)
 - HTML/CSS for layout and responsive UI.
@@ -131,9 +132,9 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk. Routes in `js/login.js`
 - Image sources: to be added by the team.
 
 ## Known Limitations
-- Delivery fee logic exists, but delivery selection is disabled in the UI.
 - Payment success/failure is simulated; no real payment integration.
+- Failed payments do not redirect to Orders; the user remains on checkout.
 
 ## Future Improvements
-- Enable delivery selection UI and apply delivery fees correctly.
-- Add a proper payment failure state or dedicated failure page.
+- Add real payment integration.
+- Add stronger checkout validation (address/payment details).

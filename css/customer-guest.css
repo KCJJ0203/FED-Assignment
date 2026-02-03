@@ -1098,6 +1098,11 @@ body.has-menu-modal {
     min-height: 18px;
 }
 
+#form-error,
+#payment-msg {
+    margin-top: 8px;
+}
+
 .delivery-fields {
     display: grid;
     gap: 12px;

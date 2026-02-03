@@ -48,22 +48,38 @@
                     <section class="checkout-section" aria-labelledby="checkout-title">
                         <h2 id="checkout-title" class="section-title">Checkout</h2>
                         <form id="checkout-form" class="checkout-form" novalidate>
-                        <fieldset class="form-group" data-group="fulfillment">
-                            <legend>Order type</legend>
-                            <div class="radio-group">
-                                <label class="radio-card">
-                                    <input type="radio" name="fulfillment" value="dinein" checked>
-                                    <span>Dine In</span>
-                                </label>
-                                <label class="radio-card">
-                                    <input type="radio" name="fulfillment" value="takeaway">
-                                    <span>Takeaway</span>
+                            <fieldset class="form-group" data-group="fulfillment">
+                                <legend>Order type</legend>
+                                <div class="radio-group">
+                                    <label class="radio-card">
+                                        <input type="radio" name="fulfillment" value="dinein" checked>
+                                        <span>Dine In</span>
+                                    </label>
+                                    <label class="radio-card">
+                                        <input type="radio" name="fulfillment" value="takeaway">
+                                        <span>Takeaway</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                            <div class="form-field">
+                                <label for="paymentResult">Simulate payment result</label>
+                                <select id="paymentResult">
+                                    <option value="success">Success</option>
+                                    <option value="fail">Fail</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>
+                                    <input id="deliveryToggle" type="checkbox">
+                                    Delivery (+$3.00)
                                 </label>
                             </div>
-                        </fieldset>
+                            <p id="payment-msg" class="form-error" role="alert" aria-live="polite"></p>
+                            <p id="form-error" class="form-error" role="alert" aria-live="polite"></p>
 
-                        <button class="primary-button cart-place-button" type="submit">Place order</button>
-                    </form>
+                            <button class="primary-button cart-place-button" type="submit">Place order</button>
+                        </form>
                 </section>
                 </section>
             </section>

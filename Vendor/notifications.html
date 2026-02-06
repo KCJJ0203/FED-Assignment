@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management | HawkerHub</title>
+    <title>Notifications | HawkerHub</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -17,9 +17,9 @@
             </div>
             <ul class="nav-links">
                 <li><a href="index.html"><i class="fas fa-th-large"></i> Overview</a></li>
-                <li><a href="orders.html" class="active"><i class="fas fa-clipboard-list"></i> Order Management</a></li>
+                <li><a href="orders.html"><i class="fas fa-clipboard-list"></i> Order Management</a></li>
                 <li><a href="menu.html"><i class="fas fa-utensils"></i> Menu Items</a></li>
-                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a></li>
                 <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
         </div>
@@ -34,70 +34,67 @@
 
     <main class="main-content">
         <header style="height: 80px !important; min-height: 80px !important; background-color: #1A237E; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 30px;">
-            
             <div class="header-title">
                 <i class="fas fa-bars" style="margin-right: 15px; cursor: pointer; color: white; font-size: 22px;"></i>
                 <strong style="font-size: 22px;">Uncle Lim Chicken Rice</strong>
             </div>
-
             <div class="header-icons">
                 <div style="display: flex; align-items: center; gap: 10px; margin-right: 30px; background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 30px;">
                     <span style="font-size: 13px; color: #eee; font-weight: 500;">Store Status</span>
                     <i class="fas fa-toggle-on" style="color: #69F0AE; font-size: 24px;"></i>
                     <span style="font-size: 13px; font-weight: bold; color: white;">OPEN</span>
                 </div>
-
                 <i class="fas fa-bell" style="color: white; font-size: 20px; margin-right: 20px; cursor: pointer;"></i>
-                
                 <div class="user-avatar" style="width: 40px; height: 40px; background-color: white; color: #1A237E; display:flex; align-items:center; justify-content:center; border-radius: 50%; font-weight:bold; font-size:15px;">UT</div>
             </div>
         </header>
 
         <div class="dashboard-container">
             
-            <div class="orders-toolbar">
-                <h2 style="margin: 0; display: flex; align-items: center; font-size: 22px;">
-                    Order Management 
-                    <span class="live-badge">LIVE</span>
-                </h2>
-                <button class="btn-walkin" onclick="window.location.href='pos.html'">
-                    <i class="fas fa-plus"></i> NEW WALK-IN ORDER
-                </button>
-            </div>
-
-            <div class="kanban-board">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <h2 style="margin: 0;">Notifications</h2>
+                    <p style="margin: 5px 0 0; color: #777;">Stay updated with urgent alerts and system messages.</p>
+                </div>
                 
-                <div class="kanban-column col-new">
-                    <div class="col-header">
-                        <span><i class="fas fa-receipt" style="color: #FF5252; margin-right: 8px;"></i> New Orders</span>
-                        <span class="count-badge" id="count-new">0</span>
-                    </div>
-                    <div id="list-new"></div> 
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-outline" onclick="createDemoNotification()">
+                        <i class="fas fa-magic"></i> Send Test Alert
+                    </button>
+                    
+                    <button class="btn-grey" onclick="openClearModal()">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
                 </div>
-
-                <div class="kanban-column col-cooking">
-                    <div class="col-header">
-                        <span><i class="fas fa-fire" style="color: #FFB74D; margin-right: 8px;"></i> Cooking</span>
-                        <span class="count-badge" id="count-cooking">0</span>
-                    </div>
-                    <div id="list-cooking"></div>
-                </div>
-
-                <div class="kanban-column col-ready">
-                    <div class="col-header">
-                        <span><i class="fas fa-check-circle" style="color: #2ECC71; margin-right: 8px;"></i> Ready</span>
-                        <span class="count-badge" id="count-ready">0</span>
-                    </div>
-                    <div id="list-ready"></div>
-                </div>
-
             </div>
+
+            <div id="notification-list" style="max-width: 800px;">
+                <p style="color: #999;">Loading...</p>
+            </div>
+
         </div>
     </main>
 
+    <div id="clearModal" class="modal-overlay">
+        <div class="modal-content" style="width: 320px; text-align: center; padding: 0;">
+            <div class="modal-body" style="padding: 30px 25px;">
+                <div style="width: 60px; height: 60px; background: #FFEBEE; color: #FF5252; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 24px;">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                
+                <h3 style="margin: 0 0 10px 0; font-size: 18px;">Clear History?</h3>
+                <p style="color: #666; font-size: 14px; margin: 0 0 25px 0; line-height: 1.5;">Are you sure you want to remove all notifications? This cannot be undone.</p>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-grey" onclick="closeClearModal()">Cancel</button>
+                    <button class="btn-grey" style="background-color: #FF5252; color: white;" onclick="performClearAll()">Yes, Clear All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-    <script src="js/orders.js"></script>
+    <script src="js/notifications.js"></script>
 </body>
 </html>

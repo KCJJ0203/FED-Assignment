@@ -19,11 +19,12 @@
 <body class="login-page">
     <header class="login-header">
         <a class="back" href="index.html" aria-label="Back">&larr;</a>
-        <h1>Sign In</h1>
         <div class="spacer" aria-hidden="true"></div>
     </header>
     <main class="login">
+    <div class="login-box">
         <form class="login-form">
+            <h1>Sign In</h1>
             <label class="field">
                 <span class="sr-only">Email</span>
                 <input type="email" name="email" placeholder="EMAIL" autocomplete="email" required>
@@ -33,10 +34,11 @@
                 <input type="password" name="password" placeholder="PASSWORD" autocomplete="current-password" required>
             </label>
             <p class="form-error" role="alert" aria-live="polite" hidden></p>
-            <a class="forgot" href="#">Forgot password?</a>
+            <a class="forgot" href="forgotpassword.html">Forgot password?</a>
             <button class="login-btn" type="submit">LOGIN</button>
-            <p class="signup">Don't have account? <a href="#">Sign up Here</a></p>
-        </form>
+            <p class="signup">Don't have account? <a href="signup.html">Sign up Here</a></p>
+         </form>
+        </div>
     </main>
     <script type="module" src="js/login.js"></script>
 </body>

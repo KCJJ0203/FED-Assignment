@@ -140,30 +140,221 @@ function updateQty(index, change) {
     renderCart();
 }
 
+function toggleTag(index, tagName) {
+    let currentNote = cart[index].notes || "";
+    
+    if (currentNote.includes(tagName)) {
+        currentNote = currentNote.replace(tagName, "").replace(", ,", ",").trim();
+        if (currentNote.startsWith(",")) currentNote = currentNote.substring(1).trim();
+        if (currentNote.endsWith(",")) currentNote = currentNote.substring(0, currentNote.length - 1).trim();
+    } else {
+        if (currentNote.length > 0) {
+            currentNote += ", " + tagName;
+        } else {
+            currentNote = tagName;
+        }
+    }
+    
+    cart[index].notes = currentNote;
+    renderCart();
+}
+
 function renderCart() {
     const container = document.getElementById('cart-container');
     container.innerHTML = '';
+    
     let subtotal = 0;
+
+    const commonTags = ["No Chili", "More Chili", "Less Rice", "More Sauce", "Breast Meat"];
 
     cart.forEach((item, index) => {
         const itemTotal = item.price * item.qty;
         subtotal += itemTotal;
+        const currentNotes = item.notes || "";
+
+        let tagsHtml = `<div class="quick-tags">`;
+        commonTags.forEach(tag => {
+            const isActive = currentNotes.includes(tag) ? "active" : "";
+            tagsHtml += `
+                <span class="tag-pill ${isActive}" onclick="toggleTag(${index}, '${tag}')">
+                    ${tag}
+                </span>`;
+        });
+        tagsHtml += `</div>`;
+
         const html = `
         <div class="cart-item">
             <img src="${item.img}" class="cart-item-img">
+            
             <div class="cart-item-details">
                 <span class="cart-item-title">${item.name}</span>
+                
+                ${tagsHtml}
+
+                <input type="text" class="note-input" 
+                       placeholder="Custom note..." 
+                       value="${currentNotes}" 
+                       onchange="updateNote(${index}, this.value)">
+                
                 <span class="cart-item-price">$${itemTotal.toFixed(2)}</span>
             </div>
+
             <div class="qty-control">
                 <span class="qty-btn" onclick="updateQty(${index}, -1)">-</span>
                 <span>${item.qty}</span>
                 <span class="qty-btn" onclick="updateQty(${index}, 1)">+</span>
             </div>
-        </div>`;
+        </div>
+        `;
         container.innerHTML += html;
     });
 
     document.getElementById('cart-total').innerText = `$${subtotal.toFixed(2)}`;
     document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+}
+
+let selectedPaymentMethod = 'Cash';
+
+function openPaymentModal() {
+    if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+    }
+    
+    let total = 0;
+    cart.forEach(item => total += (item.price * item.qty));
+    
+    document.getElementById('modal-total-amount').innerText = `$${total.toFixed(2)}`;
+    
+    document.getElementById('paymentModal').style.display = 'flex';
+}
+
+function closePaymentModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+}
+
+function selectMethod(element, method) {
+    selectedPaymentMethod = method;
+    
+    document.querySelectorAll('.pay-option').forEach(opt => opt.classList.remove('selected'));
+    element.classList.add('selected');
+}
+
+function processPayment() {
+    const btn = document.querySelector('.btn-confirm-pay');
+    btn.innerText = "Processing...";
+    
+    const orderIdRaw = Math.floor(Math.random() * 10000);
+    const orderID = "ORD-" + orderIdRaw;
+    const totalAmount = parseFloat(document.getElementById('modal-total-amount').innerText.replace('$',''));
+
+    const newOrder = {
+        orderID: orderID,
+        items: cart,
+        total: totalAmount,
+        paymentMethod: selectedPaymentMethod,
+        status: "new",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        type: "Walk-In"
+    };
+
+    db.collection("stalls").doc(MY_STALL_ID).collection("active_orders").add(newOrder)
+    .then(() => {
+        
+        closePaymentModal(); 
+
+        document.getElementById('success-order-id').innerText = `Order #${orderIdRaw} Created`;
+        document.getElementById('success-total-amount').innerText = `$${totalAmount.toFixed(2)}`;
+        
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${orderID}`;
+        document.getElementById('success-qr-img').src = qrUrl;
+
+        document.getElementById('successModal').style.display = 'flex';
+
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> CONFIRM PAYMENT';
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        alert("Payment Failed: " + error.message);
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> CONFIRM PAYMENT';
+    });
+}
+
+function resetPos() {
+    document.getElementById('successModal').style.display = 'none';
+    
+    cart = [];
+    renderCart();
+    
+    selectedPaymentMethod = 'Cash'; 
+}
+
+function expandQR() {
+    const smallSrc = document.getElementById('success-qr-img').src;
+    document.getElementById('big-qr-img').src = smallSrc;
+    document.getElementById('qrLightbox').style.display = 'flex';
+}
+
+function closeQR() {
+    document.getElementById('qrLightbox').style.display = 'none';
+}
+
+function printReceipt() {
+    let itemsHtml = '';
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        itemsHtml += `
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span>${item.qty}x ${item.name}</span>
+                <span>$${itemTotal.toFixed(2)}</span>
+            </div>
+            ${item.notes ? `<div style="font-size:10px; color:#666; margin-top:-3px;">(${item.notes})</div>` : ''}
+        `;
+    });
+
+    const receiptContent = `
+        <html>
+        <head>
+            <title>Receipt</title>
+            <style>
+                body { font-family: 'Courier New', monospace; width: 300px; padding: 20px; }
+                .center { text-align: center; }
+                .divider { border-top: 1px dashed #000; margin: 10px 0; }
+                .total { font-weight: bold; font-size: 18px; display: flex; justify-content: space-between; }
+            </style>
+        </head>
+        <body>
+            <div class="center">
+                <h3>UNCLE LIM<br>CHICKEN RICE</h3>
+                <p>HawkerHub @ Maxwell<br>Stall #04-21</p>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size: 12px;">
+                Date: ${new Date().toLocaleString()}<br>
+                Order ID: ${document.getElementById('success-order-id').innerText}
+            </div>
+            <div class="divider"></div>
+            
+            ${itemsHtml}
+            
+            <div class="divider"></div>
+            <div class="total">
+                <span>TOTAL</span>
+                <span>$${total.toFixed(2)}</span>
+            </div>
+            <div class="divider"></div>
+            <div class="center" style="font-size: 12px; margin-top: 20px;">
+                Thank you for dining with us!
+            </div>
+        </body>
+        </html>
+    `;
+
+    const win = window.open('', '', 'width=350,height=600');
+    win.document.write(receiptContent);
+    win.document.close();
+    win.print(); 
 }

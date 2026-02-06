@@ -64,7 +64,7 @@
                     <span id="cart-total">$0.00</span>
                 </div>
 
-                <button class="btn-checkout" onclick="alert('Proceed to Payment Modal')">
+                <button class="btn-checkout" onclick="openPaymentModal()">
                     PROCEED TO PAYMENT <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -74,6 +74,90 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-content payment-modal">
+            <div class="modal-header">
+                <h3>Confirm Payment</h3>
+                <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="font-size: 14px; color: #666;">Total Amount Payable</div>
+                    <div style="font-size: 36px; font-weight: 800; color: #1A237E;" id="modal-total-amount">$0.00</div>
+                </div>
+
+                <div style="margin-bottom: 20px; font-weight: bold; font-size: 14px;">Select Payment Method:</div>
+                
+                <div class="payment-methods">
+                    <div class="pay-option selected" onclick="selectMethod(this, 'Cash')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Cash</span>
+                    </div>
+                    
+                    <div class="pay-option" onclick="selectMethod(this, 'PayNow')">
+                        <i class="fas fa-qrcode"></i>
+                        <span>PayNow</span>
+                    </div>
+                    
+                    <div class="pay-option" onclick="selectMethod(this, 'NETS')">
+                        <i class="fas fa-credit-card"></i>
+                        <span>NETS</span>
+                    </div>
+                </div>
+
+                <button class="btn-confirm-pay" onclick="processPayment()">
+                    <i class="fas fa-check-circle"></i> CONFIRM PAYMENT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content success-modal">
+            
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+
+            <h2 style="text-align: center; margin: 0 0 5px 0;">Order Created!</h2>
+            <div style="text-align: center; color: #666; margin-bottom: 20px;" id="success-order-id">Order #---</div>
+
+            <div class="qr-container">
+                <img src="" id="success-qr-img" alt="Order QR Code">
+                <div style="font-size: 12px; color: #888; margin-top: 10px;">Scan for digital queue</div>
+            </div>
+
+            <div class="success-total">
+                Total: <span id="success-total-amount">$0.00</span>
+            </div>
+
+            <div class="success-actions">
+                <div class="row-btns">
+                    <button class="btn-secondary" onclick="printReceipt()">
+                        <i class="fas fa-print"></i> Print Receipt
+                    </button>
+                    <button class="btn-secondary" onclick="expandQR()">
+                        <i class="fas fa-expand"></i> Expand QR
+                    </button>
+                </div>
+                <button class="btn-done" onclick="resetPos()">
+                    DONE / NEXT ORDER <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="qrLightbox" class="modal-overlay" onclick="closeQR()">
+        <div style="background: white; padding: 20px; border-radius: 12px; text-align: center;">
+            <img id="big-qr-img" src="" style="width: 300px; height: 300px;">
+            <div style="margin-top: 10px; color: #666; font-size: 14px;">Click anywhere to close</div>
+        </div>
+    </div>
 
     <script src="js/pos.js"></script>
 </body>

@@ -33,19 +33,23 @@
     </nav>
 
     <main class="main-content">
-        <header>
+        <header style="height: 80px !important; min-height: 80px !important; background-color: #1A237E; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 30px;">
+            
             <div class="header-title">
-                <i class="fas fa-bars" style="margin-right: 15px; cursor: pointer;"></i>
-                <strong>Uncle Lim Chicken Rice</strong>
+                <i class="fas fa-bars" style="margin-right: 15px; cursor: pointer; color: white; font-size: 22px;"></i>
+                <strong style="font-size: 22px;">Uncle Lim Chicken Rice</strong>
             </div>
+
             <div class="header-icons">
-                <div style="display: flex; align-items: center; gap: 8px; margin-right: 20px; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px;">
-                    <span style="font-size: 12px; opacity: 0.8;">Store Status</span>
-                    <i class="fas fa-toggle-on" style="color: #2ECC71; font-size: 24px;"></i>
-                    <span style="font-size: 12px; font-weight: bold;">OPEN</span>
+                <div style="display: flex; align-items: center; gap: 10px; margin-right: 30px; background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 30px;">
+                    <span style="font-size: 13px; color: #eee; font-weight: 500;">Store Status</span>
+                    <i class="fas fa-toggle-on" style="color: #69F0AE; font-size: 24px;"></i>
+                    <span style="font-size: 13px; font-weight: bold; color: white;">OPEN</span>
                 </div>
-                <i class="fas fa-bell"></i>
-                <div class="user-avatar" style="width: 32px; height: 32px;"></div>
+
+                <i class="fas fa-bell" style="color: white; font-size: 20px; margin-right: 20px; cursor: pointer;"></i>
+                
+                <div class="user-avatar" style="width: 40px; height: 40px; background-color: white; color: #1A237E; display:flex; align-items:center; justify-content:center; border-radius: 50%; font-weight:bold; font-size:15px;">UT</div>
             </div>
         </header>
 
@@ -63,121 +67,36 @@
 
             <div class="kanban-board">
                 
-                <div class="kanban-column col-new" id="col-new">
+                <div class="kanban-column col-new">
                     <div class="col-header">
                         <span><i class="fas fa-receipt" style="color: #FF5252; margin-right: 8px;"></i> New Orders</span>
-                        <span class="count-badge">2</span>
+                        <span class="count-badge" id="count-new">0</span>
                     </div>
-
-                    <div class="order-card" id="order-102">
-                        <div class="card-top">
-                            <div class="id-group">
-                                <div class="icon-box"><i class="fas fa-motorcycle"></i></div>
-                                <div>
-                                    <div class="order-id">#102</div>
-                                    <div class="order-type type-delivery">DELIVERY</div>
-                                </div>
-                            </div>
-                            <div class="timer"><i class="far fa-clock"></i> 4m</div>
-                        </div>
-                        <div class="order-items">
-                            1x Chicken Rice Set<br>
-                            <span class="note">+ Extra Chili</span>
-                        </div>
-                        <div class="action-area">
-                            <button class="btn-grey" onclick="moveOrder('order-102', 'col-cooking')">
-                                ACCEPT <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="order-card" id="order-105">
-                        <div class="badge-new">NEW</div> 
-
-                        <div class="card-top">
-                            <div class="id-group">
-                                <div class="icon-box walkin"><i class="fas fa-user"></i></div>
-                                <div>
-                                    <div class="order-id">#105</div>
-                                    <div class="order-type type-walkin">TAKEAWAY</div>
-                                </div>
-                            </div>
-                            <div class="timer urgent"><i class="far fa-clock"></i> Just now</div>
-                        </div>
-                        <div class="order-items">
-                            1x Steamed Chicken Rice Set<br>
-                            <span class="note">No cucumber</span>
-                        </div>
-                        <div class="action-area">
-                            <button class="btn-grey" onclick="moveOrder('order-105', 'col-cooking')">
-                                ACCEPT <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <div id="list-new"></div> 
                 </div>
 
-                <div class="kanban-column col-cooking" id="col-cooking">
+                <div class="kanban-column col-cooking">
                     <div class="col-header">
                         <span><i class="fas fa-fire" style="color: #FFB74D; margin-right: 8px;"></i> Cooking</span>
-                        <span class="count-badge">1</span>
+                        <span class="count-badge" id="count-cooking">0</span>
                     </div>
-
-                    <div class="order-card" id="order-099">
-                        <div class="card-top">
-                            <div class="id-group">
-                                <div class="icon-box"><i class="fas fa-motorcycle"></i></div>
-                                <div>
-                                    <div class="order-id">#099</div>
-                                    <div class="order-type type-delivery">DELIVERY</div>
-                                </div>
-                            </div>
-                            <div class="timer"><i class="far fa-clock"></i> 8m</div>
-                        </div>
-                        <div class="order-items">
-                            2x Roasted Chicken Rice<br>
-                            1x Soya Sauce Veg
-                        </div>
-                        <div class="action-area btn-group">
-                            <button class="btn-outline">EDIT</button>
-                            <button class="btn-green" onclick="moveOrder('order-099', 'col-ready')">
-                                <i class="fas fa-check"></i> Ready
-                            </button>
-                        </div>
-                    </div>
+                    <div id="list-cooking"></div>
                 </div>
 
-                <div class="kanban-column col-ready" id="col-ready">
+                <div class="kanban-column col-ready">
                     <div class="col-header">
                         <span><i class="fas fa-check-circle" style="color: #2ECC71; margin-right: 8px;"></i> Ready</span>
-                        <span class="count-badge">1</span>
+                        <span class="count-badge" id="count-ready">0</span>
                     </div>
-                    
-                    <div class="order-card" id="order-098">
-                        <div class="card-top">
-                            <div class="id-group">
-                                <div class="icon-box walkin"><i class="fas fa-user"></i></div>
-                                <div>
-                                    <div class="order-id">#098</div>
-                                    <div class="order-type type-walkin">WALK-IN</div>
-                                </div>
-                            </div>
-                            <div class="timer" style="color:#2ECC71; font-weight:bold;">COLLECTION</div>
-                        </div>
-                        <div class="order-items">
-                            1x Steamed Chicken Rice<br>
-                            1x Braised Egg
-                        </div>
-                        <div class="action-area">
-                            <button class="btn-grey" onclick="this.closest('.order-card').remove(); updateColumnCounts();">
-                                COMPLETE
-                            </button>
-                        </div>
-                    </div>
+                    <div id="list-ready"></div>
                 </div>
 
             </div>
         </div>
     </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script src="js/orders.js"></script>
 </body>

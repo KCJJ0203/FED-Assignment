@@ -27,7 +27,6 @@
 
             <div class="category-tabs">
                 <div class="cat-pill active">All</div>
-                
                 <div class="cat-pill">Mains</div>
                 <div class="cat-pill">Sides</div>
                 <div class="cat-pill">Drinks</div>
@@ -41,17 +40,25 @@
         </main>
 
         <aside class="pos-cart-sidebar">
-            <div class="cart-header">
-                <div style="font-weight: bold; font-size: 18px; display: flex; align-items: center;">
-                    New Order <span class="order-badge">Walk-In</span>
-                </div>
-                <span style="color: #FF5252; font-size: 13px; cursor: pointer; font-weight: bold;" onclick="cart=[]; renderCart();">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <div style="font-weight: bold; font-size: 18px;">Current Order</div>
+                <span style="color: #FF5252; font-size: 13px; cursor: pointer; font-weight: bold;" onclick="clearCart()">
                     <i class="fas fa-trash"></i> Clear
                 </span>
             </div>
 
+            <div class="order-mode-tabs">
+                <button class="mode-btn active" id="btn-dinein" onclick="setOrderMode('Dine-In')">
+                    <i class="fas fa-utensils"></i> Dine-In
+                </button>
+                <button class="mode-btn" id="btn-takeaway" onclick="setOrderMode('Takeaway')">
+                    <i class="fas fa-shopping-bag"></i> Takeaway
+                </button>
+            </div>
+
             <div class="cart-items-container" id="cart-container">
-                </div>
+            </div>
 
             <div class="cart-footer">
                 <div class="cart-row">
@@ -81,7 +88,6 @@
                 <h3>Confirm Payment</h3>
                 <span class="close-btn" onclick="closePaymentModal()">&times;</span>
             </div>
-            
             <div class="modal-body">
                 <div style="text-align: center; margin-bottom: 25px;">
                     <div style="font-size: 14px; color: #666;">Total Amount Payable</div>
@@ -89,21 +95,15 @@
                 </div>
 
                 <div style="margin-bottom: 20px; font-weight: bold; font-size: 14px;">Select Payment Method:</div>
-                
                 <div class="payment-methods">
                     <div class="pay-option selected" onclick="selectMethod(this, 'Cash')">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span>Cash</span>
+                        <i class="fas fa-money-bill-wave"></i><span>Cash</span>
                     </div>
-                    
                     <div class="pay-option" onclick="selectMethod(this, 'PayNow')">
-                        <i class="fas fa-qrcode"></i>
-                        <span>PayNow</span>
+                        <i class="fas fa-qrcode"></i><span>PayNow</span>
                     </div>
-                    
                     <div class="pay-option" onclick="selectMethod(this, 'NETS')">
-                        <i class="fas fa-credit-card"></i>
-                        <span>NETS</span>
+                        <i class="fas fa-credit-card"></i><span>NETS</span>
                     </div>
                 </div>
 
@@ -116,39 +116,23 @@
 
     <div id="successModal" class="modal-overlay">
         <div class="modal-content success-modal">
-            
             <div style="text-align: center; margin-bottom: 15px;">
-                <div class="success-icon">
-                    <i class="fas fa-check"></i>
-                </div>
+                <div class="success-icon"><i class="fas fa-check"></i></div>
             </div>
-
             <h2 style="text-align: center; margin: 0 0 5px 0;">Order Created!</h2>
             <div style="text-align: center; color: #666; margin-bottom: 20px;" id="success-order-id">Order #---</div>
-
             <div class="qr-container">
                 <img src="" id="success-qr-img" alt="Order QR Code">
                 <div style="font-size: 12px; color: #888; margin-top: 10px;">Scan for digital queue</div>
             </div>
-
-            <div class="success-total">
-                Total: <span id="success-total-amount">$0.00</span>
-            </div>
-
+            <div class="success-total">Total: <span id="success-total-amount">$0.00</span></div>
             <div class="success-actions">
                 <div class="row-btns">
-                    <button class="btn-secondary" onclick="printReceipt()">
-                        <i class="fas fa-print"></i> Print Receipt
-                    </button>
-                    <button class="btn-secondary" onclick="expandQR()">
-                        <i class="fas fa-expand"></i> Expand QR
-                    </button>
+                    <button class="btn-secondary" onclick="printReceipt()"><i class="fas fa-print"></i> Print Receipt</button>
+                    <button class="btn-secondary" onclick="expandQR()"><i class="fas fa-expand"></i> Expand QR</button>
                 </div>
-                <button class="btn-done" onclick="resetPos()">
-                    DONE / NEXT ORDER <i class="fas fa-arrow-right"></i>
-                </button>
+                <button class="btn-done" onclick="resetPos()">DONE / NEXT ORDER <i class="fas fa-arrow-right"></i></button>
             </div>
-
         </div>
     </div>
 

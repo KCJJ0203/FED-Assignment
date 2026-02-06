@@ -1096,3 +1096,227 @@ header {
     padding: 0 5px;
 }
 .notify-close:hover { color: #FF5252; }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2ECC71;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+.slider.round {
+  border-radius: 22px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+}
+.toggle-btn input { margin: 0; }
+
+/* --- ORDER MODE TABS (NEW) --- */
+.order-mode-tabs {
+    display: flex;
+    background: #f0f2f5;
+    padding: 4px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.mode-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.mode-btn.active {
+    background: white;
+    color: #1A237E;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mode-btn.active.takeaway-mode {
+    color: #FF5252;
+}
+
+/* --- ITEM NOTES & TAGS (RESTORED) --- */
+.item-extras {
+    margin-top: 6px;
+    width: 100%;
+}
+
+.quick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.tag-pill {
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tag-pill:hover { border-color: #bbb; }
+
+.tag-pill.active {
+    background-color: #E3F2FD;
+    border-color: #2962FF;
+    color: #2962FF;
+    font-weight: bold;
+}
+
+.note-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px dashed #ccc;
+    background: transparent;
+    padding: 3px 0;
+    font-size: 12px;
+    color: #666;
+    outline: none;
+}
+.note-input:focus { border-bottom: 1px solid #2962FF; color: #333; }
+
+/* --- ORDER MODE TABS --- */
+.order-mode-tabs {
+    display: flex;
+    background: #f0f2f5;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #777;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.mode-btn:hover { background: #e4e6eb; }
+
+.mode-btn.active {
+    background: white;
+    color: #1A237E;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mode-btn.active.takeaway-mode {
+    color: #FF5252; 
+    /* Red text when Takeaway is active */
+}
+
+/* --- QUICK TAGS & NOTES --- */
+.item-extras {
+    margin-top: 8px;
+    width: 100%;
+}
+
+.quick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.tag-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tag-pill:hover { border-color: #bbb; }
+
+.tag-pill.active {
+    background-color: #E8EAF6;
+    border-color: #3F51B5;
+    color: #3F51B5;
+    font-weight: bold;
+}
+
+.note-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px dashed #ccc;
+    background: transparent;
+    padding: 5px 0;
+    font-size: 12px;
+    color: #444;
+    outline: none;
+}
+.note-input:focus { 
+    border-bottom: 1px solid #1A237E; 
+    background: #f9f9f9;
+}

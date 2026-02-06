@@ -13,34 +13,42 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.firestore();
-
 const MY_STALL_ID = "0tPLvlPufTsDZ3jH6m5E"; 
 
 let cart = [];
 let allMenuItems = []; 
 let currentCategory = 'All'; 
+let CONTAINER_PRICE = 0.30; 
+let currentOrderMode = 'Dine-In';
 
 document.addEventListener('DOMContentLoaded', () => {
+    listenToSettings();
     fetchMenu();
     setupEventListeners();
     renderCart();
 });
 
+function listenToSettings() {
+    db.collection("stalls").doc(MY_STALL_ID)
+      .onSnapshot((doc) => {
+          if (doc.exists) {
+              const data = doc.data();
+              if (data.takeawayCharge) {
+                  CONTAINER_PRICE = parseFloat(data.takeawayCharge);
+                  renderCart(); 
+              }
+          }
+      });
+}
+
 function fetchMenu() {
     const grid = document.getElementById('menu-grid');
     grid.innerHTML = '<p>Loading menu...</p>';
 
-    const sortOrder = {
-        "Mains": 1,
-        "Sides": 2,
-        "Drinks": 3,
-        "Add-ons": 4,
-        "Sets": 5
-    };
+    const sortOrder = { "Mains": 1, "Sides": 2, "Drinks": 3, "Add-ons": 4, "Sets": 5 };
 
     db.collection("stalls").doc(MY_STALL_ID).collection("menu_items")
       .get().then((querySnapshot) => {
-        
         allMenuItems = []; 
         grid.innerHTML = ''; 
 
@@ -51,7 +59,9 @@ function fetchMenu() {
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            allMenuItems.push(data); 
+            if (data.name !== "Takeaway" && data.name !== "Takeaway Box") {
+                allMenuItems.push(data); 
+            }
         });
 
         allMenuItems.sort((a, b) => {
@@ -63,7 +73,7 @@ function fetchMenu() {
         renderMenu(allMenuItems);
 
     }).catch((error) => {
-        console.error("Error loading menu:", error);
+        console.error(error);
         grid.innerHTML = '<p style="color:red">Error loading menu.</p>';
     });
 }
@@ -81,7 +91,7 @@ function renderMenu(itemsToRender) {
         const imageSrc = item.image || "https://placehold.co/150";
         
         const cardHTML = `
-            <div class="menu-card" onclick="addToCart('${item.name}', ${item.price}, '${imageSrc}')">
+            <div class="menu-card" onclick="addToCart('${item.name}', ${item.price}, '${imageSrc}', '${item.category}')">
                 <img src="${imageSrc}" class="menu-img">
                 <div class="menu-title">${item.name}</div>
                 <div class="menu-price">$${item.price.toFixed(2)}</div>
@@ -92,7 +102,6 @@ function renderMenu(itemsToRender) {
 }
 
 function setupEventListeners() {
-    
     const tabs = document.querySelectorAll('.cat-pill');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -101,7 +110,7 @@ function setupEventListeners() {
             
             const category = tab.innerText; 
             
-            if (category === "All" || category === "Show All") {
+            if (category === "All") {
                 renderMenu(allMenuItems);
             } else {
                 const filtered = allMenuItems.filter(item => item.category === category);
@@ -113,7 +122,6 @@ function setupEventListeners() {
     const searchInput = document.querySelector('.search-bar input');
     searchInput.addEventListener('keyup', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        
         const filtered = allMenuItems.filter(item => 
             item.name.toLowerCase().includes(searchTerm)
         );
@@ -121,17 +129,21 @@ function setupEventListeners() {
     });
 }
 
-function addToCart(name, price, image) {
+function addToCart(name, price, image, category) {
+    if (name.toLowerCase().includes("takeaway") && category === "System") return; 
+
     const existingItem = cart.find(item => item.name === name);
     if (existingItem) {
         existingItem.qty++;
     } else {
-        cart.push({ name, price, qty: 1, img: image });
+        cart.push({ name, price, qty: 1, img: image, category, notes: "" });
     }
     renderCart();
 }
 
 function updateQty(index, change) {
+    if (cart[index].name === "Takeaway Charge") return;
+
     if (cart[index].qty + change > 0) {
         cart[index].qty += change;
     } else {
@@ -140,70 +152,115 @@ function updateQty(index, change) {
     renderCart();
 }
 
-function toggleTag(index, tagName) {
-    let currentNote = cart[index].notes || "";
+function setOrderMode(mode) {
+    currentOrderMode = mode;
     
-    if (currentNote.includes(tagName)) {
-        currentNote = currentNote.replace(tagName, "").replace(", ,", ",").trim();
-        if (currentNote.startsWith(",")) currentNote = currentNote.substring(1).trim();
-        if (currentNote.endsWith(",")) currentNote = currentNote.substring(0, currentNote.length - 1).trim();
+    document.getElementById('btn-dinein').classList.remove('active', 'takeaway-mode');
+    document.getElementById('btn-takeaway').classList.remove('active', 'takeaway-mode');
+
+    if (mode === 'Takeaway') {
+        document.getElementById('btn-takeaway').classList.add('active', 'takeaway-mode');
     } else {
-        if (currentNote.length > 0) {
-            currentNote += ", " + tagName;
+        document.getElementById('btn-dinein').classList.add('active');
+    }
+    renderCart();
+}
+
+function toggleTag(index, tag) {
+    let currentNotes = cart[index].notes || "";
+    
+    if (currentNotes.includes(tag)) {
+        currentNotes = currentNotes.replace(tag, "").replace(", ,", ",").trim();
+        if (currentNotes.startsWith(",")) currentNotes = currentNotes.substring(1).trim();
+        if (currentNotes.endsWith(",")) currentNotes = currentNotes.substring(0, currentNotes.length - 1).trim();
+    } else {
+        if (currentNotes.length > 0) {
+            currentNotes += ", " + tag;
         } else {
-            currentNote = tagName;
+            currentNotes = tag;
         }
     }
-    
-    cart[index].notes = currentNote;
+    cart[index].notes = currentNotes;
     renderCart();
+}
+
+function updateNote(index, value) {
+    cart[index].notes = value;
 }
 
 function renderCart() {
     const container = document.getElementById('cart-container');
     container.innerHTML = '';
     
+    cart = cart.filter(item => item.name !== "Takeaway Charge");
+
+    if (currentOrderMode === 'Takeaway') {
+        let containerCount = 0;
+        cart.forEach(item => {
+            if (item.category !== 'Drinks' && item.category !== 'Add-ons') {
+                containerCount += item.qty;
+            }
+        });
+
+        if (containerCount > 0) {
+            cart.push({
+                name: "Takeaway Charge",
+                price: CONTAINER_PRICE, 
+                qty: containerCount,
+                img: "https://placehold.co/50/FF5252/FFFFFF?text=BOX", 
+                isSystemItem: true
+            });
+        }
+    }
+    
     let subtotal = 0;
-
     const commonTags = ["No Chili", "More Chili", "Less Rice", "More Sauce", "Breast Meat"];
-
+    
     cart.forEach((item, index) => {
         const itemTotal = item.price * item.qty;
         subtotal += itemTotal;
-        const currentNotes = item.notes || "";
 
-        let tagsHtml = `<div class="quick-tags">`;
-        commonTags.forEach(tag => {
-            const isActive = currentNotes.includes(tag) ? "active" : "";
-            tagsHtml += `
-                <span class="tag-pill ${isActive}" onclick="toggleTag(${index}, '${tag}')">
-                    ${tag}
-                </span>`;
-        });
-        tagsHtml += `</div>`;
-
-        const html = `
-        <div class="cart-item">
-            <img src="${item.img}" class="cart-item-img">
+        const isSystem = item.isSystemItem;
+        const rowStyle = isSystem ? "background:#FFF3E0; border-radius:8px; padding:5px;" : "";
+        
+        let extrasHtml = '';
+        
+        if (!isSystem) {
+            const currentNotes = item.notes || "";
+            let tagsHtml = `<div class="quick-tags">`;
+            commonTags.forEach(tag => {
+                const isActive = currentNotes.includes(tag) ? "active" : "";
+                tagsHtml += `<span class="tag-pill ${isActive}" onclick="toggleTag(${index}, '${tag}')">${tag}</span>`;
+            });
+            tagsHtml += `</div>`;
             
-            <div class="cart-item-details">
-                <span class="cart-item-title">${item.name}</span>
-                
-                ${tagsHtml}
+            extrasHtml = `
+                <div class="item-extras">
+                    ${tagsHtml}
+                    <input type="text" class="note-input" placeholder="Custom note..." value="${currentNotes}" onchange="updateNote(${index}, this.value)">
+                </div>
+            `;
+        }
 
-                <input type="text" class="note-input" 
-                       placeholder="Custom note..." 
-                       value="${currentNotes}" 
-                       onchange="updateNote(${index}, this.value)">
-                
-                <span class="cart-item-price">$${itemTotal.toFixed(2)}</span>
-            </div>
-
+        const controls = isSystem ? "" : `
             <div class="qty-control">
                 <span class="qty-btn" onclick="updateQty(${index}, -1)">-</span>
                 <span>${item.qty}</span>
                 <span class="qty-btn" onclick="updateQty(${index}, 1)">+</span>
             </div>
+        `;
+
+        const html = `
+        <div class="cart-item" style="flex-wrap:wrap; ${rowStyle}">
+            <div style="display:flex; width:100%; gap:12px; align-items:center;">
+                <img src="${item.img}" class="cart-item-img">
+                <div class="cart-item-details">
+                    <span class="cart-item-title">${item.name}</span>
+                    <span class="cart-item-price">$${itemTotal.toFixed(2)}</span>
+                </div>
+                ${controls}
+            </div>
+            ${extrasHtml}
         </div>
         `;
         container.innerHTML += html;
@@ -225,7 +282,6 @@ function openPaymentModal() {
     cart.forEach(item => total += (item.price * item.qty));
     
     document.getElementById('modal-total-amount').innerText = `$${total.toFixed(2)}`;
-    
     document.getElementById('paymentModal').style.display = 'flex';
 }
 
@@ -235,7 +291,6 @@ function closePaymentModal() {
 
 function selectMethod(element, method) {
     selectedPaymentMethod = method;
-    
     document.querySelectorAll('.pay-option').forEach(opt => opt.classList.remove('selected'));
     element.classList.add('selected');
 }
@@ -247,7 +302,7 @@ function processPayment() {
     const orderIdRaw = Math.floor(Math.random() * 10000);
     const orderID = "ORD-" + orderIdRaw;
     const totalAmount = parseFloat(document.getElementById('modal-total-amount').innerText.replace('$',''));
-
+    
     const newOrder = {
         orderID: orderID,
         items: cart,
@@ -255,38 +310,35 @@ function processPayment() {
         paymentMethod: selectedPaymentMethod,
         status: "new",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        type: "Walk-In"
+        type: currentOrderMode
     };
 
     db.collection("stalls").doc(MY_STALL_ID).collection("active_orders").add(newOrder)
     .then(() => {
-        
         closePaymentModal(); 
-
         document.getElementById('success-order-id').innerText = `Order #${orderIdRaw} Created`;
         document.getElementById('success-total-amount').innerText = `$${totalAmount.toFixed(2)}`;
-        
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${orderID}`;
         document.getElementById('success-qr-img').src = qrUrl;
-
         document.getElementById('successModal').style.display = 'flex';
-
         btn.innerHTML = '<i class="fas fa-check-circle"></i> CONFIRM PAYMENT';
     })
     .catch((error) => {
-        console.error("Error:", error);
-        alert("Payment Failed: " + error.message);
+        console.error(error);
+        alert("Payment Failed");
         btn.innerHTML = '<i class="fas fa-check-circle"></i> CONFIRM PAYMENT';
     });
 }
 
+function clearCart() {
+    cart = [];
+    setOrderMode('Dine-In');
+    renderCart();
+}
+
 function resetPos() {
     document.getElementById('successModal').style.display = 'none';
-    
-    cart = [];
-    renderCart();
-    
-    selectedPaymentMethod = 'Cash'; 
+    clearCart();
 }
 
 function expandQR() {

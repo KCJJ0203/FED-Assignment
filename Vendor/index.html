@@ -15,20 +15,18 @@
                 <div class="brand-icon"><i class="fas fa-store"></i></div>
                 HawkerHub
             </div>
-            
             <ul class="nav-links">
-                <li><a href="index.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="index.html" class="active"><i class="fas fa-th-large"></i> Overview</a></li>
                 <li><a href="orders.html"><i class="fas fa-clipboard-list"></i> Order Management</a></li>
                 <li><a href="menu.html"><i class="fas fa-utensils"></i> Menu Items</a></li>
                 <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
                 <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
         </div>
-
         <div class="user-profile">
             <div class="user-avatar"></div>
             <div>
-                <div style="font-weight: bold; font-size: 14px;">Uncle Tan</div>
+                <div id="stall-name-display" style="font-weight: bold; font-size: 14px;">Loading...</div>
                 <div style="font-size: 12px; color: #777;">Stall #04-21</div>
             </div>
         </div>
@@ -36,9 +34,7 @@
 
     <main class="main-content">
         <header>
-            <div class="header-title">
-                <strong>Stall Performance</strong>
-            </div>
+            <div class="header-title"><strong>Stall Performance</strong></div>
             <div class="header-icons">
                 <i class="fas fa-search"></i>
                 <i class="fas fa-bell"></i>
@@ -48,7 +44,6 @@
         </header>
 
         <div class="dashboard-container">
-            
             <div class="page-title">
                 <h2>Dashboard Overview</h2>
                 <p>Welcome back, Uncle Tan. Here is your stall's performance summary.</p>
@@ -59,22 +54,20 @@
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-file-contract" style="color:#1A237E;"></i> Stall Rental</h3>
-                        <i class="fas fa-ellipsis-h" style="color: #ccc; cursor: pointer;"></i>
+                        <i class="fas fa-ellipsis-h" style="color: #ccc; cursor: pointer;" onclick="toggleRentalMenu()"></i>
+
+                        <div class="menu-dropdown" id="rentalDropdown">
+                            <div onclick="showToast('Downloading PDF Copy...')">Download Copy</div>
+                            <div onclick="showToast('Renewal Request Sent!')">Request Renewal</div>
+                            <div class="danger" onclick="showToast('Issue Reported to Admin', true)">Report Issue</div>
+                        </div>
+
                     </div>
                     <div class="rental-info">
-                        <div class="info-row">
-                            <span>Stall Number</span>
-                            <strong>#04-21</strong>
-                        </div>
-                        <div class="info-row">
-                            <span>Status</span>
-                            <span class="status-pill">Active</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Lease Renewal</span>
-                            <strong>31 Dec 2026</strong>
-                        </div>
-                        <a href="#" class="link-btn">View Agreement Details &rarr;</a>
+                        <div class="info-row"><span>Stall Number</span><strong>#04-21</strong></div>
+                        <div class="info-row"><span>Status</span><span class="status-pill">Active</span></div>
+                        <div class="info-row"><span>Lease Renewal</span><strong>31 Dec 2026</strong></div>
+                        <a href="javascript:void(0)" class="link-btn" onclick="showAgreementDetails()">View Agreement Details &rarr;</a>
                     </div>
                 </div>
 
@@ -85,14 +78,14 @@
                     </div>
                     <div class="sales-grid">
                         <div class="sales-box">
-                            <span class="sales-label"><i class="fas fa-wallet"></i> Revenue</span>
+                            <span class="sales-label">Revenue</span>
                             <span class="sales-value">$450</span>
-                            <span class="trend up"><i class="fas fa-arrow-up"></i> +12.5% <span style="font-weight:normal; color:#777;">vs yesterday</span></span>
+                            <span class="trend up"><i class="fas fa-arrow-up"></i> +12.5%</span>
                         </div>
                         <div class="sales-box">
-                            <span class="sales-label"><i class="fas fa-receipt"></i> Orders</span>
+                            <span class="sales-label">Orders</span>
                             <span class="sales-value">85</span>
-                            <span class="trend up"><i class="fas fa-arrow-up"></i> +5 <span style="font-weight:normal; color:#777;">orders</span></span>
+                            <span class="trend up"><i class="fas fa-arrow-up"></i> +5</span>
                         </div>
                     </div>
                 </div>
@@ -100,37 +93,19 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>Popular Items</h3>
-                        <a href="#" style="font-size: 12px; text-decoration: none; color: blue;">View All</a>
+                        <a href="javascript:void(0)" style="font-size: 12px; color: blue;" onclick="showAllItems()">View All</a>
                     </div>
-                    
                     <div class="item-row">
-                        <div class="item-header">
-                            <span>Chicken Rice</span>
-                            <span style="color:#777;">45 orders</span>
-                        </div>
-                        <div class="progress-bg">
-                            <div class="progress-fill" style="width: 85%;"></div>
-                        </div>
+                        <div class="item-header"><span>Chicken Rice</span><span style="color:#777;">45 orders</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 85%;"></div></div>
                     </div>
-
                     <div class="item-row">
-                        <div class="item-header">
-                            <span>Roasted Rice</span>
-                            <span style="color:#777;">28 orders</span>
-                        </div>
-                        <div class="progress-bg">
-                            <div class="progress-fill" style="width: 60%; opacity: 0.7;"></div>
-                        </div>
+                        <div class="item-header"><span>Roasted Rice</span><span style="color:#777;">28 orders</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 60%; opacity: 0.7;"></div></div>
                     </div>
-
                     <div class="item-row">
-                        <div class="item-header">
-                            <span>Char Siew Pork</span>
-                            <span style="color:#777;">12 orders</span>
-                        </div>
-                        <div class="progress-bg">
-                            <div class="progress-fill" style="width: 30%; opacity: 0.5;"></div>
-                        </div>
+                        <div class="item-header"><span>Char Siew Pork</span><span style="color:#777;">12 orders</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 30%; opacity: 0.5;"></div></div>
                     </div>
                 </div>
 
@@ -149,16 +124,7 @@
                             </defs>
                             <path d="M0,50 Q25,50 35,10 Q60,40 100,25 L100,50 Z" fill="url(#grad1)" />
                             <path d="M0,50 Q25,50 35,10 Q60,40 100,25" fill="none" stroke="#4A6CF7" stroke-width="2" />
-                            
-                            <circle cx="70" cy="20" r="1.5" stroke="#4A6CF7" stroke-width="0.5" fill="white" />
                         </svg>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: #aaa; margin-top: 5px;">
-                        <span>10 AM</span>
-                        <span>12 PM</span>
-                        <span>2 PM</span>
-                        <span>4 PM</span>
-                        <span>6 PM</span>
                     </div>
                 </div>
 
@@ -166,5 +132,52 @@
         </div>
     </main>
 
+    <div id="agreementModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rental Agreement Details</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="doc-row"><span class="label">Agreement ID:</span><span class="value">#SG-NEA-8821</span></div>
+                <div class="doc-divider"></div>
+                <div class="doc-row"><span class="label">Tenant:</span><span class="value">Uncle Tan</span></div>
+                <div class="doc-row"><span class="label">Stall:</span><span class="value">#04-21 @ Maxwell</span></div>
+                <div class="doc-divider"></div>
+                <div class="doc-row"><span class="label">Ends:</span><span class="value">31 Dec 2026</span></div>
+                <div class="doc-status valid">STATUS: VALID</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="itemsModal" class="modal-overlay">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-header">
+                <h3>Menu Performance</h3>
+                <span class="close-btn" onclick="closeItemsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table class="report-table">
+                    <thead>
+                        <tr><th>Item</th><th>Category</th><th style="text-align:right;">Orders</th><th style="text-align:right;">Revenue</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Chicken Rice</td><td><span class="tag">Mains</span></td><td style="text-align:right;">45</td><td style="text-align:right;">$180.00</td></tr>
+                        <tr><td>Roasted Rice</td><td><span class="tag">Mains</span></td><td style="text-align:right;">28</td><td style="text-align:right;">$112.00</td></tr>
+                        <tr><td>Soya Bean Milk</td><td><span class="tag drink">Drinks</span></td><td style="text-align:right;">55</td><td style="text-align:right;">$82.50</td></tr>
+                    </tbody>
+                </table>
+                <button class="btn-print" onclick="alert('Exporting...')">Export Report</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"><i class="fas fa-check-circle toast-icon"></i> <span id="toast-message">Action Successful</span></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script src="js/index.js"></script>
 </body>
 </html>

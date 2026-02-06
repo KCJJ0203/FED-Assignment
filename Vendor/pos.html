@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Walk-In | HawkerHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="pos-layout">
+
+        <main class="pos-menu-area">
+            
+            <div class="pos-top-bar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <a href="orders.html" style="color: #333; font-size: 20px;"><i class="fas fa-arrow-left"></i></a>
+                    <h2 style="margin: 0;">Uncle Lim Chicken Rice</h2>
+                </div>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search menu items...">
+                </div>
+            </div>
+
+            <div class="category-tabs">
+                <div class="cat-pill active">All</div>
+                
+                <div class="cat-pill">Mains</div>
+                <div class="cat-pill">Sides</div>
+                <div class="cat-pill">Drinks</div>
+                <div class="cat-pill">Add-ons</div>
+                <div class="cat-pill">Sets</div>
+            </div>
+
+            <div class="menu-grid" id="menu-grid">
+                <p>Loading menu from database...</p>
+            </div>
+        </main>
+
+        <aside class="pos-cart-sidebar">
+            <div class="cart-header">
+                <div style="font-weight: bold; font-size: 18px; display: flex; align-items: center;">
+                    New Order <span class="order-badge">Walk-In</span>
+                </div>
+                <span style="color: #FF5252; font-size: 13px; cursor: pointer; font-weight: bold;" onclick="cart=[]; renderCart();">
+                    <i class="fas fa-trash"></i> Clear
+                </span>
+            </div>
+
+            <div class="cart-items-container" id="cart-container">
+                </div>
+
+            <div class="cart-footer">
+                <div class="cart-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">$0.00</span>
+                </div>
+                
+                <div class="cart-row cart-total">
+                    <span>Total</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+
+                <button class="btn-checkout" onclick="alert('Proceed to Payment Modal')">
+                    PROCEED TO PAYMENT <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script src="js/pos.js"></script>
+</body>
+</html>

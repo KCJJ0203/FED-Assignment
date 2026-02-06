@@ -124,12 +124,7 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk. Routes in `js/login.js`
 ```
 
 ## Credits / References
-- Google Fonts (Sora): https://fonts.googleapis.com/css2?family=Sora
-- Font Awesome CDN: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css
-- UI Avatars: https://ui-avatars.com/
-- Hawker centre data: https://data.gov.sg/
-- Stall mock data: https://jsonplaceholder.typicode.com/
-- Image sources: to be added by the team.
+See [credits.html](credits.html) for the full credits list (including image sources).
 
 ## Known Limitations
 - Payment success/failure is simulated; no real payment integration.

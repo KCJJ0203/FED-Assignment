@@ -60,6 +60,9 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
     let currentHawkerSource = "none";
     let firebaseHawkers = [];
     let firebaseStalls = [];
+    const firebaseMenuCache = new Map();
+    const firebaseMenuInFlight = new Map();
+    let menuRenderToken = 0;
     const hasStallUi = Boolean(stallSectionEl && stallListEl && stallStatusEl && stallSearchInput);
     const hasMenuUi = Boolean(menuSectionEl && menuListEl && menuStatusEl);
     const filters = {
@@ -214,6 +217,7 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
     };
 
     const exitMenuMode = () => {
+        menuRenderToken += 1;
         isMenuMode = false;
         if (stallSectionEl) {
             stallSectionEl.classList.remove("is-menu-only");
@@ -787,6 +791,34 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         });
     };
 
+    const fetchFirebaseMenuItemsForStall = async (stallId) => {
+        const stallKey = String(stallId || "").trim();
+        if (!db || !stallKey) {
+            return [];
+        }
+        if (firebaseMenuCache.has(stallKey)) {
+            return firebaseMenuCache.get(stallKey);
+        }
+        if (firebaseMenuInFlight.has(stallKey)) {
+            return firebaseMenuInFlight.get(stallKey);
+        }
+
+        const task = (async () => {
+            try {
+                const snap = await getDocs(collection(db, "stalls", stallKey, "menu_items"));
+                const items = snap.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+                const normalized = normalizeMenuItems(items, stallKey);
+                firebaseMenuCache.set(stallKey, normalized);
+                return normalized;
+            } finally {
+                firebaseMenuInFlight.delete(stallKey);
+            }
+        })();
+
+        firebaseMenuInFlight.set(stallKey, task);
+        return task;
+    };
+
     const showToast = (message) => {
         if (!cartToastEl) {
             return;
@@ -869,14 +901,51 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         modalQty = 1;
     };
 
-    const renderMenu = (stall) => {
+    const renderMenu = async (stall) => {
         if (!hasMenuUi || !stall) {
             return;
         }
+        const token = ++menuRenderToken;
+        const stallId = String(stall.id);
         const stallName = stall.displayName || toStallName(stall.title);
         currentStallName = stallName;
-        const items = buildMenuItems(stall);
         menuListEl.innerHTML = "";
+        let items = [];
+
+        if (stall.source === "firebase") {
+            setMenuStatus("Loading menu...");
+            try {
+                items = await fetchFirebaseMenuItemsForStall(stallId);
+            } catch (error) {
+                if (token !== menuRenderToken) {
+                    return;
+                }
+                console.error("Failed to load menu items:", error);
+                setMenuStatus("Error loading menu. Please try again.");
+                return;
+            }
+
+            if (token !== menuRenderToken) {
+                return;
+            }
+
+            if (items.length === 0) {
+                const fallback = normalizeMenuItems(
+                    stall.menuItems || stall.menu || stall.items,
+                    stallId
+                );
+                if (fallback.length > 0) {
+                    items = fallback;
+                }
+            }
+        } else {
+            items = buildMenuItems(stall);
+        }
+
+        if (token !== menuRenderToken) {
+            return;
+        }
+
         if (items.length === 0) {
             setMenuStatus(`No menu available for ${stallName}.`);
             return;
@@ -1105,11 +1174,12 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         const hours = data.hours || "";
         const rawMenuItems = data.menuItems || data.menu || data.items;
         const menuItems = Array.isArray(rawMenuItems) ? rawMenuItems : [];
+        const stallName = data.stallName || data.name || "Stall";
         return {
             id: docSnap.id,
-            title: data.name || "Stall",
+            title: stallName,
             body: data.location || "",
-            displayName: data.name || "Stall",
+            displayName: stallName,
             rating,
             grade: data.grade || "",
             isOpen: Boolean(hours),
@@ -1214,6 +1284,9 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         }
         clearStallSelection();
         const stallName = stall.displayName || toStallName(stall.title);
+        if (stall.source === "firebase") {
+            firebaseMenuCache.delete(String(stall.id));
+        }
         const selectedButton = stallListEl.querySelector(`[data-stall-id="${stall.id}"]`);
         if (selectedButton) {
             selectedButton.classList.add("is-selected");

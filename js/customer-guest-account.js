@@ -1,7 +1,10 @@
-// customer-guest-account.js (FULL: profile edit + cards add/remove + feedback history + PFP (Firestore Base64))
+// customer-guest-account.js (FULL: profile edit + cards add/remove + feedback history + PFP + Favorites from localStorage)
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updateEmail } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import {
+  getAuth, onAuthStateChanged, signOut, updateEmail,
+  updatePassword, EmailAuthProvider, reauthenticateWithCredential
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import {
   getFirestore,
   doc, getDoc, setDoc,
@@ -95,18 +98,54 @@ $("#logoutBtn")?.addEventListener("click", async () => {
 const pwModal = $("#pwModal");
 $("#openPwModal")?.addEventListener("click", () => pwModal?.classList.add("show"));
 $("#closePwModal")?.addEventListener("click", () => pwModal?.classList.remove("show"));
-pwModal?.addEventListener("click", (e) => { if (e.target === pwModal) pwModal.classList.remove("show"); });
+const pwMsg = $("#pwMsg"); // optional message text
+function setPwMsg(text = "") {
+  if (pwMsg) pwMsg.textContent = text;
+}
 
-$("#pwForm")?.addEventListener("submit", (e) => {
+$("#pwForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!currentUser) return;
+
+  setPwMsg("");
+
+  const currentPw = $("#curPw")?.value || "";
   const newPw = $("#newPw")?.value || "";
   const confirm = $("#confirmPw")?.value || "";
-  if (newPw.length < 6) return alert("Password must be at least 6 characters.");
-  if (newPw !== confirm) return alert("Passwords do not match.");
-  alert("Password change UI done (backend later).");
-  pwModal?.classList.remove("show");
-  e.target.reset();
+
+  if (!currentPw) return setPwMsg("Enter current password.");
+  if (newPw.length < 6) return setPwMsg("Password must be at least 6 characters.");
+  if (newPw !== confirm) return setPwMsg("Passwords do not match.");
+
+  try {
+    setPwMsg("Verifying...");
+
+    // Re-authenticate user
+    const cred = EmailAuthProvider.credential(currentUser.email, currentPw);
+    await reauthenticateWithCredential(currentUser, cred);
+
+    setPwMsg("Updating password...");
+    await updatePassword(currentUser, newPw);
+
+    alert("Password changed successfully!");
+    pwModal?.classList.remove("show");
+    e.target.reset();
+  } catch (err) {
+    console.error("Password change failed:", err);
+
+    if (err.code === "auth/wrong-password")
+      return setPwMsg("Current password is incorrect.");
+
+    if (err.code === "auth/too-many-requests")
+      return setPwMsg("Too many attempts. Try again later.");
+
+    if (err.code === "auth/requires-recent-login")
+      return setPwMsg("Please log out and log in again first.");
+
+    setPwMsg(err.message || "Failed to change password.");
+  }
 });
+
 
 // ---------------- Edit Profile modal ----------------
 const editModal = $("#editModal");
@@ -154,6 +193,86 @@ function escapeHtml(s) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
+// ================= FAVORITES (localStorage) =================
+const FAV_KEYS = {
+  hawker: "cg_fav_hawker",
+  stall: "cg_fav_stall",
+  dish: "cg_fav_dish"
+};
+
+function readFavs(type) {
+  try {
+    const raw = localStorage.getItem(FAV_KEYS[type]);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeFavs(type, list) {
+  localStorage.setItem(FAV_KEYS[type], JSON.stringify(list));
+}
+
+function removeFav(type, id) {
+  const list = readFavs(type);
+  const next = list.filter(x => String(x.id) !== String(id));
+  writeFavs(type, next);
+  renderFavPanel(type, next);
+}
+
+function renderFavPanel(type, list) {
+  const panel = document.getElementById(`fav-${type}`);
+  if (!panel) return;
+
+  panel.innerHTML = "";
+
+  if (!list || list.length === 0) {
+    panel.innerHTML = `<div class="muted">No favorite ${escapeHtml(type)} yet.</div>`;
+    return;
+  }
+
+  list.forEach(item => {
+    const name = escapeHtml(item.name || "Untitled");
+    const sub = escapeHtml(item.sub || "");
+    const img = item.imageUrl ? escapeHtml(item.imageUrl) : "../image/lau pa sat.jpg";
+
+    const row = document.createElement("div");
+    row.className = "fav-item";
+    row.innerHTML = `
+      <img class="fav-img" src="${img}" alt="${name}">
+      <div class="fav-text">
+        <div class="fav-name">${name}</div>
+        <div class="fav-sub">${sub}</div>
+      </div>
+      <button class="fav-heart" type="button" aria-label="Remove from favorites">❤</button>
+    `;
+
+    row.querySelector(".fav-heart")?.addEventListener("click", () => {
+      removeFav(type, item.id);
+      window.dispatchEvent(new CustomEvent("cg:favs-updated", { detail: { type } }));
+    });
+
+    panel.appendChild(row);
+  });
+}
+
+function loadFavoritesUI() {
+  renderFavPanel("hawker", readFavs("hawker"));
+  renderFavPanel("stall", readFavs("stall"));
+  renderFavPanel("dish", readFavs("dish"));
+}
+
+// Re-render if other pages update favorites
+window.addEventListener("cg:favs-updated", (e) => {
+  const t = e?.detail?.type;
+  if (t && FAV_KEYS[t]) {
+    renderFavPanel(t, readFavs(t));
+  } else {
+    loadFavoritesUI();
+  }
+});
 
 // ---------------- PFP helpers ----------------
 function showPfp(urlOrBase64) {
@@ -322,7 +441,7 @@ async function loadCards() {
 async function loadMyReviews() {
   const myReviewsList = document.getElementById("myreviews-list");
   const myReviewsEmpty = document.getElementById("myreviews-empty");
-  
+
   if (!myReviewsList || !myReviewsEmpty) return;
   if (!currentUser) return;
 
@@ -411,6 +530,9 @@ onAuthStateChanged(auth, async (user) => {
 
   currentUser = user;
   await loadUserDocAndFillUI(user);
+
+  
+  loadFavoritesUI();
 
   try { await loadFeedback(); } catch (e) { console.error("loadFeedback:", e); }
   try { await loadCards(); } catch (e) { console.error("loadCards:", e); }

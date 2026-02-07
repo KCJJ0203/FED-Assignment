@@ -190,7 +190,7 @@ body {
     text-align: left;
     padding: 14px 0;
     display: grid;
-    grid-template-columns: 48px 1fr;
+    grid-template-columns: 48px 1fr 32px;
     gap: 12px;
     align-items: center;
     cursor: pointer;
@@ -254,6 +254,7 @@ body {
 .stall-info {
     display: grid;
     gap: 4px;
+    
 }
 
 .hawker-name,
@@ -498,6 +499,24 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+}
+
+.menu-card .like-btn {
+    position: static; /* Not absolute for this placement */
+    transform: none;
+    color: #cbd5e1;
+    font-size: 20px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    width: auto;
+    height: auto;
+}
+
+.menu-card .like-btn.is-on {
+    color: #ff5a7a;
 }
 
 .menu-item-price {
@@ -1108,6 +1127,26 @@ body.has-menu-modal {
     gap: 12px;
 }
 
+#pwForm label {
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+#pwForm input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+#pwForm button {
+  margin-top: 10px;
+  align-self: flex-start; /* keeps button left */
+}
+
+#pwForm button {
+  align-self: center;
+}
+
 .primary-button {
     border: none;
     border-radius: 14px;
@@ -1594,7 +1633,7 @@ body.has-menu-modal {
 .fav-img{ width:110px; height:60px; object-fit:cover; border-radius:10px; }
 .fav-name{ font-weight:900; }
 .fav-sub{ font-size:12px; color: rgba(255,255,255,.7); }
-.fav-heart{ margin-left:auto; border:none; background:transparent; color:#ff5a7a; font-size:18px; cursor:pointer; }
+.fav-heart{ margin-left:auto; border:none; background:transparent; color:#ff5a7a; font-size:18px; cursor:pointer;}
 
 /* preferences */
 .prefs-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; margin-top:8px; }

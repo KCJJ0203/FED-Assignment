@@ -23,7 +23,7 @@
         <button class="acc-tab" data-view="fav" role="tab" type="button">My Favorites</button>
         <button class="acc-tab" data-view="prefs" role="tab" type="button">User Preferences</button>
         <button class="acc-tab" data-view="fb" role="tab" type="button">Feedback Form</button>
-        <button class="acc-tab" data-view="loyalty" role="tab" type="button">Loyalty Coins</button>
+
         <button class="acc-tab" data-view="myreviews">My Reviews</button>
 
       </div>
@@ -34,7 +34,6 @@
           <div class="acc-title-row">
             <h2 class="acc-title">Account Information</h2>
             <div class="acc-actions">
-              <button id="openEditModal" class="btn btn-white" type="button">Edit Profile</button>
               <button id="openPwModal" class="btn btn-white" type="button">Change Password</button>
               <button id="logoutBtn" class="btn btn-outline" type="button">Logout</button>
             </div>
@@ -94,7 +93,6 @@
     </section>
 
       </section>
-
       <!-- VIEW: Favorites -->
       <section class="acc-view" id="view-fav" aria-label="My Favorites">
         <div class="acc-card">
@@ -106,24 +104,10 @@
             <button class="fav-tab" data-fav="dish" type="button">Dish</button>
           </div>
 
-          <div class="fav-panel show" id="fav-hawker">
-            <div class="fav-item">
-              <img class="fav-img" src="../image/lau pa sat.jpg" alt="Hawker photo">
-              <div class="fav-text">
-                <div class="fav-name">Maxwell Food Centre</div>
-                <div class="fav-sub">1 Kadayanallur St • 2.1km away</div>
-              </div>
-              <button class="fav-heart" aria-label="Favorite" type="button">❤</button>
-            </div>
-          </div>
-
-          <div class="fav-panel" id="fav-stall">
-            <div class="muted">No favorite stalls yet.</div>
-          </div>
-
-          <div class="fav-panel" id="fav-dish">
-            <div class="muted">No favorite dishes yet.</div>
-          </div>
+          <!-- EMPTY CONTAINERS – JS WILL FILL -->
+          <div class="fav-panel show" id="fav-hawker"></div>
+          <div class="fav-panel" id="fav-stall"></div>
+          <div class="fav-panel" id="fav-dish"></div>
         </div>
       </section>
 
@@ -332,18 +316,25 @@
             <h3>Change Password</h3>
             <button id="closePwModal" class="x" type="button">✕</button>
           </div>
+            <form id="pwForm" class="modal-form">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input id="curPw" class="input" type="password" required>
+              </div>
 
-          <form id="pwForm" class="modal-body">
-            <label>Current Password</label>
-            <input id="curPw" type="password" required>
+              <div class="form-group">
+                <label>New Password</label>
+                <input id="newPw" class="input" type="password" required>
+              </div>
 
-            <label>New Password</label>
-            <input id="newPw" type="password" required>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input id="confirmPw" class="input" type="password" required>
+              </div>
 
-            <label>Confirm New Password</label>
-            <input id="confirmPw" type="password" required>
-
-            <button class="btn btn-blue" type="submit">CHANGE PASSWORD</button>
+              <button class="btn btn-blue" type="submit">CHANGE PASSWORD</button>
+              <p id="pwMsg" class="muted"></p>
+            </form>
           </form>
         </div>
       </div>

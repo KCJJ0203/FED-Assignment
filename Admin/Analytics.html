@@ -192,8 +192,8 @@ const hawkerChart = new Chart(hawkerCtx, {
 
 function setRange(type){
   const ranges={monthly:[120,150,140,180,170,200], quarterly:[400,450,500,600], yearly:[1500,1600,1700,1800,1900]};
-  hawkerChart.data.labels = type==='monthly'?['Jan','Feb','Mar','Apr','May','Jun']:
-                             type==='quarterly'?['Q1','Q2','Q3','Q4']:
+  hawkerChart.data.labels = type==='Monthly'?['Jan','Feb','Mar','Apr','May','Jun']:
+                             type==='Quarterly'?['Q1','Q2','Q3','Q4']:
                              ['2020','2021','2022','2023','2024'];
   hawkerChart.data.datasets[0].data = ranges[type];
   hawkerChart.update();

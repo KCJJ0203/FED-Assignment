@@ -226,6 +226,62 @@
         grid-template-columns: 1fr;
       }
     }
+    @media (max-width: 768px) {
+
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .meta {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .grade-badge {
+    width: 70px;
+    height: 70px;
+    font-size: 26px;
+  }
+}
+
+    /* =========================
+   GLOBAL MOBILE STYLES
+   ========================= */
+@media (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .header {
+    padding: 20px 16px 28px;
+  }
+
+  .content {
+    padding: 20px 16px 32px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  h3 {
+    font-size: 17px !important;
+  }
+
+  .back {
+    font-size: 14px;
+  }
+
+  button, .card, .stall-card {
+    touch-action: manipulation;
+  }
+}
+
   </style>
 </head>
 

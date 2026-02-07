@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inspect Stall</title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f5f7fb;
+    }
+
+    .header {
+      background: linear-gradient(180deg, #1f5cff, #0b2fa8);
+      color: #fff;
+      padding: 20px 24px 30px;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+    }
+
+    .back {
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 6px 0;
+    }
+
+    .sub {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 24px;
+      margin-top: -20px;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .grade-select {
+      display: flex;
+      gap: 12px;
+    }
+
+    .grade-btn {
+      flex: 1;
+      padding: 16px 0;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 600;
+      background: #f1f1f1;
+      cursor: pointer;
+    }
+
+    .grade-btn.active.a { background: #12c94c; color: #fff; }
+    .grade-btn.active.b { background: #f4c430; color: #fff; }
+    .grade-btn.active.c { background: #ff8c42; color: #fff; }
+    .grade-btn.active.d { background: #e63946; color: #fff; }
+
+    .criteria {
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+    }
+
+    .criteria h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    .criteria p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    input[type="number"], textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    .save-btn {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      background: #1f5cff;
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="back" onclick="window.history.back()">
+      <i class="fas fa-chevron-left"></i> Back to Stalls
+    </div>
+
+    <h1 id="stallTitle">Stall</h1>
+    <div class="sub" id="centreName">Hawker Centre</div>
+  </div>
+
+  <div class="content">
+
+    <!-- Grade -->
+    <div class="section">
+      <h3>HYGIENE GRADE</h3>
+      <div class="grade-select">
+        <div class="grade-btn a" data-grade="A">A</div>
+        <div class="grade-btn b" data-grade="B">B</div>
+        <div class="grade-btn c" data-grade="C">C</div>
+        <div class="grade-btn d" data-grade="D">D</div>
+      </div>
+    </div>
+
+    <!-- Criteria -->
+    <div class="criteria">
+      <h3>Food Hygiene</h3>
+      <input type="number" max="25" id="foodHygiene" placeholder="0 / 25">
+    </div>
+
+    <div class="criteria">
+      <h3>Premises Cleanliness</h3>
+      <input type="number" max="20" id="cleanliness" placeholder="0 / 20">
+    </div>
+
+    <div class="criteria">
+      <h3>Food Handler Hygiene</h3>
+      <input type="number" max="15" id="handlerHygiene" placeholder="0 / 15">
+    </div>
+
+    <div class="criteria">
+      <h3>Pest Control</h3>
+      <input type="number" max="15" id="pestControl" placeholder="0 / 15">
+    </div>
+
+    <div class="criteria">
+      <h3>Waste Management</h3>
+      <input type="number" max="10" id="wasteManagement" placeholder="0 / 10">
+    </div>
+
+    <div class="criteria">
+      <h3>Equipment & Facilities</h3>
+      <input type="number" max="10" id="equipment" placeholder="0 / 10">
+    </div>
+
+    <div class="criteria">
+      <h3>Licensing & Documentation</h3>
+      <input type="number" max="5" id="licensing" placeholder="0 / 5">
+    </div>
+
+    <div class="criteria">
+      <h3>Remarks</h3>
+      <textarea id="remarks" placeholder="Enter remarks..."></textarea>
+    </div>
+
+  </div>
+
+  <button class="save-btn">SAVE INSPECTION</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+      authDomain: "fed-assignment-9c219.firebaseapp.com",
+      projectId: "fed-assignment-9c219"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const stallId = localStorage.getItem("selectedStallId");
+    if (!stallId) window.location.href = "index.html";
+
+    const draftKey = `inspectionDraft_${stallId}`;
+
+    const stallSnap = await getDoc(doc(db, "stalls", stallId));
+    if (stallSnap.exists()) {
+      const s = stallSnap.data();
+      document.getElementById("stallTitle").textContent =
+        `${s.location || ""} - ${s.name}`;
+    }
+
+    const centreId = localStorage.getItem("selectedHawkerCentreId");
+    if (centreId) {
+      const centreSnap = await getDoc(doc(db, "hawkers", centreId));
+      if (centreSnap.exists()) {
+        document.getElementById("centreName").textContent =
+          centreSnap.data().name;
+      }
+    }
+
+    function saveDraft() {
+      const draft = {
+        grade: document.querySelector(".grade-btn.active")?.dataset.grade || "",
+        foodHygiene: foodHygiene.value,
+        cleanliness: cleanliness.value,
+        handlerHygiene: handlerHygiene.value,
+        pestControl: pestControl.value,
+        wasteManagement: wasteManagement.value,
+        equipment: equipment.value,
+        licensing: licensing.value,
+        remarks: remarks.value
+      };
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+    }
+
+    document.querySelectorAll("input, textarea").forEach(el =>
+      el.addEventListener("input", saveDraft)
+    );
+
+    document.querySelectorAll(".grade-btn").forEach(btn =>
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".grade-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active", btn.dataset.grade.toLowerCase());
+        saveDraft();
+      })
+    );
+
+    const savedDraft = localStorage.getItem(draftKey);
+    if (savedDraft) {
+      const d = JSON.parse(savedDraft);
+      if (d.grade) document.querySelector(`[data-grade="${d.grade}"]`)?.click();
+      foodHygiene.value = d.foodHygiene || "";
+      cleanliness.value = d.cleanliness || "";
+      handlerHygiene.value = d.handlerHygiene || "";
+      pestControl.value = d.pestControl || "";
+      wasteManagement.value = d.wasteManagement || "";
+      equipment.value = d.equipment || "";
+      licensing.value = d.licensing || "";
+      remarks.value = d.remarks || "";
+    }
+
+    document.querySelector(".save-btn").addEventListener("click", async () => {
+      const grade =
+        document.querySelector(".grade-btn.active")?.dataset.grade || "C";
+
+      await updateDoc(doc(db, "stalls", stallId), {
+        grade,
+        lastInspectedAt: new Date()
+      });
+
+      localStorage.removeItem(draftKey);
+      localStorage.removeItem("selectedStallId");
+
+      const count = Number(localStorage.getItem("thisWeekInspections") || 0);
+      localStorage.setItem("thisWeekInspections", count + 1);
+
+      alert("Inspection saved");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>

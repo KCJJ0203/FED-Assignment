@@ -36,21 +36,14 @@
     }
 
     .header {
-      background: #007e63;
-      color: var(--white);
-      padding: 28px 40px 36px;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
-      background: #f5f7fb;
-      min-height: 100vh;
-    }
+  background: linear-gradient(180deg, #0f766e, #065f46);
+  color: #fff;
+  padding: 28px 24px 40px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  box-shadow: 0 4px 12px rgba(6, 95, 70, 0.35);
+}
 
-    .header {
-      background: linear-gradient(180deg, #1f5cff, #0b2fa8);
-      color: #fff;
-      padding: 28px 24px 40px;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-    }
 
     .header-top {
       display: flex;
@@ -76,11 +69,6 @@
       place-items: center;
       font-size: 22px;
       cursor: pointer;
-    }
-
-    .welcome h1 {
-      font-size: 28px;
-      font-weight: 700;
     }
 
     .welcome h1 {
@@ -156,7 +144,8 @@
     }
 
     .content {
-      padding: 34px 40px 48px;
+      padding: 24px;
+      margin-top: -20px;
       background: var(--page-bg);
     }
 
@@ -167,43 +156,6 @@
       flex-wrap: wrap;
       gap: 16px;
       margin-bottom: 22px;
-    }
-
-    .blue-title {
-      color: var(--text-dark);
-      font-size: 30px;
-      font-weight: 700;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .stats {
-      display: flex;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .stat {
-      flex: 1;
-      background: rgba(255,255,255,0.15);
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-    }
-
-    .stat h2 {
-      font-size: 22px;
-      margin-bottom: 6px;
-    }
-
-    .stat p {
-      font-size: 13px;
-      opacity: 0.9;
-    }
-
-    .content {
-      padding: 24px;
-      margin-top: -20px;
     }
 
     .blue-title {
@@ -347,58 +299,6 @@
     .grade-b { background: #fef3c7; color: #b45309; }
     .grade-c { background: #fee2e2; color: #b91c1c; }
     .grade-d { background: #fecaca; color: #991b1b; }
-      font-size: 14px;
-      color: #666;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 14px;
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-    }
-
-    .card img {
-      width: 70px;
-      height: 70px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
-
-    .card-content {
-      flex: 1;
-    }
-
-    .card-content h3 {
-      font-size: 16px;
-      margin-bottom: 4px;
-    }
-
-    .meta {
-      font-size: 13px;
-      color: #666;
-      margin-top: 4px;
-    }
-
-    .time {
-      color: #1f5cff;
-      margin-top: 4px;
-      font-size: 13px;
-    }
-
-    .arrow {
-      align-self: center;
-      color: #999;
-    }
 
     .message-box {
       background: #fff;
@@ -431,13 +331,11 @@
       .centre-image {
         height: 160px;
       }
-      color: #666;
     }
   </style>
 </head>
 
 <body>
-
   <div class="header">
     <div class="header-top">
       <div class="profile">
@@ -487,22 +385,6 @@
           <i class="fas fa-arrow-trend-up"></i>
           Stable
         </div>
-      <div class="welcome">
-        <h1>Welcome back,</h1>
-        <p>Officer NEA-12345</p>
-      </div>
-      <i class="fas fa-user" id="logoutBtn" style="cursor:pointer;"></i>
-
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <h2 id="foodCentreCount">0</h2>
-        <p>Food Centres</p>
-      </div>
-      <div class="stat">
-        <h2 id="thisWeekCount">0</h2>
-        <p>This Week</p>
       </div>
     </div>
   </div>
@@ -519,15 +401,11 @@
       </div>
     </div>
     <div id="centresList" class="cards"></div>
-    <h2 class="blue-title">Schedule your next inspection!</h2>
-    <p class="subtitle">Select a hawker centre to begin inspection</p>
-    <div id="centresList"></div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -571,16 +449,24 @@
           .filter(Boolean)
       );
     }
-
     function getTodayCount() {
-      const todayKey = toLocalDateKey(new Date());
-      const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
-      const completedSet = getCompletedTodaySet(todayKey);
+  const todayKey = toLocalDateKey(new Date());
+  const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
+  const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
 
-      const scheduledItems = schedules.flatMap(entry => entry.scheduledStalls?.[todayKey] || []);
-      const remaining = scheduledItems.filter(item => !completedSet.has(item.stallId));
-      return remaining.length;
-    }
+  const completedToday = inspections.filter(i =>
+    i.completedAt && toLocalDateKey(new Date(i.completedAt)) === todayKey
+  ).length;
+
+  const scheduledToday = schedules.reduce((sum, entry) => {
+    return sum + (entry.scheduledStalls?.[todayKey]?.length || 0);
+  }, 0);
+
+  return scheduledToday + completedToday;
+}
+
+
+    
 
     const [centresSnap, stallsSnap] = await Promise.all([
       getDocs(collection(db, "hawkers")),
@@ -599,6 +485,7 @@
     }
 
     const stallCounts = {};
+    const stallLocationsByCentre = {};
     const gradeTotals = {};
     const gradeMap = { A: 4, B: 3, C: 2, D: 1 };
 
@@ -608,6 +495,12 @@
       if (!hawkerId) return;
 
       stallCounts[hawkerId] = (stallCounts[hawkerId] || 0) + 1;
+      if (!stallLocationsByCentre[hawkerId]) {
+        stallLocationsByCentre[hawkerId] = new Set();
+      }
+      if (stall.location) {
+        stallLocationsByCentre[hawkerId].add(stall.location);
+      }
 
       if (!gradeTotals[hawkerId]) {
         gradeTotals[hawkerId] = { sum: 0, count: 0 };
@@ -655,7 +548,10 @@
       const gradeLetter = avgGrade >= 3.5 ? "A" : avgGrade >= 2.5 ? "B" : avgGrade >= 1.5 ? "C" : avgGrade > 0 ? "D" : "-";
       const gradeClass = gradeLetter !== "-" ? `grade-${gradeLetter.toLowerCase()}` : "";
       const imageUrl = normalizeImageUrl(h.imageUrl);
-      const address = h.address || h.location || "Address unavailable";
+      const locationList = Array.from(stallLocationsByCentre[centreId] || []).sort();
+      const address = locationList.length
+        ? locationList.join(", ")
+        : "Locations unavailable";
 
       list.innerHTML += `
         <div class="centre-card" data-centre-id="${centreId}" data-centre-name="${h.name}">
@@ -682,42 +578,6 @@
               </div>
             </div>
           </div>
-      if (!user) window.location.href = "login.html";
-    });
-
-    const list = document.getElementById("centresList");
-    list.innerHTML = `<div class="message-box">Loading hawker centres...</div>`;
-
-    const snapshot = await getDocs(collection(db, "hawkers"));
-
-    document.getElementById("foodCentreCount").textContent = snapshot.size;
-    document.getElementById("thisWeekCount").textContent =
-      Number(localStorage.getItem("thisWeekInspections") || 0);
-
-    list.innerHTML = "";
-
-    snapshot.forEach(docSnap => {
-      const h = docSnap.data();
-
-      list.innerHTML += `
-        <div class="card"
-     data-centre-id="${docSnap.id}"
-     data-centre-name="${h.name}">
-
-          <img src="${h.imageUrl || '/image/default-hawker.jpg'}" alt="${h.name}">
-          <div class="card-content">
-            <h3>${h.name}</h3>
-            <div class="meta">
-              <i class="fas fa-map-marker-alt"></i> ${h.area || "Area unavailable"}
-            </div>
-            <div class="time">
-              <i class="fas fa-clock"></i> ${h.hours || "N/A"}
-            </div>
-            <div class="time">
-              ⭐ Rating: ${typeof h.rating === "number" ? h.rating : "N/A"}
-            </div>
-          </div>
-          <i class="fas fa-chevron-right arrow"></i>
         </div>
       `;
     });
@@ -758,38 +618,6 @@
 
     document.getElementById("logoutBtn").addEventListener("click", handleLogout);
     document.getElementById("logoutActionBtn").addEventListener("click", handleLogout);
-   document.querySelectorAll(".card").forEach(card => {
-  card.addEventListener("click", () => {
-    // ✅ SAVE CENTRE ID (CRITICAL)
-    localStorage.setItem(
-      "selectedHawkerCentreId",
-      card.dataset.centreId
-    );
-
-    // ✅ SAVE CENTRE NAME (optional, for display)
-    localStorage.setItem(
-      "selectedHawkerCentreName",
-      card.dataset.centreName
-    );
-
-    window.location.href = "inspection.html";
-  });
-});
-
-    // 🔓 Logout on user icon click
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  const auth = getAuth();
-
-  await signOut(auth);
-
-  // Clear app state
-  localStorage.clear();
-
-  // Go back to login
-  window.location.href = "login.html";
-});
-
   </script>
-
 </body>
 </html>

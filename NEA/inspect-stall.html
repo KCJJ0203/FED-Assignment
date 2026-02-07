@@ -2,29 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inspect Stall</title>
 
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
   <style>
     :root {
-      --green-900: #0b6d33;
-      --green-800: #0b7d38;
-      --green-700: #0a6a32;
-      --green-600: #0f7a3b;
-      --white: #ffffff;
+      --green-900: #006b55;
+      --green-800: #008a6e;
+      --green-700: #009977;
+      --green-100: #e6f7f3;
+      --green-50: #f2fbf8;
       --text-dark: #0f172a;
       --text-muted: #6b7280;
-      --border: #e2e8f0;
-      --page-bg: #f6f7fb;
+      --border: #e5e7eb;
+      --card-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+      --page-bg: #f4fbf8;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Inter", Arial, sans-serif;
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
     }
 
     body {
@@ -33,9 +34,10 @@
     }
 
     .header {
-      background: linear-gradient(180deg, var(--green-800), var(--green-700));
+      background: linear-gradient(180deg, var(--green-800), var(--green-900));
       color: #fff;
-      padding: 26px 32px 36px;
+      padding: 28px 40px 34px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
     }
 
     .back {
@@ -44,52 +46,23 @@
       gap: 10px;
       font-size: 15px;
       cursor: pointer;
-      margin-bottom: 16px;
-      color: #fff;
+      margin-bottom: 18px;
+      color: #e6fffa;
       text-decoration: none;
     }
 
-    h1 {
-      font-size: 28px;
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: #f5f7fb;
+    .header-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
-    .header {
-      background: linear-gradient(180deg, #1f5cff, #0b2fa8);
-      color: #fff;
-      padding: 20px 24px 30px;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-    }
-
-    .back {
-      font-size: 14px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      font-size: 22px;
-      margin: 6px 0;
-    }
-
-    .sub {
-      opacity: 0.9;
+    .header-sub {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
       font-size: 15px;
-    }
-
-    .meta-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 14px;
-      background: rgba(255, 255, 255, 0.18);
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 14px;
+      opacity: 0.92;
     }
 
     .header-row {
@@ -101,16 +74,28 @@
     }
 
     .inspector-card {
-      background: rgba(255, 255, 255, 0.18);
-      padding: 14px 18px;
-      border-radius: 14px;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 12px;
+      background: rgba(255, 255, 255, 0.14);
+      padding: 14px 18px;
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
     }
 
     .content {
-      padding: 28px 32px 40px;
+      padding: 28px 40px 50px;
       display: grid;
       grid-template-columns: minmax(0, 1fr) 360px;
       gap: 24px;
@@ -119,16 +104,16 @@
     .section-title {
       font-size: 22px;
       font-weight: 700;
-      color: var(--green-800);
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .criteria-card {
       background: #fff;
       border-radius: 18px;
       border: 1px solid var(--border);
-      padding: 18px;
+      padding: 18px 20px;
       margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
     }
 
     .criteria-card h3 {
@@ -160,6 +145,7 @@
       font-size: 16px;
       text-align: center;
       font-weight: 600;
+      background: #f9fafb;
     }
 
     .score-meta {
@@ -181,7 +167,7 @@
     .score-bar span {
       display: block;
       height: 100%;
-      background: var(--green-600);
+      background: var(--green-700);
       width: 0;
       transition: width 0.2s ease;
     }
@@ -194,17 +180,20 @@
       font-size: 14px;
       resize: none;
       min-height: 120px;
+      background: #f9fafb;
     }
 
     .summary-card {
-      background: linear-gradient(180deg, var(--green-800), var(--green-700));
+      background: linear-gradient(180deg, var(--green-800), var(--green-900));
       color: #fff;
       border-radius: 22px;
       padding: 22px;
       display: grid;
       gap: 18px;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.16);
       height: fit-content;
+      position: sticky;
+      top: 24px;
     }
 
     .summary-score {
@@ -245,103 +234,42 @@
       background: rgba(255, 255, 255, 0.2);
       border: none;
       border-radius: 14px;
-      padding: 16px 0;
+      padding: 14px 0;
       color: #fff;
       font-weight: 700;
       cursor: pointer;
       font-size: 18px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .grade-btn:hover {
+      transform: translateY(-1px);
     }
 
     .grade-btn.active {
       background: #fff;
-      color: var(--green-700);
+      color: var(--green-900);
     }
 
     .save-btn {
       margin-top: 6px;
       background: #fff;
-      color: var(--green-700);
+      color: var(--green-900);
       font-size: 14px;
-    }
-
-    .content {
-      padding: 24px;
-      margin-top: -20px;
-    }
-
-    .section {
-      margin-bottom: 24px;
-    }
-
-    .grade-select {
-      display: flex;
-      gap: 12px;
-    }
-
-    .grade-btn {
-      flex: 1;
-      padding: 16px 0;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: 600;
-      background: #f1f1f1;
-      cursor: pointer;
-    }
-
-    .grade-btn.active.a { background: #12c94c; color: #fff; }
-    .grade-btn.active.b { background: #f4c430; color: #fff; }
-    .grade-btn.active.c { background: #ff8c42; color: #fff; }
-    .grade-btn.active.d { background: #e63946; color: #fff; }
-
-    .criteria {
-      background: #fff;
-      padding: 16px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-    }
-
-    .criteria h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-    }
-
-    .criteria p {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    input[type="number"], textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    textarea {
-      resize: none;
-      height: 80px;
-    }
-
-    .save-btn {
-      position: fixed;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      background: #1f5cff;
-      color: #fff;
-      border: none;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 16px;
       font-weight: 700;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 14px;
       cursor: pointer;
     }
 
     @media (max-width: 1100px) {
       .content {
         grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        position: static;
       }
     }
 
@@ -354,25 +282,23 @@
         padding: 24px 20px 36px;
       }
     }
-      font-weight: 600;
-      cursor: pointer;
-    }
   </style>
 </head>
 
 <body>
-
   <div class="header">
     <div class="header-row">
       <div>
         <a class="back" href="inspection.html">
-          <i class="fas fa-chevron-left"></i> Back to Stalls
+          <i class="fas fa-chevron-left"></i> Back to Dashboard
         </a>
-        <h1 id="stallTitle">#01-01 - Stall</h1>
-        <div class="sub" id="centreName">Hawker Centre</div>
-        <div class="meta-chip">
-          <i class="far fa-calendar"></i>
-          <span id="scheduleMeta">Not scheduled</span>
+        <div class="header-title" id="stallTitle">#01-01 - Stall</div>
+        <div class="header-sub">
+          <div id="centreName">Hawker Centre</div>
+          <div class="meta-chip">
+            <i class="far fa-calendar"></i>
+            <span id="scheduleMeta">Not scheduled</span>
+          </div>
         </div>
       </div>
       <div class="inspector-card">
@@ -393,7 +319,7 @@
         <h3>Food Hygiene <i class="fas fa-pen"></i></h3>
         <p>Proper food storage, temperature control, and handling</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="25" min="0" id="foodHygiene" value="0">
+          <input class="score-input" type="number" max="25" min="0" id="foodHygiene" value="0" />
           <div class="score-meta">
             <span>/ 25 points</span>
             <div class="score-bar"><span></span></div>
@@ -405,7 +331,7 @@
         <h3>Premises Cleanliness <i class="fas fa-pen"></i></h3>
         <p>Overall cleanliness of cooking and dining areas</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="20" min="0" id="cleanliness" value="0">
+          <input class="score-input" type="number" max="20" min="0" id="cleanliness" value="0" />
           <div class="score-meta">
             <span>/ 20 points</span>
             <div class="score-bar"><span></span></div>
@@ -417,7 +343,7 @@
         <h3>Food Handler Hygiene <i class="fas fa-pen"></i></h3>
         <p>Personal hygiene and food handler certification</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="15" min="0" id="handlerHygiene" value="0">
+          <input class="score-input" type="number" max="15" min="0" id="handlerHygiene" value="0" />
           <div class="score-meta">
             <span>/ 15 points</span>
             <div class="score-bar"><span></span></div>
@@ -429,7 +355,7 @@
         <h3>Pest Control <i class="fas fa-pen"></i></h3>
         <p>Evidence of pest control and safe practices</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="15" min="0" id="pestControl" value="0">
+          <input class="score-input" type="number" max="15" min="0" id="pestControl" value="0" />
           <div class="score-meta">
             <span>/ 15 points</span>
             <div class="score-bar"><span></span></div>
@@ -441,7 +367,7 @@
         <h3>Waste Management <i class="fas fa-pen"></i></h3>
         <p>Waste disposal practices and bins management</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="10" min="0" id="wasteManagement" value="0">
+          <input class="score-input" type="number" max="10" min="0" id="wasteManagement" value="0" />
           <div class="score-meta">
             <span>/ 10 points</span>
             <div class="score-bar"><span></span></div>
@@ -453,7 +379,7 @@
         <h3>Equipment & Facilities <i class="fas fa-pen"></i></h3>
         <p>Equipment hygiene and maintenance</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="10" min="0" id="equipment" value="0">
+          <input class="score-input" type="number" max="10" min="0" id="equipment" value="0" />
           <div class="score-meta">
             <span>/ 10 points</span>
             <div class="score-bar"><span></span></div>
@@ -465,7 +391,7 @@
         <h3>Licensing & Documentation <i class="fas fa-pen"></i></h3>
         <p>Licensing, documentation, and compliance checks</p>
         <div class="score-row">
-          <input class="score-input" type="number" max="5" min="0" id="licensing" value="0">
+          <input class="score-input" type="number" max="5" min="0" id="licensing" value="0" />
           <div class="score-meta">
             <span>/ 5 points</span>
             <div class="score-bar"><span></span></div>
@@ -505,74 +431,6 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-    <div class="back" onclick="window.history.back()">
-      <i class="fas fa-chevron-left"></i> Back to Stalls
-    </div>
-
-    <h1 id="stallTitle">Stall</h1>
-    <div class="sub" id="centreName">Hawker Centre</div>
-  </div>
-
-  <div class="content">
-
-    <!-- Grade -->
-    <div class="section">
-      <h3>HYGIENE GRADE</h3>
-      <div class="grade-select">
-        <div class="grade-btn a" data-grade="A">A</div>
-        <div class="grade-btn b" data-grade="B">B</div>
-        <div class="grade-btn c" data-grade="C">C</div>
-        <div class="grade-btn d" data-grade="D">D</div>
-      </div>
-    </div>
-
-    <!-- Criteria -->
-    <div class="criteria">
-      <h3>Food Hygiene</h3>
-      <input type="number" max="25" id="foodHygiene" placeholder="0 / 25">
-    </div>
-
-    <div class="criteria">
-      <h3>Premises Cleanliness</h3>
-      <input type="number" max="20" id="cleanliness" placeholder="0 / 20">
-    </div>
-
-    <div class="criteria">
-      <h3>Food Handler Hygiene</h3>
-      <input type="number" max="15" id="handlerHygiene" placeholder="0 / 15">
-    </div>
-
-    <div class="criteria">
-      <h3>Pest Control</h3>
-      <input type="number" max="15" id="pestControl" placeholder="0 / 15">
-    </div>
-
-    <div class="criteria">
-      <h3>Waste Management</h3>
-      <input type="number" max="10" id="wasteManagement" placeholder="0 / 10">
-    </div>
-
-    <div class="criteria">
-      <h3>Equipment & Facilities</h3>
-      <input type="number" max="10" id="equipment" placeholder="0 / 10">
-    </div>
-
-    <div class="criteria">
-      <h3>Licensing & Documentation</h3>
-      <input type="number" max="5" id="licensing" placeholder="0 / 5">
-    </div>
-
-    <div class="criteria">
-      <h3>Remarks</h3>
-      <textarea id="remarks" placeholder="Enter remarks..."></textarea>
-    </div>
-
-  </div>
-
-  <button class="save-btn">SAVE INSPECTION</button>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -588,8 +446,6 @@
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "/login.html";
     });
-
-    const db = getFirestore(app);
 
     const stallId = localStorage.getItem("selectedStallId");
     if (!stallId) window.location.href = "index.html";
@@ -618,8 +474,6 @@
       document.getElementById("stallTitle").textContent = stallLocation
         ? `${stallLocation} - ${stallName}`
         : stallName;
-      document.getElementById("stallTitle").textContent =
-        `${s.location || ""} - ${s.name}`;
     }
 
     const centreId = localStorage.getItem("selectedHawkerCentreId");
@@ -715,14 +569,6 @@
       const inspections = loadInspections();
       inspections.unshift(entry);
       localStorage.setItem(inspectionsKey, JSON.stringify(inspections));
-      foodHygiene.value = d.foodHygiene || "";
-      cleanliness.value = d.cleanliness || "";
-      handlerHygiene.value = d.handlerHygiene || "";
-      pestControl.value = d.pestControl || "";
-      wasteManagement.value = d.wasteManagement || "";
-      equipment.value = d.equipment || "";
-      licensing.value = d.licensing || "";
-      remarks.value = d.remarks || "";
     }
 
     document.querySelector(".save-btn").addEventListener("click", async () => {
@@ -784,6 +630,5 @@
       window.location.href = "index.html";
     });
   </script>
-
 </body>
 </html>

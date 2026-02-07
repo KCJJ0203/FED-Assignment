@@ -162,82 +162,69 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-      authDomain: "fed-assignment-9c219.firebaseapp.com",
-      projectId: "fed-assignment-9c219",
-      storageBucket: "fed-assignment-9c219.firebasestorage.app",
-      messagingSenderId: "287410844855",
-      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+    authDomain: "fed-assignment-9c219.firebaseapp.com",
+    projectId: "fed-assignment-9c219"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    onAuthStateChanged(auth, user => {
-      if (!user) window.location.href = "/login.html";
-    });
+  onAuthStateChanged(auth, user => {
+    if (!user) window.location.href = "/login.html";
+  });
 
-    const list = document.getElementById("inspectionList");
+  function dateKey(d) {
+    return d.toISOString().split("T")[0];
+  }
 
-    function toLocalDateKey(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    }
+  const todayKey = dateKey(new Date());
+  const list = document.getElementById("inspectionList");
 
-    const today = new Date();
-    document.getElementById("todayLabel").textContent = today.toLocaleDateString(
-      "en-SG",
-      { weekday: "long", day: "numeric", month: "long", year: "numeric" }
-    );
+  const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
+  const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
 
-    const todayKey = toLocalDateKey(today);
-    const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
-    const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
-    const completedSet = new Set(
-      inspections
-        .filter(entry => entry.completedAt && toLocalDateKey(new Date(entry.completedAt)) === todayKey)
-        .map(entry => entry.stallId)
-        .filter(Boolean)
-    );
+  const scheduled = schedules.flatMap(entry =>
+    (entry.scheduledStalls?.[todayKey] || []).map(item => ({
+      ...item,
+      centreName: entry.centreName,
+      time: entry.time,
+      status: "scheduled"
+    }))
+  );
 
-    const items = schedules.flatMap(entry => {
-      const dayItems = entry.scheduledStalls?.[todayKey] || [];
-      return dayItems
-        .filter(item => !completedSet.has(item.stallId))
-        .map(item => ({
-          ...item,
-          centreName: entry.centreName,
-          time: entry.time
-        }));
-    });
+  const completed = inspections.filter(i =>
+    i.completedAt && dateKey(new Date(i.completedAt)) === todayKey
+  ).map(i => ({
+    stallId: i.stallId,
+    location: i.stallTitle,
+    centreName: i.centreName,
+    time: i.completedTime,
+    status: "completed"
+  }));
 
-    if (!items.length) {
-      list.innerHTML = `<div class="empty">No inspections scheduled for today.</div>`;
-    } else {
-      list.innerHTML = items.map(item => `
-        <div class="card" data-stall-id="${item.stallId}" data-centre-id="${item.centreId}">
-          <div class="card-info">
-            <h3>${item.location || "Stall"}</h3>
-            <span>${item.centreName || "Hawker Centre"}</span>
-          </div>
-          <span class="time-pill">${item.time || "Scheduled"}</span>
+  const all = [...scheduled, ...completed];
+
+  if (!all.length) {
+    list.innerHTML = `<div class="empty">No inspections today.</div>`;
+  } else {
+    list.innerHTML = all.map(item => `
+      <div class="card">
+        <div class="card-info">
+          <h3>${item.location}</h3>
+          <span>${item.centreName}</span>
         </div>
-      `).join("");
+        <span class="time-pill">
+          ${item.status === "completed" ? "Completed" : item.time}
+        </span>
+      </div>
+    `).join("");
+  }
+</script>
 
-      document.querySelectorAll(".card").forEach(card => {
-        card.addEventListener("click", () => {
-          localStorage.setItem("selectedStallId", card.dataset.stallId);
-          localStorage.setItem("selectedHawkerCentreId", card.dataset.centreId);
-          window.location.href = "inspect-stall.html";
-        });
-      });
-    }
-  </script>
 </body>
 </html>

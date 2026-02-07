@@ -220,9 +220,6 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
       color: var(--text-muted);
     }
 
@@ -241,6 +238,87 @@
       color: var(--text-dark);
       font-size: 18px;
       margin-top: 10px;
+    }
+
+    .detail-card.empty {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .detail-header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .detail-header .icon {
+      flex-shrink: 0;
+    }
+
+    .detail-header p {
+      font-size: 14px;
+    }
+
+    .detail-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .detail-section h4 {
+      color: var(--text-dark);
+      font-size: 15px;
+    }
+
+    .inspection-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fff;
+    }
+
+    .inspection-item.highlight {
+      border-color: #16a34a;
+      box-shadow: 0 12px 22px rgba(22, 163, 74, 0.12);
+    }
+
+    .inspection-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .inspection-meta strong {
+      color: var(--text-dark);
+      font-size: 15px;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background: var(--green-800);
+    }
+
+    .action-btn.view {
+      background: #0f172a;
+    }
+
+    .day.active {
+      outline: 2px solid var(--green-800);
+      outline-offset: 2px;
     }
 
     .summary-row {
@@ -352,7 +430,7 @@
         <div class="day-grid" id="dayGrid"></div>
       </div>
 
-      <div class="detail-card" id="detailCard">
+      <div class="detail-card empty" id="detailCard">
         <div class="icon"><i class="far fa-calendar"></i></div>
         <h3>Select a Date</h3>
         <p>Click on any date to view inspection details</p>
@@ -404,6 +482,7 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const summaryRow = document.getElementById("summaryRow");
+    const detailCard = document.getElementById("detailCard");
 
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
@@ -411,6 +490,7 @@
     ];
 
     let currentDate = new Date();
+    let selectedDateKey = "";
 
     function loadInspections() {
       return JSON.parse(localStorage.getItem("neaInspections") || "[]");
@@ -453,7 +533,9 @@
       const completedByDate = buildCompletedMap();
 
       loadInspections().forEach(entry => {
-        const date = new Date(entry.completedAt);
+        const dateKey = normalizeDateKey(entry.scheduleDate || entry.completedAt);
+        if (!dateKey) return;
+        const date = new Date(`${dateKey}T00:00:00`);
         if (date.getFullYear() === year && date.getMonth() === month) {
           const key = date.getDate();
           completed[key] = (completed[key] || 0) + 1;
@@ -472,7 +554,9 @@
         const scheduleItems = entry.scheduledStalls?.[dateKey] || [];
         const pendingItems = scheduleItems.filter(item => !completedSet.has(item.stallId));
         const fallbackLocations = entry.locations?.[dateKey] || [];
-        const pendingCount = pendingItems.length || fallbackLocations.length || 0;
+        const pendingCount = scheduleItems.length
+          ? pendingItems.length
+          : fallbackLocations.length || 0;
         if (pendingCount) {
           scheduled[dayKey] = (scheduled[dayKey] || 0) + pendingCount;
         }
@@ -481,24 +565,130 @@
       return { completed, scheduled, completedByDate };
     }
 
-    function handleDayClick(targetDate, isFuture, scheduledStallId, scheduledCentreId) {
-      if (scheduledStallId && scheduledCentreId) {
-        localStorage.setItem("selectedStallId", scheduledStallId);
-        localStorage.setItem("selectedHawkerCentreId", scheduledCentreId);
-        window.location.href = "inspect-stall.html";
+    function formatDateHeading(dateKey) {
+      const parsed = new Date(`${dateKey}T00:00:00`);
+      if (Number.isNaN(parsed.getTime())) return "Inspection Details";
+      return parsed.toLocaleDateString("en-SG", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function getScheduleItemsForDate(dateKey) {
+      const schedules = loadSchedules();
+      return schedules.flatMap(entry => {
+        const items = entry.scheduledStalls?.[dateKey] || [];
+        if (items.length) {
+          return items.map(item => ({
+            ...item,
+            time: entry.time,
+            centreName: entry.centreName || "",
+            dateKey
+          }));
+        }
+        const locations = entry.locations?.[dateKey] || [];
+        return locations.map(location => ({
+          location,
+          time: entry.time,
+          centreName: entry.centreName || "",
+          dateKey
+        }));
+      });
+    }
+
+    function getCompletedInspectionsForDate(dateKey) {
+      return loadInspections().filter(entry => (
+        normalizeDateKey(entry.scheduleDate || entry.completedAt) === dateKey
+      ));
+    }
+
+    function renderDetail(dateKey, highlightedStallId = "") {
+      if (!dateKey) {
+        detailCard.classList.add("empty");
+        detailCard.innerHTML = `
+          <div class="icon"><i class="far fa-calendar"></i></div>
+          <h3>Select a Date</h3>
+          <p>Click on any date to view inspection details</p>
+        `;
         return;
       }
 
-      if (isFuture) {
-        alert("Inspection date saved! See you soon!");
-        return;
-      }
+      const completedByDate = buildCompletedMap();
+      const completedSet = completedByDate[dateKey] || new Set();
+      const scheduleItems = getScheduleItemsForDate(dateKey);
+      const pendingItems = scheduleItems.filter(item => (
+        !item.stallId || !completedSet.has(item.stallId)
+      ));
+      const completedItems = getCompletedInspectionsForDate(dateKey);
 
-      const inspections = loadInspections();
-      if (inspections.length) {
-        localStorage.setItem("selectedReportId", inspections[0].id);
-      }
-      window.location.href = "report.html";
+      const pendingList = pendingItems.length
+        ? pendingItems.map(item => `
+            <div class="inspection-item ${item.stallId === highlightedStallId ? "highlight" : ""}">
+              <div class="inspection-meta">
+                <strong>${item.name || item.location || "Scheduled Stall"}</strong>
+                <span>${item.centreName || "Hawker Centre"}</span>
+                <span>${item.time || "Time pending"}</span>
+              </div>
+              ${item.stallId ? `
+                <button class="action-btn start" data-stall-id="${item.stallId}" data-centre-id="${item.centreId || ""}" data-time="${item.time || ""}">Start inspection</button>
+              ` : ""}
+            </div>
+          `).join("")
+        : `<p>No scheduled inspections.</p>`;
+
+      const completedList = completedItems.length
+        ? completedItems.map(item => `
+            <div class="inspection-item">
+              <div class="inspection-meta">
+                <strong>${item.stallTitle || "Completed Stall"}</strong>
+                <span>${item.centreName || "Hawker Centre"}</span>
+                <span>${item.completedTime || item.scheduleTime || ""}</span>
+              </div>
+              <button class="action-btn view" data-report-id="${item.id}">View inspection</button>
+            </div>
+          `).join("")
+        : `<p>No completed inspections.</p>`;
+
+      detailCard.classList.remove("empty");
+      detailCard.innerHTML = `
+        <div class="detail-header">
+          <div class="icon"><i class="far fa-calendar-check"></i></div>
+          <div>
+            <h3>${formatDateHeading(dateKey)}</h3>
+            <p>${pendingItems.length} scheduled · ${completedItems.length} completed</p>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4>Pending Inspections</h4>
+          ${pendingList}
+        </div>
+        <div class="detail-section">
+          <h4>Completed Inspections</h4>
+          ${completedList}
+        </div>
+      `;
+
+      detailCard.querySelectorAll(".action-btn.start").forEach(button => {
+        button.addEventListener("click", () => {
+          localStorage.setItem("selectedStallId", button.dataset.stallId);
+          if (button.dataset.centreId) {
+            localStorage.setItem("selectedHawkerCentreId", button.dataset.centreId);
+          }
+          localStorage.setItem("scheduleDate", dateKey);
+          if (button.dataset.time) {
+            localStorage.setItem("scheduleTime", button.dataset.time);
+          }
+          window.location.href = "inspect-stall.html";
+        });
+      });
+
+      detailCard.querySelectorAll(".action-btn.view").forEach(button => {
+        button.addEventListener("click", () => {
+          localStorage.setItem("selectedReportId", button.dataset.reportId);
+          window.location.href = "report.html";
+        });
+      });
     }
 
     function renderSummary(month, year) {
@@ -522,7 +712,9 @@
         const scheduleItems = entry.scheduledStalls?.[dateKey] || [];
         const pendingItems = scheduleItems.filter(item => !completedSet.has(item.stallId));
         const fallbackLocations = entry.locations?.[dateKey] || [];
-        return total + (pendingItems.length || fallbackLocations.length || 0);
+        return total + (scheduleItems.length
+          ? pendingItems.length
+          : (fallbackLocations.length || 0));
       }, 0);
 
       const total = completedCount + scheduledCount;
@@ -554,8 +746,6 @@
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const { completed, scheduled, completedByDate } = buildDayMap(year, month);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
       const schedules = loadSchedules();
 
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -570,10 +760,11 @@
         const isScheduled = Boolean(scheduled[day]);
         const targetDate = new Date(year, month, day);
         targetDate.setHours(0, 0, 0, 0);
-        const isFuture = targetDate > today;
         const classes = ["day"];
         if (isCompleted) classes.push("completed");
         if (isScheduled) classes.push("scheduled");
+        const dateKey = new Date(Date.UTC(year, month, day)).toISOString().split("T")[0];
+        if (selectedDateKey === dateKey) classes.push("active");
 
         let label = "";
         if (isCompleted && isScheduled) {
@@ -584,7 +775,6 @@
           label = `${scheduled[day]} scheduled`;
         }
 
-        const dateKey = new Date(Date.UTC(year, month, day)).toISOString().split("T")[0];
         const scheduleItems = schedules
           .flatMap(entry => entry.scheduledStalls?.[dateKey] || [])
           .filter(Boolean);
@@ -603,25 +793,22 @@
         const labelContent = [label, locationLabel].filter(Boolean).map(text => `<div>${text}</div>`).join("");
 
         dayGrid.innerHTML += `
-          <button type="button" class="${classes.join(" ")}" data-date="${targetDate.toISOString()}" ${dataAttrs}>
+          <button type="button" class="${classes.join(" ")}" data-date="${targetDate.toISOString()}" data-date-key="${dateKey}" ${dataAttrs}>
             <div class="day-number">${day}</div>
             ${labelContent ? `<div class="day-labels">${labelContent}</div>` : ""}
           </button>
         `;
       }
 
-      document.querySelectorAll(".day[data-date]").forEach(dayButton => {
-        const dateValue = new Date(dayButton.dataset.date);
-        dateValue.setHours(0, 0, 0, 0);
-        const isFuture = dateValue > today;
-        const scheduledStallId = dayButton.dataset.stallId;
-        const scheduledCentreId = dayButton.dataset.centreId;
-        dayButton.addEventListener("click", () => handleDayClick(
-          dateValue,
-          isFuture,
-          scheduledStallId,
-          scheduledCentreId
-        ));
+      document.querySelectorAll(".day[data-date-key]").forEach(dayButton => {
+        const dateKey = dayButton.dataset.dateKey;
+        dayButton.addEventListener("click", () => {
+          selectedDateKey = dateKey;
+          localStorage.setItem("selectedCalendarDate", dateKey);
+          document.querySelectorAll(".day.active").forEach(btn => btn.classList.remove("active"));
+          dayButton.classList.add("active");
+          renderDetail(dateKey);
+        });
       });
 
       renderSummary(month, year);
@@ -645,13 +832,18 @@
     renderCalendar(currentDate);
 
     const selectedCalendarDate = localStorage.getItem("selectedCalendarDate");
+    const selectedCalendarStallId = localStorage.getItem("selectedCalendarStallId") || "";
     if (selectedCalendarDate) {
-      const parsedDate = new Date(selectedCalendarDate);
+      const parsedDate = new Date(`${selectedCalendarDate}T00:00:00`);
       if (!Number.isNaN(parsedDate.getTime())) {
         currentDate = parsedDate;
+        selectedDateKey = selectedCalendarDate;
         renderCalendar(currentDate);
+        renderDetail(selectedCalendarDate, selectedCalendarStallId);
       }
       localStorage.removeItem("selectedCalendarDate");
+      localStorage.removeItem("selectedCalendarStallId");
+      localStorage.removeItem("selectedCalendarCentreId");
     }
   </script>
 </body>

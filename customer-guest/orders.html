@@ -21,17 +21,61 @@
                     <button id="payment-track" class="payment-track" type="button">Track Order</button>
                 </div>
             </section>
+
             <section class="orders-shell" aria-label="Order history">
                 <header class="orders-header">
                     <h1 class="guest-title">Your Orders</h1>
                     <p id="orders-status" class="guest-status" role="status" aria-live="polite">Loading orders...</p>
                 </header>
+
                 <div id="orders-empty" class="empty-state is-hidden">
                     <h2 class="empty-title">No orders yet</h2>
                     <p class="empty-text">Place an order and it will show up here.</p>
                     <a class="primary-button" href="index.html">Browse stalls</a>
                 </div>
+
                 <div id="orders-list" class="orders-list" role="list"></div>
+            </section>
+
+            <!-- REVIEW MODAL -->
+            <section id="review-modal" class="review-modal is-hidden" aria-hidden="true">
+                <div class="review-backdrop" data-close="true"></div>
+
+                <div class="review-card" role="dialog" aria-modal="true" aria-labelledby="review-title">
+                    <div class="review-head">
+                        <h2 id="review-title">Leave a Review</h2>
+                        <button class="review-x" type="button" id="review-close" aria-label="Close">✕</button>
+                    </div>
+
+                    <p class="review-sub" id="review-stall">Stall: -</p>
+
+                    <form id="review-form" class="review-form">
+                        <label class="review-label">Title</label>
+                        <input id="review-input-title" class="review-input" type="text" required maxlength="60"
+                               placeholder="Short title">
+
+                        <label class="review-label">Rating</label>
+                        <div class="review-stars" id="review-stars" aria-label="Rating">
+                            <button type="button" class="rstar" data-v="1">★</button>
+                            <button type="button" class="rstar" data-v="2">★</button>
+                            <button type="button" class="rstar" data-v="3">★</button>
+                            <button type="button" class="rstar" data-v="4">★</button>
+                            <button type="button" class="rstar" data-v="5">★</button>
+                        </div>
+                        <input type="hidden" id="review-rating" value="0">
+
+                        <label class="review-label">Message</label>
+                        <textarea id="review-input-msg" class="review-textarea" required maxlength="500"
+                                  placeholder="How was it?"></textarea>
+
+                        <p id="review-error" class="review-error is-hidden" role="alert"></p>
+
+                        <div class="review-actions">
+                            <button type="button" class="review-btn outline" id="review-cancel">Cancel</button>
+                            <button type="submit" class="review-btn primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </section>
         </main>
 
@@ -90,7 +134,9 @@
             </nav>
         </footer>
     </section>
+
     <script src="../js/customer-guest-cart-utils.js" defer></script>
     <script src="../js/customer-guest-orders.js" defer></script>
 </body>
 </html>
+

@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inspection History</title>
 
+  <!-- Font Awesome for icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <style>
+    /* CSS Variable Definitions for consistent theming */
     :root {
       --green-900: #046a51;
       --green-800: #057a5f;
@@ -18,6 +20,7 @@
       --border: #e2e8f0;
     }
 
+    /* Global reset and base font */
     * {
       margin: 0;
       padding: 0;
@@ -25,12 +28,14 @@
       font-family: "Inter", Arial, sans-serif;
     }
 
+    /* Body background and text color */
     body {
       background: var(--page-bg);
       color: var(--text-dark);
       min-height: 100vh;
     }
 
+    /* Header section styling */
     .header {
       background: #007e63;
       color: #fff;
@@ -38,6 +43,7 @@
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
     }
 
+    /* Back navigation link */
     .back {
       display: inline-flex;
       align-items: center;
@@ -49,16 +55,19 @@
       text-decoration: none;
     }
 
+    /* Header title styling */
     .header h1 {
       font-size: 32px;
       margin-bottom: 6px;
     }
 
+    /* Header description text */
     .header p {
       font-size: 15px;
       opacity: 0.9;
     }
 
+    /* Summary statistics grid */
     .summary {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -66,6 +75,7 @@
       margin-top: 24px;
     }
 
+    /* Individual summary card */
     .summary-card {
       border-radius: 16px;
       padding: 18px;
@@ -76,6 +86,7 @@
       border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
+    /* Summary card label text */
     .summary-card span {
       font-size: 14px;
       opacity: 0.9;
@@ -85,21 +96,25 @@
       font-weight: 600;
     }
 
+    /* Summary card value */
     .summary-card strong {
       font-size: 32px;
       font-weight: 700;
     }
 
+    /* Color coding for different summary card types */
     .summary-card.total { background: #2f855a; }
     .summary-card.grade-a { background: #059669; }
     .summary-card.grade-b { background: #0e7490; }
     .summary-card.grade-c { background: #65a30d; }
     .summary-card.avg { background: #14b8a6; }
 
+    /* Main content area */
     .content {
       padding: 28px 40px 48px;
     }
 
+    /* Filter controls container */
     .filters {
       background: #fff;
       border-radius: 16px;
@@ -112,6 +127,7 @@
       border: 1px solid #e8eef2;
     }
 
+    /* Search input container */
     .search {
       flex: 1;
       display: flex;
@@ -124,6 +140,7 @@
       color: var(--text-muted);
     }
 
+    /* Search input field */
     .search input {
       border: none;
       flex: 1;
@@ -132,6 +149,7 @@
       background: transparent;
     }
 
+    /* Grade filter dropdown */
     .grade-filter {
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -142,6 +160,7 @@
       min-width: 160px;
     }
 
+    /* Individual history record card */
     .history-card {
       background: #fff;
       border: 1px solid #e8eef2;
@@ -155,6 +174,7 @@
       box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
     }
 
+    /* Hawker centre image */
     .history-image {
       width: 100%;
       height: 120px;
@@ -162,6 +182,7 @@
       object-fit: cover;
     }
 
+    /* Date display pill */
     .date-pill {
       background: #dcfce7;
       border-radius: 14px;
@@ -173,16 +194,19 @@
       font-weight: 700;
     }
 
+    /* Day number in date pill */
     .date-pill strong {
       font-size: 24px;
     }
 
+    /* Stall title in history card */
     .history-title {
       font-weight: 700;
       margin-bottom: 6px;
       font-size: 18px;
     }
 
+    /* Metadata (location, time, inspector) */
     .history-meta {
       color: var(--text-muted);
       font-size: 14px;
@@ -192,6 +216,7 @@
       flex-wrap: wrap;
     }
 
+    /* Score display box */
     .score-box {
       background: #f8fafc;
       border-radius: 14px;
@@ -202,11 +227,13 @@
       border: 1px solid #e2e8f0;
     }
 
+    /* Score value */
     .score-box strong {
       font-size: 22px;
       color: #047857;
     }
 
+    /* Grade badge display */
     .grade-badge {
       width: 70px;
       height: 70px;
@@ -220,10 +247,16 @@
       color: #047857;
     }
 
+    /* Grade B badge styling */
     .grade-b { background: #fff7ed; color: #b45309; border-color: #fde68a; }
+    
+    /* Grade C badge styling */
     .grade-c { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    
+    /* Grade D badge styling */
     .grade-d { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
 
+    /* View report button */
     .view-btn {
       border: none;
       background: #059669;
@@ -238,6 +271,7 @@
       justify-content: center;
     }
 
+    /* Empty state message */
     .empty-state {
       background: #fff;
       border: 1px dashed var(--border);
@@ -247,6 +281,7 @@
       text-align: center;
     }
 
+    /* Large screen responsive breakpoint */
     @media (max-width: 1200px) {
       .history-card {
         grid-template-columns: 1fr;
@@ -264,6 +299,7 @@
       }
     }
 
+    /* Mobile responsive breakpoint */
     @media (max-width: 720px) {
       .header {
         padding: 24px 20px 30px;
@@ -278,6 +314,8 @@
         align-items: stretch;
       }
     }
+
+    /* Tablet adjustments */
     @media (max-width: 768px) {
 
   .history-card {
@@ -300,18 +338,22 @@
    ========================= */
 @media (max-width: 768px) {
 
+  /* Reduce base font size on mobile */
   body {
     font-size: 14px;
   }
 
+  /* Reduce header padding on mobile */
   .header {
     padding: 20px 16px 28px;
   }
 
+  /* Reduce content padding on mobile */
   .content {
     padding: 20px 16px 32px;
   }
 
+  /* Smaller heading sizes on mobile */
   h1 {
     font-size: 24px !important;
   }
@@ -324,10 +366,12 @@
     font-size: 17px !important;
   }
 
+  /* Smaller back button text */
   .back {
     font-size: 14px;
   }
 
+  /* Improve touch targets on mobile */
   button, .card, .stall-card {
     touch-action: manipulation;
   }
@@ -337,6 +381,7 @@
 </head>
 
 <body>
+  <!-- Header with back button and summary statistics -->
   <div class="header">
     <a class="back" href="index.html">
       <i class="fas fa-chevron-left"></i> Back to Dashboard
@@ -344,6 +389,7 @@
     <h1>Inspection History</h1>
     <p>Complete record of all inspections performed</p>
 
+    <!-- Summary statistics cards -->
     <div class="summary">
       <div class="summary-card total">
         <span><i class="far fa-file-alt"></i> Total Inspections</span>
@@ -368,12 +414,16 @@
     </div>
   </div>
 
+  <!-- Main content area with filters and history list -->
   <div class="content">
+    <!-- Filter controls -->
     <div class="filters">
+      <!-- Search input -->
       <div class="search">
         <i class="fas fa-search"></i>
         <input type="text" id="searchInput" placeholder="Search by stall name, food centre, or stall ID...">
       </div>
+      <!-- Grade filter dropdown -->
       <select class="grade-filter" id="gradeFilter">
         <option value="all">All Grades</option>
         <option value="A">Grade A</option>
@@ -383,13 +433,16 @@
       </select>
     </div>
 
+    <!-- History list container (populated by JavaScript) -->
     <div id="historyList"></div>
   </div>
 
   <script type="module">
+    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
       authDomain: "fed-assignment-9c219.firebaseapp.com",
@@ -399,31 +452,39 @@
       appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // Check authentication status and redirect if not logged in
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "/login.html";
     });
 
+    // DOM element references
     const historyList = document.getElementById("historyList");
     const searchInput = document.getElementById("searchInput");
     const gradeFilter = document.getElementById("gradeFilter");
 
+    // Load inspection records from localStorage
     function loadInspections() {
       return JSON.parse(localStorage.getItem("neaInspections") || "[]");
     }
 
+    // Update summary statistics based on inspections
     function updateSummary(inspections) {
       const total = inspections.length;
+      // Count inspections by grade
       const gradeCounts = inspections.reduce((acc, entry) => {
         acc[entry.grade] = (acc[entry.grade] || 0) + 1;
         return acc;
       }, {});
+      // Calculate average score
       const avg = total
         ? Math.round(inspections.reduce((sum, entry) => sum + (entry.percent || 0), 0) / total)
         : 0;
 
+      // Update summary display
       document.getElementById("totalInspections").textContent = total;
       document.getElementById("gradeACount").textContent = gradeCounts.A || 0;
       document.getElementById("gradeBCount").textContent = gradeCounts.B || 0;
@@ -431,8 +492,10 @@
       document.getElementById("avgScore").textContent = `${avg}%`;
     }
 
+    // Default fallback image for hawker centres
     const fallbackImage = "../image/default-hawker.jpg";
 
+    // Normalize image URL to proper format
     function normalizeImageUrl(url) {
       if (!url) return fallbackImage;
       if (url.startsWith("http://") || url.startsWith("https://")) return url;
@@ -443,10 +506,13 @@
       return encodeURI(url);
     }
 
+    // Resolve the correct image for a hawker centre
     function resolveCentreImage(entry) {
+      // Check for direct image URL
       const directImage = entry.centreImage || entry.imageUrl;
       if (directImage) return normalizeImageUrl(directImage);
 
+      // Try to match known centres by name
       const centreName = (entry.centreName || "").toLowerCase();
       if (centreName.includes("maxwell")) {
         return normalizeImageUrl("maxwell.jpg");
@@ -461,9 +527,12 @@
       return fallbackImage;
     }
 
+    // Render the history list with filters applied
     function renderHistory() {
       const term = searchInput.value.trim().toLowerCase();
       const gradeValue = gradeFilter.value;
+      
+      // Filter inspections based on search and grade
       const inspections = loadInspections().filter(entry => {
         const combined = `${entry.stallTitle} ${entry.centreName}`.toLowerCase();
         const matchesSearch = combined.includes(term);
@@ -473,11 +542,13 @@
 
       updateSummary(inspections);
 
+      // Show empty state if no results
       if (!inspections.length) {
         historyList.innerHTML = `<div class="empty-state">No inspection history yet.</div>`;
         return;
       }
 
+      // Render each inspection as a history card
       historyList.innerHTML = inspections.map(entry => {
         const date = new Date(entry.completedAt);
         const day = date.getDate();
@@ -514,6 +585,7 @@
         `;
       }).join("");
 
+      // Add click handlers to view buttons
       document.querySelectorAll(".view-btn").forEach(button => {
         button.addEventListener("click", () => {
           localStorage.setItem("selectedReportId", button.dataset.id);
@@ -522,8 +594,11 @@
       });
     }
 
+    // Re-render when search or filter changes
     searchInput.addEventListener("input", renderHistory);
     gradeFilter.addEventListener("change", renderHistory);
+    
+    // Initial render
     renderHistory();
   </script>
 </body>

@@ -1,71 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Guest - Account</title>
-    <link rel="stylesheet" href="../css/customer-guest.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account</title>
+    <link rel="stylesheet" href="../css/customer-guest.css" />
 </head>
-<body>
-    <section class="app-shell" aria-label="Guest layout">
-        <main class="guest-main">
-            <h1 class="sr-only">Account</h1>
-        </main>
+<body class="cg-body">
+  <div class="cg-shell">
+    <!-- LEFT SIDEBAR -->
+    <aside class="cg-side">
+      <div class="cg-side-top">
+        <div class="cg-side-title">Menu</div>
+      </div>
 
-        <footer class="bottom-nav">
-            <nav aria-label="Primary">
-                <ul class="nav-list">
-                    <li>
-                        <a class="nav-link" href="index.html">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 10.8L12 3l9 7.8"></path>
-                                    <path d="M5 9.8v10a1.8 1.8 0 0 0 1.8 1.8h10.4A1.8 1.8 0 0 0 19 19.8v-10"></path>
-                                    <path d="M10 21v-6h4v6"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Browse</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="cart.html">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 5h2l2.2 10.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6l1.2-6.8H7.2"></path>
-                                    <circle cx="10" cy="20" r="1.6"></circle>
-                                    <circle cx="18" cy="20" r="1.6"></circle>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Cart</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="orders.html">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="6" y="4" width="12" height="16" rx="2"></rect>
-                                    <path d="M9 3h6"></path>
-                                    <path d="M9 10h6"></path>
-                                    <path d="M9 14h6"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Orders</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link is-active" href="account.html" aria-current="page">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="8" r="3.4"></circle>
-                                    <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Account</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </footer>
-    </section>
+      <nav class="cg-nav">
+        <a href="index.html" class="cg-link">Browse</a>
+        <a href="cart.html" class="cg-link">Cart</a>
+        <a href="orders.html" class="cg-link">Orders</a>
+        <a href="account.html" class="cg-link active">Account</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="cg-main">
+      <header class="cg-header">
+        <h1 class="cg-h1">Account Page</h1>
+        <div class="cg-meta">Account page for your info</div>
+      </header>
+
+      <!-- TOP SUB NAV -->
+      <div class="acc-tabs" role="tablist" aria-label="Account sections">
+        <button class="acc-tab active" data-view="info" role="tab">Account Information</button>
+        <button class="acc-tab" data-view="cards" role="tab">Credit/Debit Cards</button>
+        <button class="acc-tab" data-view="fav" role="tab">My Favorites</button>
+        <button class="acc-tab" data-view="prefs" role="tab">User Preferences</button>
+        <button class="acc-tab" data-view="fb" role="tab">Feedback Form</button>
+        <button class="acc-tab" data-view="loyalty" role="tab">Loyalty Coins</button>
+      </div>
+
+      <!-- VIEW: Account Info -->
+      <section class="acc-view show" id="view-info" aria-label="Account Information">
+        <div class="acc-card">
+          <div class="acc-title-row">
+            <h2 class="acc-title">Account Information</h2>
+            <div class="acc-actions">
+              <button id="openPwModal" class="btn btn-white">Change Password</button>
+              <button id="logoutBtn" class="btn btn-outline">Logout</button>
+            </div>
+          </div>
+
+          <div class="profile-grid">
+            <div class="profile-photo">
+              <div class="photo-box">Profile<br/>Photo</div>
+              <div class="photo-hint">Upload later (optional)</div>
+            </div>
+
+            <div class="profile-info">
+              <div class="info-row">
+                <div class="info-label">Name</div>
+                <div class="info-value" id="profileName">Loading...</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Email</div>
+                <div class="info-value" id="profileEmail">Loading...</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Phone</div>
+                <div class="info-value" id="profilePhone">-</div>
+              </div>
+
+              <div class="save-row">
+                <button class="btn btn-white" type="button">SAVE</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: Cards -->
+      <section class="acc-view" id="view-cards" aria-label="Credit Debit Cards">
+        <div class="acc-card center-card">
+          <h2 class="acc-title">Credit/Debit Cards</h2>
+          <div class="empty-emoji">💳</div>
+          <div class="muted">No cards added</div>
+          <button class="btn btn-white wide" type="button">ADD A CARD</button>
+        </div>
+      </section>
+
+      <!-- VIEW: Favorites -->
+      <section class="acc-view" id="view-fav" aria-label="My Favorites">
+        <div class="acc-card">
+          <h2 class="acc-title">My Favorites</h2>
+
+          <div class="fav-tabs" role="tablist" aria-label="Favorite type">
+            <button class="fav-tab active" data-fav="hawker">Hawker</button>
+            <button class="fav-tab" data-fav="stall">Stall</button>
+            <button class="fav-tab" data-fav="dish">Dish</button>
+          </div>
+
+          <div class="fav-panel show" id="fav-hawker">
+            <div class="fav-item">
+              <img class="fav-img" src="../image/lau pa sat.jpg" alt="Hawker photo">
+              <div class="fav-text">
+                <div class="fav-name">Maxwell Food Centre</div>
+                <div class="fav-sub">1 Kadayanallur St • 2.1km away</div>
+              </div>
+              <button class="fav-heart" aria-label="Favorite">❤</button>
+            </div>
+          </div>
+
+          <div class="fav-panel" id="fav-stall">
+            <div class="muted">No favorite stalls yet.</div>
+          </div>
+
+          <div class="fav-panel" id="fav-dish">
+            <div class="muted">No favorite dishes yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: Preferences -->
+      <section class="acc-view" id="view-prefs" aria-label="User Preferences">
+        <div class="acc-card">
+          <h2 class="acc-title">User Preferences</h2>
+
+          <div class="prefs-grid">
+            <div class="prefs-box">
+              <div class="prefs-head">Dietary Preferences</div>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefHalal"> Halal</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefNoPork"> No Pork</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefVeg"> Vegetarian</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefNoBeef"> No Beef</label>
+            </div>
+
+            <div class="prefs-box">
+              <div class="prefs-head">Allergy</div>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefNuts"> Nuts</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefDairy"> Dairy</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefSeafood"> Seafood</label>
+            </div>
+
+            <div class="prefs-box">
+              <div class="prefs-head">How strict are you?</div>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefStrict"> Only show safe food</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefWarn"> Show warning labels</label>
+            </div>
+          </div>
+
+          <div class="notif">
+            <div class="notif-title">NOTIFICATIONS</div>
+
+            <div class="toggle-row">
+              <div class="toggle-text">
+                <div class="toggle-main">Promo alerts</div>
+                <div class="toggle-sub">Get notified about discounts</div>
+              </div>
+              <label class="switch">
+                <input class="pref-toggle" type="checkbox" id="notifPromos">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-text">
+                <div class="toggle-main">Order updates</div>
+                <div class="toggle-sub">Delivery status notifications</div>
+              </div>
+              <label class="switch">
+                <input class="pref-toggle" type="checkbox" id="notifOrders">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: Feedback -->
+      <section class="acc-view" id="view-fb" aria-label="Feedback Form">
+        <div class="acc-card center-card">
+          <h2 class="acc-title">Feedback Form</h2>
+
+          <form id="feedbackForm" class="fb-form">
+            <input id="fbTitle" class="fb-input" type="text" placeholder="Title" required>
+
+            <div class="fb-label">Rate your experience</div>
+            <div class="stars" aria-label="Rating">
+              <span class="star" data-value="1">★</span>
+              <span class="star" data-value="2">★</span>
+              <span class="star" data-value="3">★</span>
+              <span class="star" data-value="4">★</span>
+              <span class="star" data-value="5">★</span>
+            </div>
+            <input id="ratingValue" type="hidden" value="0">
+
+            <textarea id="fbMsg" class="fb-textarea" placeholder="Your feedback..." required></textarea>
+
+            <div class="fb-actions">
+              <button class="btn btn-outline" type="reset">CANCEL</button>
+              <button class="btn btn-white" type="submit">SUBMIT</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- VIEW: Loyalty -->
+      <section class="acc-view" id="view-loyalty" aria-label="Loyalty Coins">
+        <div class="acc-card">
+          <h2 class="acc-title">Loyalty Coins</h2>
+
+          <div class="coins-grid">
+            <div class="coin-box"><div class="coin-top">First purchase</div><div class="coin-badge">+10</div></div>
+            <div class="coin-box"><div class="coin-top">Leave review</div><div class="coin-badge">+20</div></div>
+            <div class="coin-box"><div class="coin-top">Pay with coins</div><div class="coin-badge">Use</div></div>
+            <div class="coin-box"><div class="coin-top">Invite friend</div><div class="coin-badge">+50</div></div>
+            <div class="coin-box"><div class="coin-top">Every 5 orders</div><div class="coin-badge">+30</div></div>
+            <div class="coin-box"><div class="coin-top">Birthday bonus</div><div class="coin-badge">+50</div></div>
+            <div class="coin-box"><div class="coin-top">Streak bonus</div><div class="coin-badge">+40</div></div>
+            <div class="coin-box"><div class="coin-top">Special events</div><div class="coin-badge">+?</div></div>
+          </div>
+
+          <div class="level-card">
+            <div class="level-head">UNLOCK EXCLUSIVE PERKS • <b>LEVEL UP</b></div>
+
+            <div class="level-table">
+              <div class="lt-row lt-head">
+                <div>Perks</div><div>Bronze</div><div>Silver</div><div>Gold</div>
+              </div>
+
+              <div class="lt-row">
+                <div>Double point days</div><div>✓</div><div>✓</div><div>✓</div>
+              </div>
+              <div class="lt-row">
+                <div>Birthday bonus</div><div>—</div><div>✓</div><div>✓</div>
+              </div>
+              <div class="lt-row">
+                <div>Free delivery (monthly)</div><div>—</div><div>—</div><div>✓</div>
+              </div>
+              <div class="lt-row">
+                <div>Access to limited edition products</div><div>—</div><div>✓</div><div>✓</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Change Password Modal -->
+      <div id="pwModal" class="modal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Change password dialog">
+          <div class="modal-head">
+            <h3>Change Password</h3>
+            <button id="closePwModal" class="x" type="button">✕</button>
+          </div>
+
+          <form id="pwForm" class="modal-body">
+            <label>Current Password</label>
+            <input id="curPw" type="password" required>
+
+            <label>New Password</label>
+            <input id="newPw" type="password" required>
+
+            <label>Confirm New Password</label>
+            <input id="confirmPw" type="password" required>
+
+            <button class="btn btn-blue" type="submit">CHANGE PASSWORD</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="bottom-nav">
+    <nav aria-label="Primary">
+      <ul class="nav-list">
+        <li>
+          <a class="nav-link" href="index.html">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10.8L12 3l9 7.8"></path>
+                <path d="M5 9.8v10a1.8 1.8 0 0 0 1.8 1.8h10.4A1.8 1.8 0 0 0 19 19.8v-10"></path>
+                <path d="M10 21v-6h4v6"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Browse</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-link" href="cart.html">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 5h2l2.2 10.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6l1.2-6.8H7.2"></path>
+                <circle cx="10" cy="20" r="1.6"></circle>
+                <circle cx="18" cy="20" r="1.6"></circle>
+              </svg>
+            </span>
+            <span class="nav-label">Cart</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-link" href="orders.html">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="12" height="16" rx="2"></rect>
+                <path d="M9 3h6"></path>
+                <path d="M9 10h6"></path>
+                <path d="M9 14h6"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-link is-active" href="account.html" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="3.4"></circle>
+                <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Account</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+
+  <script type="module" src="../js/customer-guest-account.js"></script>
 </body>
 </html>

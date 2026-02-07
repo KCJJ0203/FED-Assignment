@@ -4,6 +4,18 @@
     const ordersEmptyEl = document.getElementById("orders-empty");
     const successEl = document.getElementById("payment-success");
     const trackBtn = document.getElementById("payment-track");
+    const reviewModal = document.getElementById("review-modal");
+    const reviewStall = document.getElementById("review-stall");
+    const reviewClose = document.getElementById("review-close");
+    const reviewCancel = document.getElementById("review-cancel");
+    const reviewForm = document.getElementById("review-form");
+    const reviewErr = document.getElementById("review-error");
+    const reviewTitle = document.getElementById("review-input-title");
+    const reviewMsg = document.getElementById("review-input-msg");
+    const reviewRating = document.getElementById("review-rating");
+    const reviewStars = document.getElementById("review-stars");
+
+    let reviewTarget = null; // { uid, userEmail, orderId, stallId, stallName }
 
     if (!ordersListEl || !ordersStatusEl) {
         return;
@@ -36,6 +48,48 @@
         measurementId: "G-CJBDRY9RQ5"
     };
 
+    const setReviewError = (msg) => {
+        if (!reviewErr) return;
+        reviewErr.textContent = msg || "";
+        reviewErr.classList.toggle("is-hidden", !msg);
+    };
+
+    const openReview = (target) => {
+        reviewTarget = target;
+
+        if (reviewStall) reviewStall.textContent = `Stall: ${target.stallName || "-"}`;
+        if (reviewTitle) reviewTitle.value = "";
+        if (reviewMsg) reviewMsg.value = "";
+        if (reviewRating) reviewRating.value = "0";
+        setReviewError("");
+
+        reviewModal?.classList.remove("is-hidden");
+        reviewModal?.setAttribute("aria-hidden", "false");
+        reviewModal?.querySelectorAll(".rstar").forEach(s => s.classList.remove("on"));
+    };
+
+    const closeReview = () => {
+        reviewModal?.classList.add("is-hidden");
+        reviewModal?.setAttribute("aria-hidden", "true");
+        reviewTarget = null;
+    };
+
+    reviewClose?.addEventListener("click", closeReview);
+    reviewCancel?.addEventListener("click", closeReview);
+    reviewModal?.addEventListener("click", (e) => {
+        if (e.target?.classList?.contains("review-backdrop")) closeReview();
+    });
+
+    reviewStars?.addEventListener("click", (e) => {
+        const s = e.target.closest(".rstar");
+        if (!s) return;
+        const v = Number(s.dataset.v);
+        reviewRating.value = String(v);
+        reviewStars.querySelectorAll(".rstar").forEach(st => {
+            st.classList.toggle("on", Number(st.dataset.v) <= v);
+        });
+    });
+
     const renderOrders = (orders) => {
         ordersListEl.innerHTML = "";
         if (!orders || orders.length === 0) {
@@ -56,7 +110,10 @@
         orders.forEach((order) => {
             const card = document.createElement("article");
             card.className = "order-card";
-            card.dataset.orderId = order.orderId;
+            card.dataset.orderId = order.orderId || "";
+            card.dataset.stallId = order.stallId || "";      // IMPORTANT
+            card.dataset.stallName = order.stallName || "";  // IMPORTANT
+
             const paymentLabel = (order.paymentStatus || "success").toUpperCase();
 
             const header = document.createElement("div");
@@ -128,7 +185,19 @@
                 itemsList.appendChild(row);
             });
 
-            card.append(header, total, toggleBtn, itemsList);
+            // REVIEW BUTTON
+            const reviewBtn = document.createElement("button");
+            reviewBtn.type = "button";
+            reviewBtn.className = "order-review";
+            reviewBtn.dataset.action = "review";
+            reviewBtn.textContent = "Leave a review";
+
+            const isSuccess = (order.paymentStatus || "success").toLowerCase() === "success";
+            if (!isSuccess || !order.stallId) {
+                reviewBtn.classList.add("is-hidden");
+            }
+
+            card.append(header, total, toggleBtn, itemsList, reviewBtn);
             fragment.appendChild(card);
         });
 
@@ -153,21 +222,51 @@
         }
     };
 
-    ordersListEl.addEventListener("click", (event) => {
+    // Toggle details + Review button handling
+    ordersListEl.addEventListener("click", async (event) => {
+        // Toggle
         const toggleBtn = event.target.closest("[data-action=\"toggle\"]");
-        if (!toggleBtn) {
+        if (toggleBtn) {
+            const card = toggleBtn.closest(".order-card");
+            if (!card) return;
+
+            const items = card.querySelector(".order-items");
+            if (!items) return;
+
+            const isHidden = items.classList.toggle("is-hidden");
+            toggleBtn.textContent = isHidden ? "View details" : "Hide details";
             return;
         }
-        const card = toggleBtn.closest(".order-card");
-        if (!card) {
+
+        // Review
+        const reviewBtn = event.target.closest("[data-action='review']");
+        if (!reviewBtn) return;
+
+        const card = reviewBtn.closest(".order-card");
+        if (!card) return;
+
+        const user = await getAuthUser();
+        if (!user) {
+            alert("Please login to leave a review.");
             return;
         }
-        const items = card.querySelector(".order-items");
-        if (!items) {
+
+        const stallId = card.dataset.stallId;
+        const stallName = card.dataset.stallName;
+        const orderId = card.dataset.orderId;
+
+        if (!stallId) {
+            alert("Missing stallId in order. Please store stallId when saving the order.");
             return;
         }
-        const isHidden = items.classList.toggle("is-hidden");
-        toggleBtn.textContent = isHidden ? "View details" : "Hide details";
+
+        openReview({
+            uid: user.uid,
+            userEmail: user.email || "",
+            orderId,
+            stallId,
+            stallName
+        });
     });
 
     const getAuthUser = async () => {
@@ -223,6 +322,61 @@
             return [];
         }
     };
+
+    // SUBMIT REVIEW TO RTDB
+    reviewForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        setReviewError("");
+
+        if (!reviewTarget) return setReviewError("Missing review target.");
+
+        const rating = Number(reviewRating.value || 0);
+        const title = reviewTitle.value.trim();
+        const message = reviewMsg.value.trim();
+
+        if (!rating) return setReviewError("Select a rating.");
+        if (!title) return setReviewError("Enter a title.");
+        if (!message) return setReviewError("Enter your message.");
+
+        try {
+            const [{ initializeApp, getApps }] = await Promise.all([
+                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js")
+            ]);
+            const { getDatabase, ref, push, set } = await import(
+                "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js"
+            );
+
+            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+            const rtdb = getDatabase(app);
+
+            const payload = {
+                orderId: reviewTarget.orderId,
+                stallId: reviewTarget.stallId,
+                stallName: reviewTarget.stallName || "",
+                userId: reviewTarget.uid,
+                userEmail: reviewTarget.userEmail || "",
+                rating,
+                title,
+                message,
+                createdAt: Date.now()
+            };
+
+            // Save under stall
+            const stallReviewRef = push(ref(rtdb, `reviews/${reviewTarget.stallId}`));
+            await set(stallReviewRef, payload);
+
+            // Save under user (for your feedback page)
+            const userReviewRef = push(ref(rtdb, `userReviews/${reviewTarget.uid}`));
+            await set(userReviewRef, payload);
+
+            closeReview();
+            alert("Review submitted!");
+                } catch (err) {
+        console.error("Review submit error:", err);
+        setReviewError(`${err?.code || ""} ${err?.message || "Failed to submit review."}`.trim());
+        }
+
+    });
 
     const init = async () => {
         const authUser = await getAuthUser();

@@ -162,7 +162,7 @@ canvas{ flex:1; }
 
 <main class="main">
   <div class="topbar">
-    <h1>Home Page</h1>
+    <h1>Home</h1>
     <div class="top-search"><input type="text" placeholder="Search anything here..." /></div>
   </div>
 
@@ -203,7 +203,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 // Monthly Sales Bar Chart
 new Chart(document.getElementById('monthlyBar'), {
   type:'bar',
-  data:{ labels:['Jollibee','Prime','KFG','Samsung','Sonia','Singtel'], datasets:[{ data:[20,35,45,30,55,25], backgroundColor:'#22d3ee' }] },
+  data:{ labels:['Grill House','Golden Bistro','Steak Kitchen','Fusion Wokery','Red Grill','Wok & Grill'], datasets:[{ data:[20,35,45,30,55,25], backgroundColor:'#22d3ee' }] },
   options:{ plugins:{ legend:{display:false}, datalabels:{ color:'white', anchor:'end', align:'end', font:{weight:'bold'} } }, scales:{ y:{ticks:{color:'white', beginAtZero:true}}, x:{ticks:{color:'white'}} } },
   plugins:[ChartDataLabels]
 });

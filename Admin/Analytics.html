@@ -135,7 +135,7 @@ canvas { flex:1; }
 
 <main class="main">
   <div class="topbar">
-    <h1>Analytics Page</h1>
+    <h1>Analytics</h1>
     <div class="top-search"><input placeholder="Search anything here..." /></div>
   </div>
 
@@ -211,7 +211,7 @@ new Chart(document.getElementById('satisfactionChart'),{
 // Sales by Stall Bar Chart
 new Chart(document.getElementById('stallBar'),{
   type:'bar',
-  data:{ labels:['Stall A','Stall B','Stall C','Stall D'], datasets:[{label:'Sales', data:[200,250,180,220], backgroundColor:'#22d3ee', hoverBackgroundColor:'#3b82f6'}] },
+  data:{ labels:['Grill House','Golden Bistro','Steak Kitchen','Fusion Wokery'], datasets:[{label:'Sales', data:[200,250,180,220], backgroundColor:'#22d3ee', hoverBackgroundColor:'#3b82f6'}] },
   options:{
     plugins:{ legend:{display:true, labels:{color:'white'}}, tooltip:{enabled:true}, datalabels:{color:'white', anchor:'end', align:'end', font:{weight:'bold'}} },
     scales:{ y:{ ticks:{color:'white', beginAtZero:true} }, x:{ ticks:{color:'white'} } },

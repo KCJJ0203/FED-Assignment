@@ -11,6 +11,17 @@
   >
 
   <style>
+    :root {
+      --green-900: #046a51;
+      --green-800: #057a5f;
+      --green-700: #06886b;
+      --white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --page-bg: #f5f9f7;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -19,118 +30,254 @@
     }
 
     body {
-      background: #f5f7fb;
+      background: var(--page-bg);
       min-height: 100vh;
+      color: var(--text-dark);
     }
 
     .header {
-      background: linear-gradient(180deg, #1f5cff, #0b2fa8);
-      color: #fff;
-      padding: 20px 24px 30px;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
+      background: #007e63;
+      color: var(--white);
+      padding: 26px 40px 36px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
     }
 
     .back {
-      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
       cursor: pointer;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
+      color: var(--white);
+      text-decoration: none;
     }
 
     .header h1 {
-      font-size: 22px;
-      margin-bottom: 6px;
+      font-size: 30px;
+      margin-bottom: 8px;
     }
 
-    .header p {
-      font-size: 14px;
-      opacity: 0.9;
+    .header p,
+    .header .address {
+      font-size: 16px;
+      opacity: 0.95;
       margin-bottom: 4px;
     }
 
-    .stall-count {
-      margin-top: 16px;
-      background: rgba(255,255,255,0.15);
-      padding: 14px;
+    .header .address {
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .header-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 22px;
+      margin-top: 26px;
+      align-items: stretch;
+    }
+
+    .schedule-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px 24px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+      display: grid;
+      gap: 18px;
+    }
+
+    .schedule-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .schedule-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: #00b37a;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+
+    .schedule-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field label {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .field .input-wrap {
+      margin-top: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .field .input-wrap i {
+      color: #00a471;
+      font-size: 18px;
+    }
+
+    .field input {
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      width: 100%;
+      outline: none;
+      color: var(--text-dark);
+    }
+
+    .info-card {
+      background: #00966f;
+      border-radius: 20px;
+      padding: 24px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .info-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-card strong {
+      font-size: 42px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .info-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      align-self: flex-end;
+    }
+
+    .scheduled-bar {
+      margin-top: 20px;
+      background: #d9fff1;
+      border-left: 4px solid #00a471;
       border-radius: 16px;
-      text-align: center;
+      padding: 14px 18px;
+      font-size: 15px;
+      color: #046a51;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       font-weight: 600;
     }
 
     .content {
-      padding: 24px;
-      margin-top: -20px;
+      padding: 32px 40px 48px;
     }
 
     .title {
-      color: #1f5cff;
-      font-size: 20px;
-      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 26px;
+      font-weight: 700;
     }
 
     .subtitle {
       margin-top: 6px;
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 20px;
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 22px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
     }
 
     .card {
       background: #fff;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
       cursor: pointer;
-      position: relative;
-      transition: 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .card:hover {
       transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
     }
 
-    .stall-no {
-      color: #1f5cff;
-      font-weight: 600;
-      font-size: 14px;
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
     }
+
+    .stall-number {
+      font-weight: 700;
+      color: #047857;
+      font-size: 15px;
+    }
+
+    .grade-pill {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .grade-a { background: #dcfce7; color: #15803d; }
+    .grade-b { background: #fef3c7; color: #b45309; }
+    .grade-c { background: #fee2e2; color: #b91c1c; }
+    .grade-d { background: #fecaca; color: #991b1b; }
 
     .card h3 {
-      font-size: 16px;
-      margin-bottom: 4px;
+      font-size: 17px;
     }
 
     .desc {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 6px;
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
     .last {
       font-size: 13px;
-      color: #1f5cff;
+      color: var(--text-muted);
     }
 
-    .grade {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .grade.a { background: #dff7e7; color: #0b8f4d; }
-    .grade.b { background: #fff2cc; color: #a97a00; }
-    .grade.c { background: #fde2e2; color: #b00020; }
-
-    .arrow {
-      position: absolute;
-      right: 16px;
-      bottom: 16px;
-      color: #999;
+    .last strong {
+      color: #047857;
+      display: block;
+      margin-top: 4px;
     }
 
     .message {
@@ -140,26 +287,79 @@
       text-align: center;
       color: #666;
     }
+
+    @media (max-width: 1000px) {
+      .header-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        padding: 24px 20px 30px;
+      }
+
+      .content {
+        padding: 24px 20px 36px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <div class="header">
-    <div class="back" onclick="window.history.back()">
-      <i class="fas fa-chevron-left"></i> Back
-    </div>
+    <a class="back" href="index.html">
+      <i class="fas fa-chevron-left"></i> Back to Dashboard
+    </a>
 
     <h1 id="centreName">Hawker Centre</h1>
     <p id="centreLocation"></p>
+    <div class="address" id="centreAddress"></div>
 
-    <div class="stall-count" id="stallCount">0 Stalls</div>
+    <div class="header-actions">
+      <div>
+        <div class="schedule-card">
+          <div class="schedule-title">
+            <div class="schedule-icon"><i class="far fa-calendar"></i></div>
+            Schedule Inspection
+          </div>
+          <div class="schedule-fields">
+            <div class="field">
+              <label for="scheduleDate">Date</label>
+              <div class="input-wrap">
+                <i class="far fa-calendar"></i>
+                <input type="date" id="scheduleDate">
+              </div>
+            </div>
+            <div class="field">
+              <label for="scheduleTime">Time</label>
+              <div class="input-wrap">
+                <i class="far fa-clock"></i>
+                <input type="time" id="scheduleTime" value="10:00">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="scheduled-bar" id="scheduledBar">
+          <i class="far fa-calendar"></i>
+          Scheduled for: Not set
+        </div>
+      </div>
+      <div class="info-card">
+        <div>
+          <h3><i class="fas fa-store"></i> Stalls Available</h3>
+          <strong id="stallCount">0</strong>
+        </div>
+        <div class="info-icon"><i class="fas fa-store"></i></div>
+      </div>
+    </div>
   </div>
 
   <div class="content">
     <div class="title">Select a stall to inspect</div>
-    <div class="subtitle">Tap on any stall to begin inspection</div>
-    <div id="stallList"></div>
+    <div class="subtitle">Click on any stall to begin the inspection process</div>
+    <div id="stallList" class="cards"></div>
   </div>
 
   <script type="module">
@@ -190,22 +390,133 @@ const db = getFirestore(app);
 
 // 🔐 Auth guard
 onAuthStateChanged(auth, user => {
-  if (!user) window.location.href = "index.html";
+  if (!user) window.location.href = "/login.html";
 });
 
-// ✅ THIS WAS MISSING
 const centreId = localStorage.getItem("selectedHawkerCentreId");
-
-console.log("CENTRE ID =", centreId);
 
 if (!centreId) {
   alert("No hawker centre selected.");
   window.location.href = "index.html";
 }
 
-// DOM
 const stallList = document.getElementById("stallList");
 const stallCountEl = document.getElementById("stallCount");
+const scheduledBar = document.getElementById("scheduledBar");
+const scheduleDate = document.getElementById("scheduleDate");
+const scheduleTime = document.getElementById("scheduleTime");
+
+const schedulesKey = "neaSchedules";
+
+function loadSchedules() {
+  return JSON.parse(localStorage.getItem(schedulesKey) || "[]");
+}
+
+function saveSchedules(schedules) {
+  localStorage.setItem(schedulesKey, JSON.stringify(schedules));
+}
+
+function updateScheduleLocations(stallLocation) {
+  if (!scheduleDate.value) return;
+  const schedules = loadSchedules();
+  const scheduleEntry = schedules.find(item => item.centreId === centreId);
+  if (!scheduleEntry) return;
+
+  if (!scheduleEntry.locations) scheduleEntry.locations = {};
+  if (!scheduleEntry.locations[scheduleDate.value]) {
+    scheduleEntry.locations[scheduleDate.value] = [];
+  }
+
+  if (stallLocation && !scheduleEntry.locations[scheduleDate.value].includes(stallLocation)) {
+    scheduleEntry.locations[scheduleDate.value].push(stallLocation);
+  }
+
+  saveSchedules(schedules);
+}
+
+function updateScheduleStalls(stallId, stallLocation) {
+  if (!scheduleDate.value) return;
+  const schedules = loadSchedules();
+  const scheduleEntry = schedules.find(item => item.centreId === centreId);
+  if (!scheduleEntry) return;
+
+  if (!scheduleEntry.scheduledStalls) scheduleEntry.scheduledStalls = {};
+  if (!scheduleEntry.scheduledStalls[scheduleDate.value]) {
+    scheduleEntry.scheduledStalls[scheduleDate.value] = [];
+  }
+
+  const alreadyAdded = scheduleEntry.scheduledStalls[scheduleDate.value]
+    .some(item => item.stallId === stallId);
+
+  if (!alreadyAdded) {
+    scheduleEntry.scheduledStalls[scheduleDate.value].push({
+      stallId,
+      centreId,
+      location: stallLocation
+    });
+  }
+
+  saveSchedules(schedules);
+}
+
+function updateScheduleBar() {
+  if (scheduleDate.value && scheduleTime.value) {
+    const formatted = new Date(`${scheduleDate.value}T${scheduleTime.value}`);
+    scheduledBar.textContent = `Scheduled for: ${formatted.toLocaleDateString("en-SG", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    })} at ${scheduleTime.value}`;
+  } else {
+    scheduledBar.textContent = "Scheduled for: Not set";
+  }
+}
+
+const savedDate = localStorage.getItem("scheduleDate");
+const savedTime = localStorage.getItem("scheduleTime");
+if (savedDate) scheduleDate.value = savedDate;
+if (savedTime) scheduleTime.value = savedTime;
+
+scheduleDate.addEventListener("change", () => {
+  localStorage.setItem("scheduleDate", scheduleDate.value);
+  saveSchedule();
+  updateScheduleBar();
+});
+
+scheduleTime.addEventListener("change", () => {
+  localStorage.setItem("scheduleTime", scheduleTime.value);
+  saveSchedule();
+  updateScheduleBar();
+});
+
+function saveSchedule() {
+  if (!scheduleDate.value || !scheduleTime.value) return;
+  const schedules = loadSchedules();
+  const centreName = document.getElementById("centreName").textContent;
+  const existingIndex = schedules.findIndex(item => item.centreId === centreId);
+  const scheduleEntry = {
+    centreId,
+    centreName,
+    date: scheduleDate.value,
+    time: scheduleTime.value,
+    locations: existingIndex >= 0 && schedules[existingIndex].locations
+      ? schedules[existingIndex].locations
+      : {},
+    scheduledStalls: existingIndex >= 0 && schedules[existingIndex].scheduledStalls
+      ? schedules[existingIndex].scheduledStalls
+      : {}
+  };
+
+  if (existingIndex >= 0) {
+    schedules[existingIndex] = scheduleEntry;
+  } else {
+    schedules.push(scheduleEntry);
+  }
+
+  saveSchedules(schedules);
+}
+
+updateScheduleBar();
 
 // ---- Load hawker centre ----
 const centreSnap = await getDoc(doc(db, "hawkers", centreId));
@@ -218,6 +529,15 @@ if (!centreSnap.exists()) {
 const centre = centreSnap.data();
 document.getElementById("centreName").textContent = centre.name;
 document.getElementById("centreLocation").textContent = centre.area || "";
+document.getElementById("centreAddress").textContent = centre.address || centre.location || "";
+
+const schedules = loadSchedules();
+const centreSchedule = schedules.find(item => item.centreId === centreId);
+if (centreSchedule) {
+  scheduleDate.value = centreSchedule.date;
+  scheduleTime.value = centreSchedule.time;
+}
+updateScheduleBar();
 
 // ---- Load stalls ----
 stallList.innerHTML = `<div class="message">Loading stalls...</div>`;
@@ -232,8 +552,7 @@ stallList.innerHTML = "";
 
 if (snapshot.empty) {
   stallList.innerHTML = `<div class="message">No stalls found for this centre.</div>`;
-  stallCountEl.textContent = "0 Stalls";
-  
+  stallCountEl.textContent = "0";
 }
 
 let count = 0;
@@ -243,29 +562,43 @@ snapshot.forEach(docSnap => {
   count++;
 
   const gradeClass =
-    d.grade === "A" ? "a" :
-    d.grade === "B" ? "b" : "c";
+    d.grade === "A" ? "grade-a" :
+    d.grade === "B" ? "grade-b" :
+    d.grade === "C" ? "grade-c" : "grade-d";
 
   stallList.innerHTML += `
     <div class="card" data-id="${docSnap.id}">
-      <div class="stall-no">${d.location}</div>
-      <h3>${d.hawkerName} – ${d.location}</h3>
-
-      <div class="desc">${d.hours}</div>
-      <div class="last">Last inspected: ${d.lastInspectedAt ? "Recently" : "N/A"}</div>
-      <div class="grade ${gradeClass}">Grade ${d.grade}</div>
-      <i class="fas fa-chevron-right arrow"></i>
+      <div class="card-top">
+        <div class="stall-number">${d.location || "#"}</div>
+        <div class="grade-pill ${gradeClass}">Grade ${d.grade || "-"}</div>
+      </div>
+      <h3>${d.hawkerName || d.name || "Stall"}</h3>
+      <div class="desc">${d.category || d.hours || ""}</div>
+      <div class="last">Last Inspection
+        <strong>${d.lastInspectedAt ? "Last inspected: recently" : "Last inspected: N/A"}</strong>
+      </div>
     </div>
   `;
 });
 
-stallCountEl.textContent = `${count} Stall${count !== 1 ? "s" : ""}`;
+stallCountEl.textContent = count;
 
 // ---- Click stall ----
 document.querySelectorAll(".card").forEach(card => {
   card.addEventListener("click", () => {
-    localStorage.setItem("selectedStallId", card.dataset.id);
-    window.location.href = "inspect-stall.html";
+    if (!scheduleDate.value || !scheduleTime.value) {
+      alert("Please select a date and time before scheduling.");
+      return;
+    }
+
+    const stallLocation = card.querySelector(".stall-number")?.textContent?.trim() || "";
+
+    saveSchedule();
+    updateScheduleLocations(stallLocation);
+    updateScheduleStalls(card.dataset.id, stallLocation);
+
+    localStorage.setItem("selectedCalendarDate", scheduleDate.value || "");
+    window.location.href = "calendar.html";
   });
 });
 </script>

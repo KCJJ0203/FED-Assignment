@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Officer Dashboard</title>
+
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet"
+  >
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(180deg, #1f5cff, #0b2fa8);
+      color: #fff;
+      padding: 28px 24px 40px;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .welcome h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .welcome p {
+      margin-top: 6px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .stat {
+      flex: 1;
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat h2 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .stat p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 24px;
+      margin-top: -20px;
+    }
+
+    .blue-title {
+      color: #1f5cff;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card img {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      flex: 1;
+    }
+
+    .card-content h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .time {
+      color: #1f5cff;
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .arrow {
+      align-self: center;
+      color: #999;
+    }
+
+    .message-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="header-top">
+      <div class="welcome">
+        <h1>Welcome back,</h1>
+        <p>Officer NEA-12345</p>
+      </div>
+      <i class="fas fa-user" id="logoutBtn" style="cursor:pointer;"></i>
+
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <h2 id="foodCentreCount">0</h2>
+        <p>Food Centres</p>
+      </div>
+      <div class="stat">
+        <h2 id="thisWeekCount">0</h2>
+        <p>This Week</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <h2 class="blue-title">Schedule your next inspection!</h2>
+    <p class="subtitle">Select a hawker centre to begin inspection</p>
+    <div id="centresList"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+      authDomain: "fed-assignment-9c219.firebaseapp.com",
+      projectId: "fed-assignment-9c219",
+      storageBucket: "fed-assignment-9c219.firebasestorage.app",
+      messagingSenderId: "287410844855",
+      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, user => {
+      if (!user) window.location.href = "login.html";
+    });
+
+    const list = document.getElementById("centresList");
+    list.innerHTML = `<div class="message-box">Loading hawker centres...</div>`;
+
+    const snapshot = await getDocs(collection(db, "hawkers"));
+
+    document.getElementById("foodCentreCount").textContent = snapshot.size;
+    document.getElementById("thisWeekCount").textContent =
+      Number(localStorage.getItem("thisWeekInspections") || 0);
+
+    list.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+      const h = docSnap.data();
+
+      list.innerHTML += `
+        <div class="card"
+     data-centre-id="${docSnap.id}"
+     data-centre-name="${h.name}">
+
+          <img src="${h.imageUrl || '/image/default-hawker.jpg'}" alt="${h.name}">
+          <div class="card-content">
+            <h3>${h.name}</h3>
+            <div class="meta">
+              <i class="fas fa-map-marker-alt"></i> ${h.area || "Area unavailable"}
+            </div>
+            <div class="time">
+              <i class="fas fa-clock"></i> ${h.hours || "N/A"}
+            </div>
+            <div class="time">
+              ⭐ Rating: ${typeof h.rating === "number" ? h.rating : "N/A"}
+            </div>
+          </div>
+          <i class="fas fa-chevron-right arrow"></i>
+        </div>
+      `;
+    });
+
+   document.querySelectorAll(".card").forEach(card => {
+  card.addEventListener("click", () => {
+    // ✅ SAVE CENTRE ID (CRITICAL)
+    localStorage.setItem(
+      "selectedHawkerCentreId",
+      card.dataset.centreId
+    );
+
+    // ✅ SAVE CENTRE NAME (optional, for display)
+    localStorage.setItem(
+      "selectedHawkerCentreName",
+      card.dataset.centreName
+    );
+
+    window.location.href = "inspection.html";
+  });
+});
+
+    // 🔓 Logout on user icon click
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  const auth = getAuth();
+
+  await signOut(auth);
+
+  // Clear app state
+  localStorage.clear();
+
+  // Go back to login
+  window.location.href = "login.html";
+});
+
+  </script>
+
+</body>
+</html>

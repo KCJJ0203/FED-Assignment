@@ -62,7 +62,7 @@ form.addEventListener("submit", async (e) => {
     if (userType === "customer") {
       window.location.href = "customer-guest/index.html";
     } else if (userType === "vendor") {
-      window.location.href = "vendor/index.html";
+      window.location.href = "Vendor/index.html";
     } else if (userType === "nea") {
       window.location.href = "nea/index.html";
     } else if (userType === "admin") {

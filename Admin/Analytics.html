@@ -17,7 +17,7 @@
   --accent-pink:#c084fc;
 }
 
-/* RESET */
+
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",sans-serif;}
 body{
   min-height:100vh;
@@ -30,7 +30,7 @@ body{
   animation: gradientShift 15s ease infinite;
 }
 
-/* Floating blobs */
+
 .blob{
   position:absolute;
   width:150px; height:150px;
@@ -52,7 +52,7 @@ body{
   100%{background-position:0% 50%;}
 }
 
-/* Sidebar */
+
 .sidebar {
   width:240px;
   background: linear-gradient(180deg,#4361ee,#3a0ca3);
@@ -69,14 +69,13 @@ body{
 .profile { margin-top:auto; display:flex; align-items:center; gap:10px; font-size:13px; }
 .avatar { width:34px; height:34px; background:#22d3ee; border-radius:50%; }
 
-/* Main Content */
 .main { flex:1; padding:24px 30px; }
 .topbar { display:flex; align-items:center; gap:20px; margin-bottom:30px; }
 .topbar h1 { font-size:20px; }
 .top-search { background:white; padding:8px 14px; border-radius:20px; width:240px; }
 .top-search input { border:none; outline:none; width:100%; }
 
-/* Grid layout */
+
 .grid {
   display:grid;
   grid-template-columns: repeat(3,1fr);
@@ -84,7 +83,7 @@ body{
 }
 @media(max-width:1000px){.grid{grid-template-columns:1fr;}}
 
-/* Card styling with hover glow and slide-in */
+
 .card {
   background: linear-gradient(180deg,var(--card-dark),var(--card-dark-2));
   border-radius:18px;
@@ -117,7 +116,6 @@ canvas { flex:1; }
 
 <body>
 
-<!-- floating blobs -->
 <div class="blob"></div>
 <div class="blob"></div>
 <div class="blob"></div>
@@ -168,7 +166,7 @@ window.addEventListener('load', ()=>{
   });
 });
 
-// Overall Hawker Sales Line Chart
+
 const hawkerCtx = document.getElementById('hawkerLine');
 const hawkerChart = new Chart(hawkerCtx, {
   type:'line',
@@ -201,14 +199,14 @@ function setRange(type){
   hawkerChart.update();
 }
 
-// Customer Satisfaction Pie Chart
+
 new Chart(document.getElementById('satisfactionChart'),{
   type:'doughnut',
   data:{ labels:['Satisfied','Neutral','Unsatisfied'], datasets:[{data:[65,20,15], backgroundColor:['#22d3ee','#3b82f6','#c084fc'], hoverOffset:10}] },
   options:{ plugins:{legend:{position:'bottom', labels:{color:'white'}}} }
 });
 
-// Sales by Stall Bar Chart
+
 new Chart(document.getElementById('stallBar'),{
   type:'bar',
   data:{ labels:['Grill House','Golden Bistro','Steak Kitchen','Fusion Wokery'], datasets:[{label:'Sales', data:[200,250,180,220], backgroundColor:'#22d3ee', hoverBackgroundColor:'#3b82f6'}] },

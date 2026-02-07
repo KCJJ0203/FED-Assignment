@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Select Stall</title>
+
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet"
+  >
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(180deg, #1f5cff, #0b2fa8);
+      color: #fff;
+      padding: 20px 24px 30px;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+    }
+
+    .back {
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+
+    .stall-count {
+      margin-top: 16px;
+      background: rgba(255,255,255,0.15);
+      padding: 14px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 24px;
+      margin-top: -20px;
+    }
+
+    .title {
+      color: #1f5cff;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      cursor: pointer;
+      position: relative;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stall-no {
+      color: #1f5cff;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .last {
+      font-size: 13px;
+      color: #1f5cff;
+    }
+
+    .grade {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .grade.a { background: #dff7e7; color: #0b8f4d; }
+    .grade.b { background: #fff2cc; color: #a97a00; }
+    .grade.c { background: #fde2e2; color: #b00020; }
+
+    .arrow {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      color: #999;
+    }
+
+    .message {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="back" onclick="window.history.back()">
+      <i class="fas fa-chevron-left"></i> Back
+    </div>
+
+    <h1 id="centreName">Hawker Centre</h1>
+    <p id="centreLocation"></p>
+
+    <div class="stall-count" id="stallCount">0 Stalls</div>
+  </div>
+
+  <div class="content">
+    <div class="title">Select a stall to inspect</div>
+    <div class="subtitle">Tap on any stall to begin inspection</div>
+    <div id="stallList"></div>
+  </div>
+
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+  authDomain: "fed-assignment-9c219.firebaseapp.com",
+  projectId: "fed-assignment-9c219",
+  storageBucket: "fed-assignment-9c219.firebasestorage.app",
+  messagingSenderId: "287410844855",
+  appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🔐 Auth guard
+onAuthStateChanged(auth, user => {
+  if (!user) window.location.href = "index.html";
+});
+
+// ✅ THIS WAS MISSING
+const centreId = localStorage.getItem("selectedHawkerCentreId");
+
+console.log("CENTRE ID =", centreId);
+
+if (!centreId) {
+  alert("No hawker centre selected.");
+  window.location.href = "index.html";
+}
+
+// DOM
+const stallList = document.getElementById("stallList");
+const stallCountEl = document.getElementById("stallCount");
+
+// ---- Load hawker centre ----
+const centreSnap = await getDoc(doc(db, "hawkers", centreId));
+
+if (!centreSnap.exists()) {
+  stallList.innerHTML = `<div class="message">Hawker centre not found.</div>`;
+  throw new Error("Invalid centre ID");
+}
+
+const centre = centreSnap.data();
+document.getElementById("centreName").textContent = centre.name;
+document.getElementById("centreLocation").textContent = centre.area || "";
+
+// ---- Load stalls ----
+stallList.innerHTML = `<div class="message">Loading stalls...</div>`;
+
+const q = query(
+  collection(db, "stalls"),
+  where("hawkerId", "==", centreId)
+);
+
+const snapshot = await getDocs(q);
+stallList.innerHTML = "";
+
+if (snapshot.empty) {
+  stallList.innerHTML = `<div class="message">No stalls found for this centre.</div>`;
+  stallCountEl.textContent = "0 Stalls";
+  
+}
+
+let count = 0;
+
+snapshot.forEach(docSnap => {
+  const d = docSnap.data();
+  count++;
+
+  const gradeClass =
+    d.grade === "A" ? "a" :
+    d.grade === "B" ? "b" : "c";
+
+  stallList.innerHTML += `
+    <div class="card" data-id="${docSnap.id}">
+      <div class="stall-no">${d.location}</div>
+      <h3>${d.hawkerName} – ${d.location}</h3>
+
+      <div class="desc">${d.hours}</div>
+      <div class="last">Last inspected: ${d.lastInspectedAt ? "Recently" : "N/A"}</div>
+      <div class="grade ${gradeClass}">Grade ${d.grade}</div>
+      <i class="fas fa-chevron-right arrow"></i>
+    </div>
+  `;
+});
+
+stallCountEl.textContent = `${count} Stall${count !== 1 ? "s" : ""}`;
+
+// ---- Click stall ----
+document.querySelectorAll(".card").forEach(card => {
+  card.addEventListener("click", () => {
+    localStorage.setItem("selectedStallId", card.dataset.id);
+    window.location.href = "inspect-stall.html";
+  });
+});
+</script>
+
+
+</body>
+</html>

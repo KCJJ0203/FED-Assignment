@@ -365,7 +365,7 @@
             const stallReviewRef = push(ref(rtdb, `reviews/${reviewTarget.stallId}`));
             await set(stallReviewRef, payload);
 
-            // Save under user (for your feedback page)
+            // Save under user 
             const userReviewRef = push(ref(rtdb, `userReviews/${reviewTarget.uid}`));
             await set(userReviewRef, payload);
 

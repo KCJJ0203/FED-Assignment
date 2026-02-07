@@ -94,6 +94,50 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         measurementId: "G-CJBDRY9RQ5"
     };
 
+const FAV_KEYS = {
+    hawker: "cg_fav_hawker",
+    stall: "cg_fav_stall",
+    dish: "cg_fav_dish"
+};
+
+function readFavs(type) {
+    try {
+        const raw = localStorage.getItem(FAV_KEYS[type]);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+    } catch {
+        return [];
+    }
+}
+
+function writeFavs(type, list) {
+    localStorage.setItem(FAV_KEYS[type], JSON.stringify(list));
+}
+
+function isFavorite(type, id) {
+    const list = readFavs(type);
+    return list.some(x => String(x.id) === String(id));
+}
+
+function toggleFavorite(type, item) {
+    const list = readFavs(type);
+    const id = String(item.id);
+    const index = list.findIndex(x => String(x.id) === id);
+    
+    if (index >= 0) {
+        // Remove
+        list.splice(index, 1);
+        writeFavs(type, list);
+        window.dispatchEvent(new CustomEvent("cg:favs-updated", { detail: { type } }));
+        return false;
+    } else {
+        // Add
+        list.push(item);
+        writeFavs(type, list);
+        window.dispatchEvent(new CustomEvent("cg:favs-updated", { detail: { type } }));
+        return true;
+    }
+}
     let db = null;
     try {
         const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
@@ -395,7 +439,31 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         metaLine.append(star, metaText);
 
         info.append(name, metaLine);
-        button.append(thumb, info);
+        // ===== FAVORITE HEART =====
+        const heart = document.createElement("button");
+        heart.className = "fav-heart";
+        heart.type = "button";
+        heart.setAttribute("aria-label", "Toggle favorite hawker");
+
+        // check if already favorited
+        heart.textContent = isFavorite("hawker", record._id) ? "❤" : "♡";
+
+        heart.addEventListener("click", (e) => {
+        e.stopImmediatePropagation(); // stop card click
+
+        const itemData = {
+            id: record._id,
+            name: record.name_of_centre || "Unknown centre",
+            sub: `${area}`,
+            imageUrl: record.imageUrl || ""
+        };
+
+        const nowFav = toggleFavorite("hawker", itemData);
+        heart.textContent = nowFav ? "❤" : "♡";
+        });
+
+        button.append(thumb, info, heart);
+
         item.appendChild(button);
         return item;
     };
@@ -989,6 +1057,23 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
             price.className = "menu-item-price";
             price.textContent = formatPrice(item.price);
 
+            // Create heart button
+            const likeBtn = document.createElement("button");
+            likeBtn.type = "button";
+            likeBtn.className = "like-btn";
+            likeBtn.dataset.action = "toggle-favorite";
+            likeBtn.dataset.favType = "dish";
+            likeBtn.dataset.itemId = item.id;
+            likeBtn.setAttribute("aria-label", `Add ${item.name} to favorites`);
+            likeBtn.textContent = "♡";
+
+            // Check if already favorited
+            const isFav = isFavorite("dish", item.id);
+            if (isFav) {
+                likeBtn.classList.add("is-on");
+                likeBtn.textContent = "♥";
+            }
+
             const addBtn = document.createElement("button");
             addBtn.type = "button";
             addBtn.className = "menu-add";
@@ -1004,9 +1089,16 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
             addBtn.setAttribute("aria-label", `Add ${item.name} to cart`);
             addBtn.textContent = "+";
 
+            // Create button container
+            const btnContainer = document.createElement("div");
+            btnContainer.style.display = "flex";
+            btnContainer.style.gap = "8px";
+            btnContainer.style.alignItems = "center";
+            btnContainer.append(likeBtn, addBtn);
+
             const meta = document.createElement("div");
             meta.className = "menu-card-meta";
-            meta.append(price, addBtn);
+            meta.append(price, btnContainer);
 
             body.append(name, desc, meta);
             card.append(thumb, body);
@@ -1018,9 +1110,39 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
     };
 
     const handleMenuClick = (event) => {
-        const button = event.target.closest("[data-action=\"add-to-cart\"]");
-        if (!button || !window.GuestCart) {
-            return;
+    // Handle favorite toggle
+    const likeBtn = event.target.closest("[data-action=\"toggle-favorite\"]");
+    if (likeBtn) {
+        event.stopPropagation(); // Prevent card click
+        
+        const card = likeBtn.closest(".menu-card");
+        if (!card) return;
+        
+        const favItem = {
+            id: card.dataset.itemId,
+            name: card.dataset.itemName,
+            sub: `${card.dataset.stallName} • ${formatPrice(Number.parseFloat(card.dataset.itemPrice))}`,
+            imageUrl: card.dataset.itemImage || ""
+        };
+        
+        const isNowFav = toggleFavorite("dish", favItem);
+        
+        if (isNowFav) {
+            likeBtn.classList.add("is-on");
+            likeBtn.textContent = "♥";
+            likeBtn.setAttribute("aria-label", `Remove ${favItem.name} from favorites`);
+        } else {
+            likeBtn.classList.remove("is-on");
+            likeBtn.textContent = "♡";
+            likeBtn.setAttribute("aria-label", `Add ${favItem.name} to favorites`);
+        }
+        
+        return;
+    }
+    
+    const button = event.target.closest("[data-action=\"add-to-cart\"]");
+    if (!button || !window.GuestCart) {
+        return;
         }
         const item = {
             stallId: button.dataset.stallId,
@@ -1273,7 +1395,28 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         desc.textContent = statusParts.join(" | ");
 
         info.append(title, meta, desc);
-        button.append(thumb, info);
+        const heart = document.createElement("button");
+        heart.className = "fav-heart";
+        heart.type = "button";
+
+        heart.textContent = isFavorite("stall", stall.id) ? "❤" : "♡";
+
+        heart.addEventListener("click", (e) => {
+        e.stopImmediatePropagation();
+
+        const item = {
+            id: stall.id,
+            name: stall.name,
+            sub: hawkerName || "",
+            imageUrl: stall.imageUrl || ""
+        };
+
+        const nowFav = toggleFavorite("stall", item);
+        heart.textContent = nowFav ? "❤" : "♡";
+        });
+
+        button.append(thumb, info, heart);
+
         item.appendChild(button);
         return item;
     };

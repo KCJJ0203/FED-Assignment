@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Today's Inspections</title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --green-900: #046a51;
+      --green-800: #057a5f;
+      --green-700: #06886b;
+      --page-bg: #f5f9f7;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #007e63;
+      color: #fff;
+      padding: 26px 40px 36px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #fff;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 32px 40px 48px;
+    }
+
+    .date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      color: var(--text-dark);
+      font-size: 15px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-info {
+      display: grid;
+      gap: 6px;
+    }
+
+    .card-info h3 {
+      font-size: 18px;
+    }
+
+    .card-info span {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .time-pill {
+      background: #e8f5e9;
+      color: #047857;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .empty {
+      background: #fff;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        padding: 24px 20px 30px;
+      }
+
+      .content {
+        padding: 24px 20px 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <a class="back" href="index.html">
+      <i class="fas fa-chevron-left"></i> Back to Dashboard
+    </a>
+    <h1>Today's Inspections</h1>
+    <p>Select an inspection to continue</p>
+  </div>
+
+  <div class="content">
+    <div class="date-pill">
+      <i class="far fa-calendar"></i>
+      <span id="todayLabel">Today</span>
+    </div>
+    <div class="list" id="inspectionList"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+      authDomain: "fed-assignment-9c219.firebaseapp.com",
+      projectId: "fed-assignment-9c219",
+      storageBucket: "fed-assignment-9c219.firebasestorage.app",
+      messagingSenderId: "287410844855",
+      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, user => {
+      if (!user) window.location.href = "/login.html";
+    });
+
+    const list = document.getElementById("inspectionList");
+
+    function toLocalDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    const today = new Date();
+    document.getElementById("todayLabel").textContent = today.toLocaleDateString(
+      "en-SG",
+      { weekday: "long", day: "numeric", month: "long", year: "numeric" }
+    );
+
+    const todayKey = toLocalDateKey(today);
+    const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
+    const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
+    const completedSet = new Set(
+      inspections
+        .filter(entry => entry.completedAt && toLocalDateKey(new Date(entry.completedAt)) === todayKey)
+        .map(entry => entry.stallId)
+        .filter(Boolean)
+    );
+
+    const items = schedules.flatMap(entry => {
+      const dayItems = entry.scheduledStalls?.[todayKey] || [];
+      return dayItems
+        .filter(item => !completedSet.has(item.stallId))
+        .map(item => ({
+          ...item,
+          centreName: entry.centreName,
+          time: entry.time
+        }));
+    });
+
+    if (!items.length) {
+      list.innerHTML = `<div class="empty">No inspections scheduled for today.</div>`;
+    } else {
+      list.innerHTML = items.map(item => `
+        <div class="card" data-stall-id="${item.stallId}" data-centre-id="${item.centreId}">
+          <div class="card-info">
+            <h3>${item.location || "Stall"}</h3>
+            <span>${item.centreName || "Hawker Centre"}</span>
+          </div>
+          <span class="time-pill">${item.time || "Scheduled"}</span>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+          localStorage.setItem("selectedStallId", card.dataset.stallId);
+          localStorage.setItem("selectedHawkerCentreId", card.dataset.centreId);
+          window.location.href = "inspect-stall.html";
+        });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inspection Report</title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --green-900: #0b6d33;
+      --green-800: #0b7d38;
+      --green-700: #0a6a32;
+      --green-600: #0f7a3b;
+      --page-bg: #f6f7fb;
+      --text-dark: #0f172a;
+      --text-muted: #6b7280;
+      --border: #e2e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(180deg, var(--green-800), var(--green-700));
+      color: #fff;
+      padding: 26px 32px 36px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #fff;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .header .meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .meta-card {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: grid;
+      gap: 4px;
+      min-width: 180px;
+    }
+
+    .meta-card span {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 28px 32px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 24px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green-800);
+      margin-bottom: 16px;
+    }
+
+    .criteria-card {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .criteria-card h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .criteria-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 90px auto 50px;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .score-input {
+      background: #f8fafc;
+      border: 1px solid #cbd5f5;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .score-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .score-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .score-bar span {
+      display: block;
+      height: 100%;
+      background: var(--green-600);
+    }
+
+    .score-percent {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .remarks {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      color: var(--text-muted);
+    }
+
+    .summary-card {
+      background: linear-gradient(180deg, var(--green-800), var(--green-700));
+      color: #fff;
+      border-radius: 22px;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      height: fit-content;
+    }
+
+    .summary-score {
+      text-align: center;
+    }
+
+    .summary-score h2 {
+      font-size: 44px;
+      margin-bottom: 4px;
+    }
+
+    .summary-bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .summary-bar span {
+      display: block;
+      height: 100%;
+      background: #fff;
+    }
+
+    .grade-badge {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 32px;
+      background: #dcfce7;
+      color: #15803d;
+      margin: 0 auto;
+    }
+
+    .status-chip {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 1100px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div>
+      <a class="back" href="#" id="backLink">
+        <i class="fas fa-chevron-left"></i> Back
+      </a>
+      <h1>Inspection Report</h1>
+      <div id="reportTitle">#01-01 - Stall</div>
+      <div style="margin-top:6px; display:flex; gap:12px; align-items:center;">
+        <i class="fas fa-map-marker-alt"></i>
+        <span id="reportCentre">Hawker Centre</span>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-card">
+        <span>Inspection Date</span>
+        <strong id="reportDate">-</strong>
+      </div>
+      <div class="meta-card">
+        <span>Inspector</span>
+        <strong id="reportInspector">-</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div>
+      <div class="section-title">Inspection Criteria Breakdown</div>
+      <div id="criteriaList"></div>
+      <div class="section-title">Remarks</div>
+      <div class="remarks" id="reportRemarks">No remarks.</div>
+    </div>
+
+    <div class="summary-card">
+      <div style="text-align: center; font-weight: 600;">FINAL SCORE</div>
+      <div class="summary-score">
+        <h2 id="reportScore">0</h2>
+        <span>/ 100</span>
+      </div>
+      <div class="summary-bar">
+        <span id="reportProgress"></span>
+      </div>
+      <div style="text-align: center; font-size: 20px; font-weight: 700;">
+        <span id="reportPercent">0%</span>
+      </div>
+      <div style="text-align: center; font-weight: 600;">HYGIENE GRADE</div>
+      <div class="grade-badge" id="reportGrade">A</div>
+      <div class="status-chip">
+        <i class="fas fa-check-circle"></i>
+        Inspection Completed
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+      authDomain: "fed-assignment-9c219.firebaseapp.com",
+      projectId: "fed-assignment-9c219",
+      storageBucket: "fed-assignment-9c219.firebasestorage.app",
+      messagingSenderId: "287410844855",
+      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, user => {
+      if (!user) window.location.href = "/login.html";
+    });
+
+    const reportId = localStorage.getItem("selectedReportId");
+    const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
+    const report = inspections.find(entry => entry.id === reportId) || inspections[0];
+    const backLink = document.getElementById("backLink");
+
+    const criteriaList = document.getElementById("criteriaList");
+
+    const fallbackTarget = document.referrer && document.referrer.includes("/NEA/")
+      ? document.referrer
+      : "history.html";
+
+    backLink.setAttribute("href", fallbackTarget);
+    backLink.addEventListener("click", event => {
+      if (window.history.length > 1) {
+        event.preventDefault();
+        window.history.back();
+      }
+    });
+
+    if (!report) {
+      criteriaList.innerHTML = "<div class='criteria-card'>No report found.</div>";
+    } else {
+      document.getElementById("reportTitle").textContent = report.stallTitle || "Stall";
+      document.getElementById("reportCentre").textContent = report.centreName || "";
+      document.getElementById("reportDate").textContent = `${report.completedDate || ""} ${report.completedTime || ""}`.trim();
+      document.getElementById("reportInspector").textContent = report.inspectorId || "";
+      document.getElementById("reportScore").textContent = report.score || 0;
+      document.getElementById("reportPercent").textContent = `${report.percent || 0}%`;
+      document.getElementById("reportProgress").style.width = `${report.percent || 0}%`;
+      document.getElementById("reportGrade").textContent = report.grade || "-";
+      document.getElementById("reportRemarks").textContent = report.remarks || "No remarks.";
+
+      const criteria = report.criteria || {};
+      const items = [
+        { key: "foodHygiene", title: "Food Hygiene", desc: "Proper food storage, temperature control, and handling", max: 25 },
+        { key: "cleanliness", title: "Premises Cleanliness", desc: "Overall cleanliness of cooking and dining areas", max: 20 },
+        { key: "handlerHygiene", title: "Food Handler Hygiene", desc: "Personal hygiene and food handler certification", max: 15 },
+        { key: "pestControl", title: "Pest Control", desc: "Evidence of pest control and safe practices", max: 15 },
+        { key: "wasteManagement", title: "Waste Management", desc: "Waste disposal practices and bins management", max: 10 },
+        { key: "equipment", title: "Equipment & Facilities", desc: "Equipment hygiene and maintenance", max: 10 },
+        { key: "licensing", title: "Licensing & Documentation", desc: "Licensing, documentation, and compliance checks", max: 5 }
+      ];
+
+      criteriaList.innerHTML = items.map(item => {
+        const value = Number(criteria[item.key] || 0);
+        const percent = Math.round((value / item.max) * 100);
+        return `
+          <div class="criteria-card">
+            <h3>${item.title}</h3>
+            <p>${item.desc}</p>
+            <div class="score-row">
+              <div class="score-input">${value}</div>
+              <div class="score-meta">
+                <span>/ ${item.max} points</span>
+                <div class="score-bar"><span style="width:${percent}%"></span></div>
+              </div>
+              <div class="score-percent">${percent}%</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+  </script>
+</body>
+</html>

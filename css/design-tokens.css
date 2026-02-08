@@ -1,0 +1,66 @@
+:root {
+  --app-font-base: "Sora", "Segoe UI", Arial, sans-serif;
+  --app-font-alt: "Segoe UI", Arial, sans-serif;
+
+  --color-surface: #ffffff;
+  --color-surface-soft: #f7f9fc;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-primary: #1a237e;
+  --color-primary-strong: #14206c;
+  --color-accent: #0ea5e9;
+  --color-success: #2ecc71;
+  --color-danger: #e74c3c;
+  --color-border: #dbe3ef;
+  --color-focus: #2563eb;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  color: var(--color-text);
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+}
+
+input:focus-visible,
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 12px;
+  margin-top: 6px;
+  min-height: 16px;
+}
+
+.is-invalid {
+  border-color: var(--color-danger) !important;
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.15);
+}
+

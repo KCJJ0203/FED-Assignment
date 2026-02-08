@@ -1,14 +1,11 @@
 (function () {
-  const firebaseConfig = {
-    apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-    authDomain: "fed-assignment-9c219.firebaseapp.com",
-    databaseURL: "https://fed-assignment-9c219-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "fed-assignment-9c219",
-    storageBucket: "fed-assignment-9c219.firebasestorage.app",
-    messagingSenderId: "287410844855",
-    appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-    measurementId: "G-CJBDRY9RQ5"
-  };
+  const firebaseConfig = window.AppFirebase && window.AppFirebase.config
+    ? window.AppFirebase.config
+    : null;
+
+  if (!firebaseConfig) {
+    throw new Error("Missing shared Firebase config. Ensure ../js/app-firebase.js is loaded first.");
+  }
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);

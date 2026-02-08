@@ -118,7 +118,7 @@ function renderMenu(itemsToRender) {
     }
 
     itemsToRender.forEach(item => {
-        const imageSrc = item.image || "https://placehold.co/150";
+        const imageSrc = item.image || "../image/placeholder.svg";
         const displayName = escapeHtml(item.name);
         const displayPrice = Number(item.price || 0).toFixed(2);
         
@@ -319,7 +319,7 @@ function renderCart() {
                 name: "Takeaway Charge",
                 price: CONTAINER_PRICE, 
                 qty: containerCount,
-                img: "https://placehold.co/50/FF5252/FFFFFF?text=BOX", 
+                img: "../image/placeholder.svg", 
                 isSystemItem: true
             });
         }
@@ -377,7 +377,7 @@ function renderCart() {
             </div>
         `;
 
-        const safeImage = escapeAttr(item.img || "https://placehold.co/50");
+        const safeImage = escapeAttr(item.img || "../image/placeholder.svg");
         const safeName = escapeHtml(item.name);
 
         const html = `

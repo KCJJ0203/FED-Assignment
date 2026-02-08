@@ -65,7 +65,7 @@ function loadPopularItems() {
       let html = "";
       snapshot.forEach((record) => {
         const item = record.data() || {};
-        const imageSrc = item.image || "https://placehold.co/50";
+        const imageSrc = item.image || "../image/placeholder.svg";
         const displayName = escapeHtml(item.name || "Item");
         const displayCategory = escapeHtml(item.category || "General");
         const safePrice = Number(item.price);

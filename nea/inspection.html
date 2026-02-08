@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Select Stall</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
 
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -417,42 +418,61 @@
     <div class="subtitle">Click on any stall to begin the inspection process</div>
     <div id="stallList" class="cards"></div>
   </div>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+<script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
+  <script type="module">
   import {
-    getFirestore, collection, getDocs, query, where, doc, getDoc
+    collection, getDocs, query, where, doc, getDoc
   } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-    authDomain: "fed-assignment-9c219.firebaseapp.com",
-    projectId: "fed-assignment-9c219"
+  const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+  const db = await window.AppFirebase.getFirestoreDb();
+  const storageApi = window.AppStorage || null;
+  const storageKeys = storageApi ? storageApi.KEYS : {};
+  const STORAGE = {
+    centreId: storageKeys.NEA_SELECTED_CENTRE_ID || "selectedHawkerCentreId",
+    schedules: storageKeys.NEA_SCHEDULES || "neaSchedules",
+    calendarDate: storageKeys.NEA_SELECTED_CALENDAR_DATE || "selectedCalendarDate",
+    calendarStallId: storageKeys.NEA_SELECTED_CALENDAR_STALL_ID || "selectedCalendarStallId"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  const readLocalJson = (key, fallback) => {
+    if (storageApi && typeof storageApi.readJSON === "function") {
+      return storageApi.readJSON(localStorage, key, fallback);
+    }
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  };
+
+  const writeLocalJson = (key, value) => {
+    if (storageApi && typeof storageApi.writeJSON === "function") {
+      storageApi.writeJSON(localStorage, key, value);
+      return;
+    }
+    localStorage.setItem(key, JSON.stringify(value));
+  };
 
   onAuthStateChanged(auth, user => {
     if (!user) window.location.href = "../login.html";
   });
 
-  const centreId = localStorage.getItem("selectedHawkerCentreId");
+  const centreId = localStorage.getItem(STORAGE.centreId);
   if (!centreId) window.location.href = "index.html";
 
   const scheduleDate = document.getElementById("scheduleDate");
   const scheduleTime = document.getElementById("scheduleTime");
   const scheduledBar = document.getElementById("scheduledBar");
 
-  const schedulesKey = "neaSchedules";
-
   function loadSchedules() {
-    return JSON.parse(localStorage.getItem(schedulesKey) || "[]");
+    return readLocalJson(STORAGE.schedules, []);
   }
 
   function saveSchedules(data) {
-    localStorage.setItem(schedulesKey, JSON.stringify(data));
+    writeLocalJson(STORAGE.schedules, data);
   }
 
   function saveSchedule() {
@@ -540,8 +560,8 @@
 
       saveSchedules(schedules);
 
-      localStorage.setItem("selectedCalendarDate", dateKey);
-      localStorage.setItem("selectedCalendarStallId", card.dataset.id);
+      localStorage.setItem(STORAGE.calendarDate, dateKey);
+      localStorage.setItem(STORAGE.calendarStallId, card.dataset.id);
       window.location.href = "calendar.html";
     });
   });

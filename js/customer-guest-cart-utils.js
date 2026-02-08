@@ -1,8 +1,41 @@
-﻿(function () {
-    const CART_KEY = "cart";
-    const GUEST_ORDERS_KEY = "guestOrders";
+(function () {
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const CART_KEY = storageKeys.CART || "cart";
+    const GUEST_ORDERS_KEY = storageKeys.GUEST_ORDERS || "guestOrders";
     const SERVICE_RATE = 0.05;
     const DELIVERY_FEE = 3;
+
+    const readLocalJson = (key, fallback) => {
+        if (storageApi && typeof storageApi.readJSON === "function") {
+            return storageApi.readJSON(localStorage, key, fallback);
+        }
+        try {
+            const raw = localStorage.getItem(key);
+            if (!raw) {
+                return fallback;
+            }
+            return JSON.parse(raw);
+        } catch (error) {
+            return fallback;
+        }
+    };
+
+    const writeLocalJson = (key, value) => {
+        if (storageApi && typeof storageApi.writeJSON === "function") {
+            storageApi.writeJSON(localStorage, key, value);
+            return;
+        }
+        localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    const removeLocalKey = (key) => {
+        if (storageApi && typeof storageApi.remove === "function") {
+            storageApi.remove(localStorage, key);
+            return;
+        }
+        localStorage.removeItem(key);
+    };
 
     const roundCurrency = (value) => Math.round(value * 100) / 100;
 
@@ -94,36 +127,28 @@
     };
 
     const readCart = () => {
-        const stored = localStorage.getItem(CART_KEY);
-        if (!stored) {
+        const parsed = readLocalJson(CART_KEY, null);
+        if (!parsed || typeof parsed !== "object") {
             return getEmptyCart();
         }
-        try {
-            const parsed = JSON.parse(stored);
-            if (!parsed || typeof parsed !== "object") {
-                return getEmptyCart();
-            }
-            const cart = {
-                ...getEmptyCart(),
-                ...parsed
-            };
-            const rawItems = Array.isArray(parsed.items) ? parsed.items : [];
-            cart.items = rawItems
-                .map((item) => normalizeItem(item))
-                .filter((item) => item);
-            const storedDeliveryFee = Number.parseFloat(parsed.deliveryFee);
-            const hasStoredDeliveryFee = Number.isFinite(storedDeliveryFee) && storedDeliveryFee > 0;
-            return ensureTotals(cart, {
-                delivery: hasStoredDeliveryFee,
-                deliveryFeeOverride: hasStoredDeliveryFee ? storedDeliveryFee : undefined
-            });
-        } catch (error) {
-            return getEmptyCart();
-        }
+        const cart = {
+            ...getEmptyCart(),
+            ...parsed
+        };
+        const rawItems = Array.isArray(parsed.items) ? parsed.items : [];
+        cart.items = rawItems
+            .map((item) => normalizeItem(item))
+            .filter((item) => item);
+        const storedDeliveryFee = Number.parseFloat(parsed.deliveryFee);
+        const hasStoredDeliveryFee = Number.isFinite(storedDeliveryFee) && storedDeliveryFee > 0;
+        return ensureTotals(cart, {
+            delivery: hasStoredDeliveryFee,
+            deliveryFeeOverride: hasStoredDeliveryFee ? storedDeliveryFee : undefined
+        });
     };
 
     const saveCart = (cart) => {
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        writeLocalJson(CART_KEY, cart);
     };
 
     const updateCartTotals = (cart, options = {}) => {
@@ -191,24 +216,16 @@
     };
 
     const clearCart = () => {
-        localStorage.removeItem(CART_KEY);
+        removeLocalKey(CART_KEY);
     };
 
     const getGuestOrders = () => {
-        const stored = localStorage.getItem(GUEST_ORDERS_KEY);
-        if (!stored) {
-            return [];
-        }
-        try {
-            const parsed = JSON.parse(stored);
-            return Array.isArray(parsed) ? parsed : [];
-        } catch (error) {
-            return [];
-        }
+        const parsed = readLocalJson(GUEST_ORDERS_KEY, []);
+        return Array.isArray(parsed) ? parsed : [];
     };
 
     const saveGuestOrders = (orders) => {
-        localStorage.setItem(GUEST_ORDERS_KEY, JSON.stringify(orders));
+        writeLocalJson(GUEST_ORDERS_KEY, orders);
     };
 
     const generateOrderId = () => {
@@ -235,6 +252,7 @@
         return Array.from(map.values());
     };
 
+    // Split cart items by stall so each vendor receives an isolated order payload.
     const buildOrdersFromCart = (cart, options = {}) => {
         if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
             return [];

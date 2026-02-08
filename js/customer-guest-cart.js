@@ -265,40 +265,32 @@
         };
     };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-        authDomain: "fed-assignment-9c219.firebaseapp.com",
-        databaseURL: "https://fed-assignment-9c219-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "fed-assignment-9c219",
-        storageBucket: "fed-assignment-9c219.firebasestorage.app",
-        messagingSenderId: "287410844855",
-        appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-        measurementId: "G-CJBDRY9RQ5"
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const CHECKOUT_SUCCESS_KEY = storageKeys.CHECKOUT_SUCCESS || "guestOrderSuccess";
+
+    const getRealtimeDb = async () => {
+        if (!window.AppFirebase || typeof window.AppFirebase.getRealtimeDb !== "function") {
+            throw new Error("AppFirebase.getRealtimeDb is unavailable.");
+        }
+        return window.AppFirebase.getRealtimeDb();
+    };
+
+    const getFirestoreDb = async () => {
+        if (!window.AppFirebase || typeof window.AppFirebase.getFirestoreDb !== "function") {
+            throw new Error("AppFirebase.getFirestoreDb is unavailable.");
+        }
+        return window.AppFirebase.getFirestoreDb();
     };
 
     const getAuthUser = async () => {
         try {
-            const [{ initializeApp, getApps }, { getAuth, onAuthStateChanged }] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js"),
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js")
-            ]);
-
-            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-
-            return await new Promise((resolve) => {
-                const timer = setTimeout(() => {
-                    unsub();
-                    resolve(auth.currentUser || null);
-                }, 1200);
-
-                const unsub = onAuthStateChanged(auth, (user) => {
-                    clearTimeout(timer);
-                    unsub();
-                    resolve(user || null);
-                });
-            });
+            if (!window.AppFirebase || typeof window.AppFirebase.getAuthUser !== "function") {
+                throw new Error("AppFirebase.getAuthUser is unavailable.");
+            }
+            return await window.AppFirebase.getAuthUser(1200);
         } catch (error) {
+            console.warn("Unable to resolve auth user:", error);
             return null;
         }
     };
@@ -308,18 +300,14 @@
             return false;
         }
         try {
-            const { getDatabase, ref, set } = await import(
+            const { ref, set } = await import(
                 "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js"
             );
             const resolvedUser = user || (await getAuthUser());
             if (!resolvedUser) {
                 return false;
             }
-            const [{ initializeApp, getApps }] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js")
-            ]);
-            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-            const db = getDatabase(app);
+            const db = await getRealtimeDb();
             await Promise.all(
                 orders.map((order) =>
                     set(ref(db, `orders/${resolvedUser.uid}/${order.orderId}`), order)
@@ -381,14 +369,10 @@
             return false;
         }
         try {
-            const { getFirestore, doc, setDoc, Timestamp } = await import(
+            const { doc, setDoc, Timestamp } = await import(
                 "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js"
             );
-            const [{ initializeApp, getApps }] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js")
-            ]);
-            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-            const db = getFirestore(app);
+            const db = await getFirestoreDb();
             await Promise.all(
                 orders.map((order) => {
                     const stallId = String(order?.stallId || "").trim();
@@ -449,6 +433,7 @@
             return;
         }
 
+        // Dual-write successful orders into each stall's active queue for vendor fulfillment.
         if (paymentStatus !== "fail") {
             const vendorSaveOk = await saveOrdersToVendorQueue(orders);
             if (!vendorSaveOk) {
@@ -468,14 +453,16 @@
         window.GuestCart.clearCart();
 
         const totalAmount = orders.reduce((sum, order) => sum + order.totals.grandTotal, 0);
-        sessionStorage.setItem(
-            "guestOrderSuccess",
-            JSON.stringify({
-                orderIds: orders.map((order) => order.orderId),
-                total: totalAmount,
-                count: orders.length
-            })
-        );
+        const successPayload = {
+            orderIds: orders.map((order) => order.orderId),
+            total: totalAmount,
+            count: orders.length
+        };
+        if (storageApi && typeof storageApi.writeJSON === "function") {
+            storageApi.writeJSON(sessionStorage, CHECKOUT_SUCCESS_KEY, successPayload);
+        } else {
+            sessionStorage.setItem(CHECKOUT_SUCCESS_KEY, JSON.stringify(successPayload));
+        }
 
         window.location.href = "orders.html";
     };

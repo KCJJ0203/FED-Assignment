@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inspect Stall</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
@@ -466,33 +467,65 @@
     </div>
   </div>
 
+  <script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-      authDomain: "fed-assignment-9c219.firebaseapp.com",
-      projectId: "fed-assignment-9c219"
+    const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+    const db = await window.AppFirebase.getFirestoreDb();
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const STORAGE = {
+      stallId: storageKeys.NEA_SELECTED_STALL_ID || "selectedStallId",
+      centreId: storageKeys.NEA_SELECTED_CENTRE_ID || "selectedHawkerCentreId",
+      inspections: storageKeys.NEA_INSPECTIONS || "neaInspections",
+      scheduleDate: storageKeys.NEA_SCHEDULE_DATE || "scheduleDate",
+      scheduleTime: storageKeys.NEA_SCHEDULE_TIME || "scheduleTime",
+      thisWeek: storageKeys.NEA_THIS_WEEK_INSPECTIONS || "thisWeekInspections",
+      draftPrefix: storageKeys.NEA_DRAFT_PREFIX || "inspectionDraft_"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const readLocalJson = (key, fallback) => {
+      if (storageApi && typeof storageApi.readJSON === "function") {
+        return storageApi.readJSON(localStorage, key, fallback);
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    };
+
+    const writeLocalJson = (key, value) => {
+      if (storageApi && typeof storageApi.writeJSON === "function") {
+        storageApi.writeJSON(localStorage, key, value);
+        return;
+      }
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    const removeLocalKey = (key) => {
+      if (storageApi && typeof storageApi.remove === "function") {
+        storageApi.remove(localStorage, key);
+      } else {
+        localStorage.removeItem(key);
+      }
+    };
 
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "../login.html";
     });
 
-    const stallId = localStorage.getItem("selectedStallId");
+    const stallId = localStorage.getItem(STORAGE.stallId);
     if (!stallId) window.location.href = "index.html";
 
-    const draftKey = `inspectionDraft_${stallId}`;
-    const inspectionsKey = "neaInspections";
+    const draftKey = `${STORAGE.draftPrefix}${stallId}`;
+    const inspectionsKey = STORAGE.inspections;
 
-    const scheduleDate = localStorage.getItem("scheduleDate");
-    const scheduleTime = localStorage.getItem("scheduleTime");
+    const scheduleDate = localStorage.getItem(STORAGE.scheduleDate);
+    const scheduleTime = localStorage.getItem(STORAGE.scheduleTime);
     const scheduleMeta = document.getElementById("scheduleMeta");
 
     if (scheduleDate && scheduleTime) {
@@ -501,7 +534,7 @@
         day: "numeric",
         month: "short",
         year: "numeric"
-      })} • ${scheduleTime}`;
+      })} � ${scheduleTime}`;
     }
 
     const stallSnap = await getDoc(doc(db, "stalls", stallId));
@@ -514,7 +547,7 @@
         : stallName;
     }
 
-    const centreId = localStorage.getItem("selectedHawkerCentreId");
+    const centreId = localStorage.getItem(STORAGE.centreId);
     if (centreId) {
       const centreSnap = await getDoc(doc(db, "hawkers", centreId));
       if (centreSnap.exists()) {
@@ -568,7 +601,7 @@
         licensing: licensing.value,
         remarks: remarks.value
       };
-      localStorage.setItem(draftKey, JSON.stringify(draft));
+      writeLocalJson(draftKey, draft);
     }
 
     document.querySelectorAll("input, textarea").forEach(el =>
@@ -584,9 +617,9 @@
       })
     );
 
-    const savedDraft = localStorage.getItem(draftKey);
+    const savedDraft = readLocalJson(draftKey, null);
     if (savedDraft) {
-      const d = JSON.parse(savedDraft);
+      const d = savedDraft;
       if (d.grade) document.querySelector(`[data-grade="${d.grade}"]`)?.click();
       foodHygiene.value = d.foodHygiene || "0";
       cleanliness.value = d.cleanliness || "0";
@@ -600,13 +633,13 @@
     }
 
     function loadInspections() {
-      return JSON.parse(localStorage.getItem(inspectionsKey) || "[]");
+      return readLocalJson(inspectionsKey, []);
     }
 
     function saveInspection(entry) {
       const inspections = loadInspections();
       inspections.unshift(entry);
-      localStorage.setItem(inspectionsKey, JSON.stringify(inspections));
+      writeLocalJson(inspectionsKey, inspections);
     }
 
     document.querySelector(".save-btn").addEventListener("click", async () => {
@@ -658,11 +691,11 @@
         remarks: remarks.value || ""
       });
 
-      localStorage.removeItem(draftKey);
-      localStorage.removeItem("selectedStallId");
+      removeLocalKey(draftKey);
+      removeLocalKey(STORAGE.stallId);
 
-      const count = Number(localStorage.getItem("thisWeekInspections") || 0);
-      localStorage.setItem("thisWeekInspections", count + 1);
+      const count = Number(localStorage.getItem(STORAGE.thisWeek) || 0);
+      localStorage.setItem(STORAGE.thisWeek, String(count + 1));
 
       alert("Inspection saved");
       window.location.href = "index.html";

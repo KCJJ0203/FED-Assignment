@@ -106,7 +106,7 @@ function renderAdminGrid(items) {
   grid.innerHTML = "";
 
   items.forEach((item) => {
-    const img = item.image || "https://placehold.co/150";
+    const img = item.image || "../image/placeholder.svg";
     const name = escapeHtml(item.name);
     const category = escapeHtml(item.category);
     const itemId = escapeAttr(item.id);

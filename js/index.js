@@ -1,9 +1,12 @@
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import { getFirebaseApp } from "./firebase-config.js";
 
+const storageApi = window.AppStorage || null;
+const USER_TYPE_KEY = storageApi?.KEYS?.USER_TYPE || "userType";
+
 const continueAsGuestButton = document.getElementById("continueAsGuest");
 continueAsGuestButton.addEventListener("click", async () => {
-  localStorage.setItem("userType", "guest");
+  localStorage.setItem(USER_TYPE_KEY, "guest");
   try {
     const app = getFirebaseApp();
     const auth = getAuth(app);

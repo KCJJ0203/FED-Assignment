@@ -62,11 +62,11 @@ form.addEventListener("submit", async (e) => {
     if (userType === "customer") {
       window.location.href = "customer-guest/index.html";
     } else if (userType === "vendor") {
-      window.location.href = "vendor/index.html";
+      window.location.href = "Vendor/index.html";
     } else if (userType === "nea") {
-      window.location.href = "nea/index.html";
+      window.location.href = "NEA/index.html";
     } else if (userType === "admin") {
-      window.location.href = "admin/index.html";
+      window.location.href = "Admin/Home.html";
     } else {
       setError("User type missing or not recognized. Please contact support.");
     }

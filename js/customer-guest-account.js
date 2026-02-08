@@ -246,7 +246,7 @@ function renderFavPanel(type, list) {
         <div class="fav-name">${name}</div>
         <div class="fav-sub">${sub}</div>
       </div>
-      <button class="fav-heart" type="button" aria-label="Remove from favorites">❤</button>
+      <button class="fav-heart" type="button" aria-label="Remove from favorites">&#10084;</button>
     `;
 
     row.querySelector(".fav-heart")?.addEventListener("click", () => {
@@ -341,7 +341,7 @@ function renderFeedbackList(items) {
   items.forEach(fb => {
     const div = document.createElement("div");
     div.className = "order-card";
-    const stars = "★".repeat(Number(fb.rating || 0));
+    const stars = "\u2605".repeat(Number(fb.rating || 0));
 
     div.innerHTML = `
       <div class="order-header">
@@ -380,7 +380,7 @@ function renderCardsList(cards) {
       <div class="order-header">
         <div>
           <p class="order-title">${escapeHtml(c.label || "Card")}</p>
-          <p class="order-meta">**** ${escapeHtml(c.last4 || "")} • Exp ${escapeHtml(c.exp || "")}</p>
+          <p class="order-meta">**** ${escapeHtml(c.last4 || "")} \u2022 Exp ${escapeHtml(c.exp || "")}</p>
         </div>
         <button class="order-toggle js-remove-card" data-id="${escapeHtml(c.id)}" type="button">
           Remove
@@ -466,11 +466,11 @@ async function loadMyReviews() {
       const card = document.createElement("div");
       card.className = "myreview-card";
 
-      const stars = "★".repeat(Number(r.rating || 0));
+      const stars = "\u2605".repeat(Number(r.rating || 0));
 
       card.innerHTML = `
         <div class="myreview-title">${escapeHtml(r.title || "Untitled")}</div>
-        <div class="myreview-meta">${escapeHtml(r.stallName || "-")} • ${new Date(r.createdAt || Date.now()).toLocaleString()}</div>
+        <div class="myreview-meta">${escapeHtml(r.stallName || "-")} \u2022 ${new Date(r.createdAt || Date.now()).toLocaleString()}</div>
         <div class="myreview-stars">${stars}</div>
         <div>${escapeHtml(r.message || "")}</div>
       `;
@@ -599,7 +599,7 @@ $("#cardForm")?.addEventListener("submit", async (e) => {
   if (onlyDigits(cvv).length < 3) return setCardMsg("CVV looks invalid.");
 
   const last4 = maskLast4(digits);
-  const label = `Card • ${holder}`;
+  const label = `Card \u2022 ${holder}`;
 
   try {
     const colRef = collection(db, "users", currentUser.uid, "cards");

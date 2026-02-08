@@ -446,7 +446,7 @@ function toggleFavorite(type, item) {
         heart.setAttribute("aria-label", "Toggle favorite hawker");
 
         // check if already favorited
-        heart.textContent = isFavorite("hawker", record._id) ? "❤" : "♡";
+        heart.textContent = isFavorite("hawker", record._id) ? "\u2764" : "\u2661";
 
         heart.addEventListener("click", (e) => {
         e.stopImmediatePropagation(); // stop card click
@@ -459,7 +459,7 @@ function toggleFavorite(type, item) {
         };
 
         const nowFav = toggleFavorite("hawker", itemData);
-        heart.textContent = nowFav ? "❤" : "♡";
+        heart.textContent = nowFav ? "\u2764" : "\u2661";
         });
 
         button.append(thumb, info, heart);
@@ -1065,13 +1065,13 @@ function toggleFavorite(type, item) {
             likeBtn.dataset.favType = "dish";
             likeBtn.dataset.itemId = item.id;
             likeBtn.setAttribute("aria-label", `Add ${item.name} to favorites`);
-            likeBtn.textContent = "♡";
+            likeBtn.textContent = "\u2661";
 
             // Check if already favorited
             const isFav = isFavorite("dish", item.id);
             if (isFav) {
                 likeBtn.classList.add("is-on");
-                likeBtn.textContent = "♥";
+                likeBtn.textContent = "\u2665";
             }
 
             const addBtn = document.createElement("button");
@@ -1121,7 +1121,7 @@ function toggleFavorite(type, item) {
         const favItem = {
             id: card.dataset.itemId,
             name: card.dataset.itemName,
-            sub: `${card.dataset.stallName} • ${formatPrice(Number.parseFloat(card.dataset.itemPrice))}`,
+            sub: `${card.dataset.stallName} \u2022 ${formatPrice(Number.parseFloat(card.dataset.itemPrice))}`,
             imageUrl: card.dataset.itemImage || ""
         };
         
@@ -1129,11 +1129,11 @@ function toggleFavorite(type, item) {
         
         if (isNowFav) {
             likeBtn.classList.add("is-on");
-            likeBtn.textContent = "♥";
+            likeBtn.textContent = "\u2665";
             likeBtn.setAttribute("aria-label", `Remove ${favItem.name} from favorites`);
         } else {
             likeBtn.classList.remove("is-on");
-            likeBtn.textContent = "♡";
+            likeBtn.textContent = "\u2661";
             likeBtn.setAttribute("aria-label", `Add ${favItem.name} to favorites`);
         }
         
@@ -1161,7 +1161,10 @@ function toggleFavorite(type, item) {
     };
 
     const handleMenuCardClick = (event) => {
-        if (event.target.closest("[data-action=\"add-to-cart\"]")) {
+        if (
+            event.target.closest("[data-action=\"add-to-cart\"]") ||
+            event.target.closest("[data-action=\"toggle-favorite\"]")
+        ) {
             return;
         }
         const card = event.target.closest(".menu-card");
@@ -1399,20 +1402,20 @@ function toggleFavorite(type, item) {
         heart.className = "fav-heart";
         heart.type = "button";
 
-        heart.textContent = isFavorite("stall", stall.id) ? "❤" : "♡";
+        heart.textContent = isFavorite("stall", stall.id) ? "\u2764" : "\u2661";
 
         heart.addEventListener("click", (e) => {
         e.stopImmediatePropagation();
 
         const item = {
             id: stall.id,
-            name: stall.name,
-            sub: hawkerName || "",
+            name: stallName,
+            sub: stall.hawkerName || currentHawkerName || "",
             imageUrl: stall.imageUrl || ""
         };
 
         const nowFav = toggleFavorite("stall", item);
-        heart.textContent = nowFav ? "❤" : "♡";
+        heart.textContent = nowFav ? "\u2764" : "\u2661";
         });
 
         button.append(thumb, info, heart);

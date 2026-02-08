@@ -141,6 +141,61 @@
         padding: 24px 20px 36px;
       }
     }
+    @media (max-width: 768px) {
+
+  .list {
+    gap: 12px;
+  }
+
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .time-pill {
+    align-self: flex-start;
+  }
+}
+
+    /* =========================
+   GLOBAL MOBILE STYLES
+   ========================= */
+@media (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .header {
+    padding: 20px 16px 28px;
+  }
+
+  .content {
+    padding: 20px 16px 32px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  h3 {
+    font-size: 17px !important;
+  }
+
+  .back {
+    font-size: 14px;
+  }
+
+  button, .card, .stall-card {
+    touch-action: manipulation;
+  }
+}
+
   </style>
 </head>
 
@@ -162,6 +217,70 @@
   </div>
 
   <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
+    authDomain: "fed-assignment-9c219.firebaseapp.com",
+    projectId: "fed-assignment-9c219"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, user => {
+    if (!user) window.location.href = "/login.html";
+  });
+
+  function dateKey(d) {
+    return d.toISOString().split("T")[0];
+  }
+
+  const todayKey = dateKey(new Date());
+  const list = document.getElementById("inspectionList");
+
+  const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
+  const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
+
+  const scheduled = schedules.flatMap(entry =>
+    (entry.scheduledStalls?.[todayKey] || []).map(item => ({
+      ...item,
+      centreName: entry.centreName,
+      time: entry.time,
+      status: "scheduled"
+    }))
+  );
+
+  const completed = inspections.filter(i =>
+    i.completedAt && dateKey(new Date(i.completedAt)) === todayKey
+  ).map(i => ({
+    stallId: i.stallId,
+    location: i.stallTitle,
+    centreName: i.centreName,
+    time: i.completedTime,
+    status: "completed"
+  }));
+
+  const all = [...scheduled, ...completed];
+
+  if (!all.length) {
+    list.innerHTML = `<div class="empty">No inspections today.</div>`;
+  } else {
+    list.innerHTML = all.map(item => `
+      <div class="card">
+        <div class="card-info">
+          <h3>${item.location}</h3>
+          <span>${item.centreName}</span>
+        </div>
+        <span class="time-pill">
+          ${item.status === "completed" ? "Completed" : item.time}
+        </span>
+      </div>
+    `).join("");
+  }
+</script>
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 

@@ -1,17 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getFirebaseApp } from "./firebase-config.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-  authDomain: "fed-assignment-9c219.firebaseapp.com",
-  projectId: "fed-assignment-9c219",
-  storageBucket: "fed-assignment-9c219.firebasestorage.app",
-  messagingSenderId: "287410844855",
-  appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-  measurementId: "G-CJBDRY9RQ5"
-};
-
-const app = initializeApp(firebaseConfig);
+const app = getFirebaseApp();
 const auth = getAuth(app);
 
 const form = document.querySelector(".login-form");

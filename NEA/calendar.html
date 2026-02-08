@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inspection Calendar</title>
 
-  <!-- Font Awesome for icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <style>
-    /* CSS Variable Definitions for consistent theming */
+
     :root {
       --green-900: #0a5d3c;
       --green-800: #0b7d38;
@@ -23,7 +22,6 @@
       --card-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     }
 
-    /* Global reset and base font */
     * {
       margin: 0;
       padding: 0;
@@ -31,14 +29,12 @@
       font-family: "Inter", Arial, sans-serif;
     }
 
-    /* Body background and text color */
     body {
       background: var(--page-bg);
       color: var(--text-dark);
       min-height: 100vh;
     }
 
-    /* Header section with gradient background */
     .header {
       background: linear-gradient(90deg, var(--green-800), var(--green-700));
       color: #fff;
@@ -51,7 +47,6 @@
       box-shadow: var(--card-shadow);
     }
 
-    /* Back navigation link */
     .back {
       display: inline-flex;
       align-items: center;
@@ -63,27 +58,23 @@
       margin-bottom: 10px;
     }
 
-    /* Header title styling */
     .header h1 {
       font-size: 30px;
       margin-bottom: 8px;
       font-weight: 700;
     }
 
-    /* Header subtitle/description */
     .header p {
       font-size: 15px;
       opacity: 0.9;
     }
 
-    /* Filter/legend container */
     .filters {
       display: flex;
       gap: 12px;
       align-items: center;
     }
 
-    /* Individual filter item */
     .filter {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 12px;
@@ -94,7 +85,6 @@
       font-size: 14px;
     }
 
-    /* Legend dot indicator */
     .legend-dot {
       width: 12px;
       height: 12px;
@@ -102,18 +92,14 @@
       background: #fff;
     }
 
-    /* Completed status color */
     .legend-dot.completed { background: var(--completed); }
-    
-    /* Scheduled status color */
+
     .legend-dot.scheduled { background: var(--scheduled); }
 
-    /* Main content area */
     .content {
       padding: 30px 36px 50px;
     }
 
-    /* Two-column grid layout for calendar and details */
     .calendar-grid {
       display: grid;
       grid-template-columns: 1fr 320px;
@@ -121,7 +107,6 @@
       align-items: stretch;
     }
 
-    /* Shared card styling */
     .calendar-card,
     .detail-card {
       background: #fff;
@@ -131,14 +116,12 @@
       box-shadow: var(--card-shadow);
     }
 
-    /* Calendar card specific layout */
     .calendar-card {
       display: flex;
       flex-direction: column;
       gap: 18px;
     }
 
-    /* Calendar header with title and controls */
     .calendar-header {
       display: flex;
       align-items: center;
@@ -147,21 +130,18 @@
       gap: 12px;
     }
 
-    /* Calendar month/year title */
     .calendar-header h2 {
       color: var(--green-800);
       font-size: 26px;
       font-weight: 700;
     }
 
-    /* Calendar navigation controls */
     .calendar-controls {
       display: flex;
       gap: 8px;
       align-items: center;
     }
 
-    /* Calendar control buttons */
     .calendar-controls button {
       background: #f1f5f9;
       border: none;
@@ -172,7 +152,6 @@
       color: var(--text-dark);
     }
 
-    /* 7-column grid for calendar days */
     .day-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -180,14 +159,12 @@
       text-align: center;
     }
 
-    /* Day name headers (Sun, Mon, etc.) */
     .day-name {
       font-weight: 600;
       color: var(--text-muted);
       font-size: 14px;
     }
 
-    /* Individual day cell */
     .day {
       padding: 14px 10px;
       border-radius: 16px;
@@ -204,38 +181,32 @@
       transition: box-shadow 0.2s ease, transform 0.2s ease;
     }
 
-    /* Day cell hover effect */
     .day:hover {
       box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
       transform: translateY(-1px);
     }
 
-    /* Completed inspection day styling */
     .day.completed {
       background: var(--completed);
       border-color: #22c55e;
     }
 
-    /* Scheduled inspection day styling */
     .day.scheduled {
       background: var(--scheduled);
       border-color: #facc15;
     }
 
-    /* Day with both completed and scheduled inspections */
     .day.completed.scheduled {
       background: linear-gradient(180deg, var(--completed), var(--scheduled));
       border-color: #65a30d;
     }
 
-    /* Day number display */
     .day-number {
       font-size: 16px;
       font-weight: 700;
       line-height: 1;
     }
 
-    /* Labels showing inspection counts and locations */
     .day-labels {
       display: grid;
       gap: 2px;
@@ -247,7 +218,6 @@
       line-height: 1.2;
     }
 
-    /* Detail panel for selected date */
     .detail-card {
       display: flex;
       flex-direction: column;
@@ -255,7 +225,6 @@
       color: var(--text-muted);
     }
 
-    /* Icon container in detail card */
     .detail-card .icon {
       width: 72px;
       height: 72px;
@@ -267,38 +236,32 @@
       color: #94a3b8;
     }
 
-    /* Detail card heading */
     .detail-card h3 {
       color: var(--text-dark);
       font-size: 18px;
       margin-top: 10px;
     }
 
-    /* Empty state styling for detail card */
     .detail-card.empty {
       align-items: center;
       justify-content: center;
       text-align: center;
     }
 
-    /* Detail card header with icon and text */
     .detail-header {
       display: flex;
       gap: 16px;
       align-items: center;
     }
 
-    /* Prevent icon from shrinking */
     .detail-header .icon {
       flex-shrink: 0;
     }
 
-    /* Detail header text */
     .detail-header p {
       font-size: 14px;
     }
 
-    /* Section within detail card (e.g., Pending/Completed) */
     .detail-section {
       display: flex;
       flex-direction: column;
@@ -306,13 +269,11 @@
       margin-top: 8px;
     }
 
-    /* Section heading */
     .detail-section h4 {
       color: var(--text-dark);
       font-size: 15px;
     }
 
-    /* Individual inspection item in detail view */
     .inspection-item {
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -324,13 +285,11 @@
       background: #fff;
     }
 
-    /* Highlighted inspection item */
     .inspection-item.highlight {
       border-color: #16a34a;
       box-shadow: 0 12px 22px rgba(22, 163, 74, 0.12);
     }
 
-    /* Inspection metadata (stall name, centre, time) */
     .inspection-meta {
       display: flex;
       flex-direction: column;
@@ -340,13 +299,11 @@
       text-align: left;
     }
 
-    /* Bold stall name in metadata */
     .inspection-meta strong {
       color: var(--text-dark);
       font-size: 15px;
     }
 
-    /* Action buttons (Start/View) */
     .action-btn {
       border: none;
       border-radius: 12px;
@@ -357,18 +314,15 @@
       background: var(--green-800);
     }
 
-    /* View inspection button variant */
     .action-btn.view {
       background: #0f172a;
     }
 
-    /* Active/selected day styling */
     .day.active {
       outline: 2px solid var(--green-800);
       outline-offset: 2px;
     }
 
-    /* Summary statistics row */
     .summary-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -376,7 +330,6 @@
       margin-top: 24px;
     }
 
-    /* Individual summary card */
     .summary-card {
       background: #fff;
       border: 1px solid var(--border);
@@ -389,7 +342,6 @@
       box-shadow: var(--card-shadow);
     }
 
-    /* Badge icon in summary card */
     .summary-card .badge {
       width: 40px;
       height: 40px;
@@ -401,33 +353,27 @@
       background: #e7f8ee;
     }
 
-    /* Summary card label */
     .summary-card h4 {
       font-size: 15px;
       color: var(--text-muted);
       font-weight: 600;
     }
 
-    /* Summary card value */
     .summary-card strong {
       font-size: 26px;
       color: var(--text-dark);
       font-weight: 700;
     }
 
-    /* Completed summary card styling */
     .summary-card.completed { border-color: #22c55e; }
     .summary-card.completed .badge { background: #d9fbe7; color: #16a34a; }
 
-    /* Scheduled summary card styling */
     .summary-card.scheduled { border-color: #facc15; }
     .summary-card.scheduled .badge { background: #fff4cc; color: #ca8a04; }
 
-    /* Total summary card styling */
     .summary-card.total { border-color: #94a3b8; }
     .summary-card.total .badge { background: #e2e8f0; color: #475569; }
 
-    /* Tablet responsive breakpoint */
     @media (max-width: 980px) {
       .calendar-grid {
         grid-template-columns: 1fr;
@@ -438,7 +384,6 @@
       }
     }
 
-    /* Mobile responsive breakpoint */
     @media (max-width: 720px) {
       .header {
         padding: 24px 20px 30px;
@@ -449,7 +394,6 @@
       }
     }
 
-    /* Additional tablet adjustments */
     @media (max-width: 768px) {
 
   .calendar-grid {
@@ -470,27 +414,20 @@
   }
 }
 
-    /* =========================
-   GLOBAL MOBILE STYLES
-   ========================= */
 @media (max-width: 768px) {
 
-  /* Reduce base font size on mobile */
   body {
     font-size: 14px;
   }
 
-  /* Reduce header padding on mobile */
   .header {
     padding: 20px 16px 28px;
   }
 
-  /* Reduce content padding on mobile */
   .content {
     padding: 20px 16px 32px;
   }
 
-  /* Smaller heading sizes on mobile */
   h1 {
     font-size: 24px !important;
   }
@@ -503,12 +440,10 @@
     font-size: 17px !important;
   }
 
-  /* Smaller back button text */
   .back {
     font-size: 14px;
   }
 
-  /* Improve touch targets on mobile */
   button, .card, .stall-card {
     touch-action: manipulation;
   }
@@ -518,17 +453,19 @@
 </head>
 
 <body>
-  <!-- Header section with navigation and legend -->
+  <nav aria-label="NEA Navigation" hidden></nav>
+  <main>
+
   <div class="header">
     <div>
-      <!-- Back button to dashboard -->
+
       <a class="back" href="index.html">
         <i class="fas fa-chevron-left"></i> Back to Dashboard
       </a>
       <h1>Inspection Calendar</h1>
       <p>View completed and scheduled inspections</p>
     </div>
-    <!-- Legend showing color coding -->
+
     <div class="filters">
       <div class="filter">
         <span class="legend-dot completed"></span>
@@ -541,13 +478,12 @@
     </div>
   </div>
 
-  <!-- Main content area -->
   <div class="content">
-    <!-- Calendar and detail panel grid -->
+
     <div class="calendar-grid">
-      <!-- Calendar card -->
+
       <div class="calendar-card">
-        <!-- Calendar header with navigation controls -->
+
         <div class="calendar-header">
           <h2 id="calendarTitle">Month</h2>
           <div class="calendar-controls">
@@ -557,11 +493,9 @@
           </div>
         </div>
 
-        <!-- Calendar day grid (populated by JavaScript) -->
         <div class="day-grid" id="dayGrid"></div>
       </div>
 
-      <!-- Detail card showing inspection details for selected date -->
       <div class="detail-card empty" id="detailCard">
         <div class="icon"><i class="far fa-calendar"></i></div>
         <h3>Select a Date</h3>
@@ -569,7 +503,6 @@
       </div>
     </div>
 
-    <!-- Summary statistics row -->
     <div class="summary-row" id="summaryRow">
       <div class="summary-card completed">
         <div class="badge"><i class="fas fa-check-circle"></i></div>
@@ -590,11 +523,11 @@
   </div>
 
   <script type="module">
-    // Import Firebase modules
+    
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-    // Firebase configuration object
+    
     const firebaseConfig = {
       apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
       authDomain: "fed-assignment-9c219.firebaseapp.com",
@@ -604,16 +537,16 @@
       appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
     };
 
-    // Initialize Firebase
+    
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Check authentication status and redirect if not logged in
+    
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "../login.html";
     });
 
-    // DOM element references
+    
     const dayGrid = document.getElementById("dayGrid");
     const calendarTitle = document.getElementById("calendarTitle");
     const todayBtn = document.getElementById("todayBtn");
@@ -622,34 +555,34 @@
     const summaryRow = document.getElementById("summaryRow");
     const detailCard = document.getElementById("detailCard");
 
-    // Month names for display
+    
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
 
-    // Current calendar state
+    
     let currentDate = new Date();
     let selectedDateKey = "";
 
-    // Load inspection records from localStorage
+    
     function loadInspections() {
       return JSON.parse(localStorage.getItem("neaInspections") || "[]");
     }
 
-    // Load schedule records from localStorage
+    
     function loadSchedules() {
       return JSON.parse(localStorage.getItem("neaSchedules") || "[]");
     }
 
-    // Normalize date values to YYYY-MM-DD format
+    
     function normalizeDateKey(value) {
       if (!value) return "";
-      // Already in correct format
+      
       if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
         return value;
       }
-      // Parse and convert to UTC date string
+      
       const parsed = new Date(value);
       if (Number.isNaN(parsed.getTime())) return "";
       return new Date(Date.UTC(
@@ -659,14 +592,14 @@
       )).toISOString().split("T")[0];
     }
 
-    // Build a map of completed inspections by date
+    
     function buildCompletedMap() {
       const completedByDate = {};
 
       loadInspections().forEach(entry => {
         const dateKey = normalizeDateKey(entry.scheduleDate || entry.completedAt);
         if (!dateKey) return;
-        // Track which stalls have been completed on each date
+        
         if (!completedByDate[dateKey]) completedByDate[dateKey] = new Set();
         if (entry.stallId) completedByDate[dateKey].add(entry.stallId);
       });
@@ -674,13 +607,13 @@
       return completedByDate;
     }
 
-    // Build maps of completed and scheduled inspections for a specific month
+    
     function buildDayMap(year, month) {
       const completed = {};
       const scheduled = {};
       const completedByDate = buildCompletedMap();
 
-      // Count completed inspections by day of month
+      
       loadInspections().forEach(entry => {
         const dateKey = normalizeDateKey(entry.scheduleDate || entry.completedAt);
         if (!dateKey) return;
@@ -691,7 +624,7 @@
         }
       });
 
-      // Count scheduled (pending) inspections by day of month
+      
       loadSchedules().forEach(entry => {
         if (!entry.date) return;
         const date = new Date(entry.date);
@@ -702,10 +635,10 @@
         const dateKey = normalizeDateKey(entry.date);
         const completedSet = completedByDate[dateKey] || new Set();
         const scheduleItems = entry.scheduledStalls?.[dateKey] || [];
-        // Filter out already completed stalls
+        
         const pendingItems = scheduleItems.filter(item => !completedSet.has(item.stallId));
         const fallbackLocations = entry.locations?.[dateKey] || [];
-        // Count pending inspections
+        
         const pendingCount = scheduleItems.length
           ? pendingItems.length
           : fallbackLocations.length || 0;
@@ -717,7 +650,7 @@
       return { completed, scheduled, completedByDate };
     }
 
-    // Format date key into readable heading
+    
     function formatDateHeading(dateKey) {
       const parsed = new Date(`${dateKey}T00:00:00`);
       if (Number.isNaN(parsed.getTime())) return "Inspection Details";
@@ -728,13 +661,13 @@
       });
     }
 
-    // Get all scheduled items for a specific date
+    
     function getScheduleItemsForDate(dateKey) {
       const schedules = loadSchedules();
       return schedules.flatMap(entry => {
         const items = entry.scheduledStalls?.[dateKey] || [];
         if (items.length) {
-          // Return scheduled stall items with metadata
+          
           return items.map(item => ({
             ...item,
             time: entry.time,
@@ -742,7 +675,7 @@
             dateKey
           }));
         }
-        // Fallback to location strings if no stall items
+        
         const locations = entry.locations?.[dateKey] || [];
         return locations.map(location => ({
           location,
@@ -753,16 +686,16 @@
       });
     }
 
-    // Get all completed inspections for a specific date
+    
     function getCompletedInspectionsForDate(dateKey) {
       return loadInspections().filter(entry => (
         normalizeDateKey(entry.scheduleDate || entry.completedAt) === dateKey
       ));
     }
 
-    // Render the detail panel for a selected date
+    
     function renderDetail(dateKey, highlightedStallId = "") {
-      // Show empty state if no date selected
+      
       if (!dateKey) {
         detailCard.classList.add("empty");
         detailCard.innerHTML = `
@@ -773,17 +706,17 @@
         return;
       }
 
-      // Get completed and scheduled items for this date
+      
       const completedByDate = buildCompletedMap();
       const completedSet = completedByDate[dateKey] || new Set();
       const scheduleItems = getScheduleItemsForDate(dateKey);
-      // Filter out stalls that have already been inspected
+      
       const pendingItems = scheduleItems.filter(item => (
         !item.stallId || !completedSet.has(item.stallId)
       ));
       const completedItems = getCompletedInspectionsForDate(dateKey);
 
-      // Build pending inspections list HTML
+      
       const pendingList = pendingItems.length
         ? pendingItems.map(item => `
             <div class="inspection-item ${item.stallId === highlightedStallId ? "highlight" : ""}">
@@ -799,7 +732,7 @@
           `).join("")
         : `<p>No scheduled inspections.</p>`;
 
-      // Build completed inspections list HTML
+      
       const completedList = completedItems.length
         ? completedItems.map(item => `
             <div class="inspection-item">
@@ -813,7 +746,7 @@
           `).join("")
         : `<p>No completed inspections.</p>`;
 
-      // Render detail card with both pending and completed sections
+      
       detailCard.classList.remove("empty");
       detailCard.innerHTML = `
         <div class="detail-header">
@@ -833,7 +766,7 @@
         </div>
       `;
 
-      // Add click handlers for "Start inspection" buttons
+      
       detailCard.querySelectorAll(".action-btn.start").forEach(button => {
         button.addEventListener("click", () => {
           localStorage.setItem("selectedStallId", button.dataset.stallId);
@@ -848,7 +781,7 @@
         });
       });
 
-      // Add click handlers for "View inspection" buttons
+      
       detailCard.querySelectorAll(".action-btn.view").forEach(button => {
         button.addEventListener("click", () => {
           localStorage.setItem("selectedReportId", button.dataset.reportId);
@@ -857,19 +790,19 @@
       });
     }
 
-    // Render the summary statistics for the current month
+    
     function renderSummary(month, year) {
       const inspections = loadInspections();
       const schedules = loadSchedules();
       const completedByDate = buildCompletedMap();
 
-      // Count completed inspections in current month
+      
       const completedCount = inspections.filter(entry => {
         const date = new Date(entry.completedAt);
         return date.getFullYear() === year && date.getMonth() === month;
       }).length;
 
-      // Count scheduled (pending) inspections in current month
+      
       const scheduledCount = schedules.reduce((total, entry) => {
         if (!entry.date) return total;
         const date = new Date(entry.date);
@@ -888,7 +821,7 @@
 
       const total = completedCount + scheduledCount;
 
-      // Render summary cards with counts
+      
       summaryRow.innerHTML = `
         <div class="summary-card completed">
           <div class="badge"><i class="fas fa-check-circle"></i></div>
@@ -908,42 +841,42 @@
       `;
     }
 
-    // Render the calendar grid for the given date
+    
     function renderCalendar(date) {
       const year = date.getFullYear();
       const month = date.getMonth();
       calendarTitle.textContent = `${monthNames[month]} ${year}`;
 
-      // Calculate calendar layout
+      
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const { completed, scheduled, completedByDate } = buildDayMap(year, month);
       const schedules = loadSchedules();
 
-      // Render day name headers
+      
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       dayGrid.innerHTML = dayNames.map(day => `<div class="day-name">${day}</div>`).join("");
 
-      // Add empty cells for days before the 1st of the month
+      
       for (let i = 0; i < firstDay; i += 1) {
         dayGrid.innerHTML += `<div></div>`;
       }
 
-      // Render each day of the month
+      
       for (let day = 1; day <= daysInMonth; day += 1) {
         const isCompleted = Boolean(completed[day]);
         const isScheduled = Boolean(scheduled[day]);
         const targetDate = new Date(year, month, day);
         targetDate.setHours(0, 0, 0, 0);
+
         
-        // Build CSS classes based on inspection status
         const classes = ["day"];
         if (isCompleted) classes.push("completed");
         if (isScheduled) classes.push("scheduled");
         const dateKey = new Date(Date.UTC(year, month, day)).toISOString().split("T")[0];
         if (selectedDateKey === dateKey) classes.push("active");
 
-        // Build label showing inspection counts
+        
         let label = "";
         if (isCompleted && isScheduled) {
           label = `${completed[day]} done · ${scheduled[day]} scheduled`;
@@ -953,7 +886,7 @@
           label = `${scheduled[day]} scheduled`;
         }
 
-        // Get scheduled items and locations for this day
+        
         const scheduleItems = schedules
           .flatMap(entry => entry.scheduledStalls?.[dateKey] || [])
           .filter(Boolean);
@@ -965,15 +898,15 @@
 
         const locationLabel = locations.length ? locations.join(", ") : "";
         const scheduledItem = pendingItems[0];
-        // Add data attributes for first pending item
+        
         const dataAttrs = scheduledItem
           ? `data-stall-id="${scheduledItem.stallId}" data-centre-id="${scheduledItem.centreId}"`
           : "";
 
-        // Combine labels
+        
         const labelContent = [label, locationLabel].filter(Boolean).map(text => `<div>${text}</div>`).join("");
 
-        // Render day button
+        
         dayGrid.innerHTML += `
           <button type="button" class="${classes.join(" ")}" data-date="${targetDate.toISOString()}" data-date-key="${dateKey}" ${dataAttrs}>
             <div class="day-number">${day}</div>
@@ -982,15 +915,15 @@
         `;
       }
 
-      // Add click handlers to day buttons
+      
       document.querySelectorAll(".day[data-date-key]").forEach(dayButton => {
         const dateKey = dayButton.dataset.dateKey;
         dayButton.addEventListener("click", () => {
           selectedDateKey = dateKey;
           localStorage.setItem("selectedCalendarDate", dateKey);
-          // Remove active class from all days
+          
           document.querySelectorAll(".day.active").forEach(btn => btn.classList.remove("active"));
-          // Add active class to clicked day
+          
           dayButton.classList.add("active");
           renderDetail(dateKey);
         });
@@ -999,28 +932,28 @@
       renderSummary(month, year);
     }
 
-    // Today button: jump to current month
+    
     todayBtn.addEventListener("click", () => {
       currentDate = new Date();
       renderCalendar(currentDate);
     });
 
-    // Previous month button
+    
     prevBtn.addEventListener("click", () => {
       currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
       renderCalendar(currentDate);
     });
 
-    // Next month button
+    
     nextBtn.addEventListener("click", () => {
       currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
       renderCalendar(currentDate);
     });
 
-    // Initial calendar render
+    
     renderCalendar(currentDate);
 
-    // Restore selected date from localStorage if present
+    
     const selectedCalendarDate = localStorage.getItem("selectedCalendarDate");
     const selectedCalendarStallId = localStorage.getItem("selectedCalendarStallId") || "";
     if (selectedCalendarDate) {
@@ -1031,13 +964,13 @@
         renderCalendar(currentDate);
         renderDetail(selectedCalendarDate, selectedCalendarStallId);
       }
-      // Clean up localStorage after restoring state
+      
       localStorage.removeItem("selectedCalendarDate");
       localStorage.removeItem("selectedCalendarStallId");
       localStorage.removeItem("selectedCalendarCentreId");
     }
   </script>
+  </main>
 </body>
 </html>
-
 

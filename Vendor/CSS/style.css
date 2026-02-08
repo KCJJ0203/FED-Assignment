@@ -4,7 +4,7 @@
 
 :root {
     --primary-blue: #1A237E;
-    --active-blue-bg: #E8EAF6; 
+    --active-blue-bg: #E8EAF6;
     --text-dark: #333;
     --text-grey: #666;
     --success-green: #2ECC71;
@@ -21,7 +21,6 @@ body {
     overflow: hidden;
 }
 
-/* ------------- SIDEBAR ------------- */
 .sidebar {
     width: 260px;
     background-color: var(--white);
@@ -93,7 +92,6 @@ body {
     background-size: cover;
 }
 
-/* ------------- MAIN CONTENT ------------- */
 .main-content {
     flex: 1;
     display: flex;
@@ -127,7 +125,7 @@ header {
 
 .grid-layout {
     display: grid;
-    grid-template-columns: 1fr 1.5fr; 
+    grid-template-columns: 1fr 1.5fr;
     grid-template-rows: auto auto;
     gap: 20px;
 }
@@ -170,6 +168,27 @@ header {
     font-size: 14px;
     display: inline-block;
     margin-top: 10px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+}
+
+.icon-action {
+    border: none;
+    background: transparent;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    line-height: 1;
+}
+
+.icon-action:hover,
+.icon-action:focus-visible {
+    color: #1A237E;
 }
 
 .sales-grid { display: flex; gap: 20px; }
@@ -212,8 +231,6 @@ header {
     padding-top: 20px;
     width: 100%;
 }
-
-/* ------------- ORDER MANAGEMENT ------------- */
 
 .orders-toolbar {
     display: flex;
@@ -427,11 +444,11 @@ header {
 }
 
 .card-header {
-    position: relative; 
+    position: relative;
 }
 
 .menu-dropdown {
-    display: none; 
+    display: none;
     position: absolute;
     top: 30px;
     right: 0;
@@ -448,31 +465,36 @@ header {
     display: block;
 }
 
-.menu-dropdown div {
+.menu-dropdown button {
     padding: 10px 15px;
     font-size: 14px;
     color: #333;
     cursor: pointer;
     transition: background 0.2s;
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
 }
 
-.menu-dropdown div:hover {
+.menu-dropdown button:hover,
+.menu-dropdown button:focus-visible {
     background-color: #F5F7FA;
     color: #1A237E;
 }
 
-.menu-dropdown div.danger {
+.menu-dropdown button.danger {
     color: #E74C3C;
 }
 
 .modal-overlay {
-    display: none; 
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     justify-content: center;
     align-items: center;
@@ -493,7 +515,7 @@ header {
 }
 
 .modal-header {
-    background-color: #1A237E; 
+    background-color: #1A237E;
     color: white;
     padding: 15px 20px;
     display: flex;
@@ -507,6 +529,9 @@ header {
     font-size: 24px;
     cursor: pointer;
     font-weight: bold;
+    background: none;
+    border: none;
+    color: inherit;
 }
 .close-btn:hover { color: #ccc; }
 
@@ -582,7 +607,6 @@ header {
 }
 .tag.drink { background-color: #FFF3E0; color: #EF6C00; }
 
-/* --- TOAST NOTIFICATION STYLES --- */
 #toast-container {
     visibility: hidden;
     min-width: 250px;
@@ -593,7 +617,7 @@ header {
     border-radius: 8px;
     padding: 16px 20px;
     position: fixed;
-    z-index: 2000; 
+    z-index: 2000;
     right: 30px;
     bottom: 30px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -610,7 +634,7 @@ header {
 #toast-container.show {
     visibility: visible;
     opacity: 1;
-    bottom: 30px; 
+    bottom: 30px;
 }
 
 .toast-icon {
@@ -620,13 +644,13 @@ header {
 
 .pos-layout {
     display: flex;
-    height: 100vh; 
+    height: 100vh;
     overflow: hidden;
     width: 100%;
 }
 
 .pos-menu-area {
-    flex: 1; 
+    flex: 1;
     padding: 20px 30px;
     background-color: #F5F7FA;
     display: flex;
@@ -678,7 +702,7 @@ header {
     transition: 0.2s;
 }
 .cat-pill.active {
-    background-color: #1A237E; 
+    background-color: #1A237E;
     color: white;
     border-color: #1A237E;
 }
@@ -704,6 +728,19 @@ header {
     border-color: #1A237E;
 }
 
+.menu-card-btn {
+    width: 100%;
+    border: 1px solid transparent;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+}
+
+.menu-card-btn:focus-visible {
+    outline: 2px solid #1A237E;
+    outline-offset: 2px;
+}
+
 .menu-img {
     width: 100%;
     height: 120px;
@@ -717,13 +754,13 @@ header {
 .menu-price { color: #2962FF; font-weight: bold; font-size: 15px; }
 
 .pos-cart-sidebar {
-    width: 380px; 
+    width: 380px;
     background: white;
     border-left: 1px solid #ddd;
     display: flex;
     flex-direction: column;
     padding: 25px;
-    height: 100vh; 
+    height: 100vh;
     box-sizing: border-box;
 }
 
@@ -746,7 +783,7 @@ header {
 }
 
 .cart-items-container {
-    flex: 1; 
+    flex: 1;
     overflow-y: auto;
 }
 
@@ -777,6 +814,13 @@ header {
 }
 .qty-btn { cursor: pointer; color: #555; font-weight: bold; }
 
+.qty-btn {
+    background: none;
+    border: none;
+    padding: 0 4px;
+    font: inherit;
+}
+
 .cart-footer {
     border-top: 1px solid #eee;
     padding-top: 20px;
@@ -786,7 +830,7 @@ header {
 
 .btn-checkout {
     width: 100%;
-    background-color: #2ECC71; 
+    background-color: #2ECC71;
     color: white;
     padding: 15px;
     border: none;
@@ -848,10 +892,10 @@ header {
 
 .cart-item-details {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     gap: 5px;
-    flex: 1; 
-    min-width: 0; 
+    flex: 1;
+    min-width: 0;
 }
 
 .quick-tags {
@@ -883,7 +927,7 @@ header {
 .note-input {
     width: 100%;
     border: none;
-    border-bottom: 1px solid #eee; 
+    border-bottom: 1px solid #eee;
     background: transparent;
     padding: 4px 0;
     font-size: 11px;
@@ -907,6 +951,8 @@ header {
     cursor: pointer;
     transition: 0.2s;
     color: #555;
+    font: inherit;
+    width: 100%;
 }
 
 .pay-option i {
@@ -924,7 +970,7 @@ header {
 
 .btn-confirm-pay {
     width: 100%;
-    background-color: #2ECC71; 
+    background-color: #2ECC71;
     color: white;
     padding: 16px;
     border: none;
@@ -964,13 +1010,13 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 2px dashed #ddd; 
+    border: 2px dashed #ddd;
 }
 
 #success-qr-img {
     width: 140px;
     height: 140px;
-    mix-blend-mode: multiply; 
+    mix-blend-mode: multiply;
 }
 
 .success-total {
@@ -1104,7 +1150,7 @@ header {
   height: 22px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -1157,7 +1203,6 @@ input:checked + .slider:before {
 }
 .toggle-btn input { margin: 0; }
 
-/* --- ORDER MODE TABS (NEW) --- */
 .order-mode-tabs {
     display: flex;
     background: #f0f2f5;
@@ -1189,7 +1234,6 @@ input:checked + .slider:before {
     color: #FF5252;
 }
 
-/* --- ITEM NOTES & TAGS (RESTORED) --- */
 .item-extras {
     margin-top: 6px;
     width: 100%;
@@ -1234,7 +1278,6 @@ input:checked + .slider:before {
 }
 .note-input:focus { border-bottom: 1px solid #2962FF; color: #333; }
 
-/* --- ORDER MODE TABS --- */
 .order-mode-tabs {
     display: flex;
     background: #f0f2f5;
@@ -1269,11 +1312,10 @@ input:checked + .slider:before {
 }
 
 .mode-btn.active.takeaway-mode {
-    color: #FF5252; 
-    /* Red text when Takeaway is active */
+    color: #FF5252;
+
 }
 
-/* --- QUICK TAGS & NOTES --- */
 .item-extras {
     margin-top: 8px;
     width: 100%;
@@ -1316,7 +1358,168 @@ input:checked + .slider:before {
     color: #444;
     outline: none;
 }
-.note-input:focus { 
-    border-bottom: 1px solid #1A237E; 
+.note-input:focus {
+    border-bottom: 1px solid #1A237E;
     background: #f9f9f9;
+}
+
+@media (max-width: 1200px) {
+    .grid-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .kanban-board {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .pos-cart-sidebar {
+        width: 340px;
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding: 14px 16px;
+        gap: 12px;
+    }
+
+    .brand {
+        margin-bottom: 8px;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .nav-links li {
+        margin-bottom: 0;
+    }
+
+    .nav-links a {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .user-profile {
+        padding-top: 10px;
+    }
+
+    .main-content {
+        overflow: visible;
+    }
+
+    header {
+        height: auto;
+        min-height: 72px;
+        padding: 14px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .dashboard-container {
+        padding: 16px;
+    }
+
+    .sales-grid {
+        flex-direction: column;
+    }
+
+    .orders-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+
+    .category-tabs {
+        flex-wrap: wrap;
+    }
+
+    .pos-layout {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .pos-menu-area,
+    .pos-cart-sidebar {
+        width: 100%;
+        height: auto;
+    }
+
+    .pos-menu-area {
+        padding: 16px;
+    }
+
+    .pos-cart-sidebar {
+        padding: 16px;
+        border-left: none;
+        border-top: 1px solid #ddd;
+    }
+
+    .pos-top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .payment-modal,
+    .success-modal {
+        width: 94vw;
+        max-width: 440px;
+    }
+}
+
+@media (max-width: 560px) {
+    .card {
+        padding: 16px;
+    }
+
+    .btn-walkin,
+    .btn-green,
+    .btn-grey,
+    .btn-outline,
+    .btn-checkout {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .order-id {
+        font-size: 14px;
+    }
+
+    .payment-methods {
+        grid-template-columns: 1fr;
+    }
+
+    .row-btns {
+        flex-direction: column;
+    }
 }

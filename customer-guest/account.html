@@ -9,14 +9,13 @@
 
 <body class="cg-body">
   <div class="cg-shell">
-    <!-- MAIN -->
+
     <main class="cg-main">
       <header class="cg-header">
         <h1 class="cg-h1">Account Page</h1>
         <div class="cg-meta">Account page for your info</div>
       </header>
 
-      <!-- TOP SUB NAV -->
       <div class="acc-tabs" role="tablist" aria-label="Account sections">
         <button class="acc-tab active" data-view="info" role="tab" type="button">Account Information</button>
         <button class="acc-tab" data-view="cards" role="tab" type="button">Credit/Debit Cards</button>
@@ -24,11 +23,10 @@
         <button class="acc-tab" data-view="prefs" role="tab" type="button">User Preferences</button>
         <button class="acc-tab" data-view="fb" role="tab" type="button">Feedback Form</button>
 
-        <button class="acc-tab" data-view="myreviews">My Reviews</button>
+        <button class="acc-tab" data-view="myreviews" role="tab" type="button">My Reviews</button>
 
       </div>
 
-      <!-- VIEW: Account Info -->
       <section class="acc-view show" id="view-info" aria-label="Account Information">
         <div class="acc-card">
           <div class="acc-title-row">
@@ -41,19 +39,18 @@
 
           <div class="profile-grid">
             <div class="profile-photo">
-                <!-- image preview -->
+
                 <div class="photo-box" id="pfpBox">
                     <img id="pfpImg" alt="Profile photo" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;" />
                     <div id="pfpPlaceholder">Profile<br/>Photo</div>
                 </div>
 
-                <!-- upload controls -->
-                <input id="pfpInput" type="file" accept="image/*" style="margin-top:10px; font-size:12px;">
+                <label for="pfpInput" class="muted" style="display:block; margin-top:10px; font-size:12px;">Upload profile image</label>
+                <input id="pfpInput" type="file" accept="image/*" style="margin-top:6px; font-size:12px;">
                 <button id="uploadPfpBtn" class="btn btn-white" type="button" style="margin-top:10px;">UPLOAD</button>
 
                 <div id="pfpMsg" class="muted" style="margin-top:8px; min-height:16px;"></div>
                 </div>
-
 
             <div class="profile-info">
               <div class="info-row">
@@ -77,7 +74,6 @@
         </div>
       </section>
 
-        <!-- VIEW: Cards -->
     <section class="acc-view" id="view-cards" aria-label="Credit Debit Cards">
     <div class="acc-card">
         <div class="acc-title-row">
@@ -92,7 +88,6 @@
     </div>
     </section>
 
-            <!-- VIEW: Favorites -->
       <section class="acc-view" id="view-fav" aria-label="My Favorites">
         <div class="acc-card">
           <h2 class="acc-title">My Favorites</h2>
@@ -103,14 +98,12 @@
             <button class="fav-tab" data-fav="dish" type="button">Dish</button>
           </div>
 
-          <!-- EMPTY CONTAINERS - JS WILL FILL -->
           <div class="fav-panel show" id="fav-hawker"></div>
           <div class="fav-panel" id="fav-stall"></div>
           <div class="fav-panel" id="fav-dish"></div>
         </div>
       </section>
 
-      <!-- VIEW: Preferences -->
       <section class="acc-view" id="view-prefs" aria-label="User Preferences">
         <div class="acc-card">
           <h2 class="acc-title">User Preferences</h2>
@@ -166,12 +159,12 @@
         </div>
       </section>
 
-      <!-- VIEW: Feedback -->
       <section class="acc-view" id="view-fb" aria-label="Feedback Form">
         <div class="acc-card">
           <h2 class="acc-title">Feedback Form</h2>
 
           <form id="feedbackForm" class="fb-form" style="margin:0 auto;">
+            <label for="fbTitle" class="fb-label">Feedback title</label>
             <input id="fbTitle" class="fb-input" type="text" placeholder="Title" required>
 
             <div class="fb-label">Rate your experience</div>
@@ -184,6 +177,7 @@
             </div>
             <input id="ratingValue" type="hidden" value="0">
 
+            <label for="fbMsg" class="fb-label">Feedback message</label>
             <textarea id="fbMsg" class="fb-textarea" placeholder="Your feedback..." required></textarea>
 
             <div class="fb-actions">
@@ -200,7 +194,6 @@
         </div>
       </section>
 
-      <!-- VIEW: Loyalty -->
       <section class="acc-view" id="view-loyalty" aria-label="Loyalty Coins">
         <div class="acc-card">
           <h2 class="acc-title">Loyalty Coins</h2>
@@ -250,10 +243,6 @@
         </div>
        </section>
 
-
-      <!-- ================= Modals ================= -->
-
-      <!-- Edit Profile Modal -->
       <div id="editModal" class="modal" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-modal="true" aria-label="Edit profile dialog">
           <div class="modal-head">
@@ -262,16 +251,16 @@
           </div>
 
           <form id="editForm" class="modal-body">
-            <label>Name</label>
+            <label for="editName">Name</label>
             <input id="editName" type="text" placeholder="Your name" required>
 
-            <label>Username</label>
+            <label for="editUsername">Username</label>
             <input id="editUsername" type="text" placeholder="Username (optional)">
 
-            <label>Email</label>
+            <label for="editEmail">Email</label>
             <input id="editEmail" type="email" placeholder="Email" required>
 
-            <label>Phone</label>
+            <label for="editPhone">Phone</label>
             <input id="editPhone" type="text" placeholder="Phone (optional)">
 
             <div id="editMsg" style="font-size:12px; color:#ef4444; min-height:16px;"></div>
@@ -281,7 +270,6 @@
         </div>
       </div>
 
-      <!-- Add Card Modal -->
       <div id="cardModal" class="modal" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-modal="true" aria-label="Add card dialog">
           <div class="modal-head">
@@ -289,16 +277,16 @@
             <button id="closeCardModal" class="x" type="button">&times;</button>
           </div>
           <form id="cardForm" class="modal-body">
-            <label>Cardholder Name</label>
+            <label for="cardName">Cardholder Name</label>
             <input id="cardName" type="text" placeholder="e.g. Htet Myat" required>
 
-            <label>Card Number</label>
+            <label for="cardNumber">Card Number</label>
             <input id="cardNumber" type="text" inputmode="numeric" placeholder="1234 5678 9012 3456" required>
 
-            <label>Expiry (MM/YY)</label>
+            <label for="cardExp">Expiry (MM/YY)</label>
             <input id="cardExp" type="text" placeholder="MM/YY" required>
 
-            <label>CVV</label>
+            <label for="cardCvv">CVV</label>
             <input id="cardCvv" type="password" inputmode="numeric" placeholder="***" required>
 
             <div id="cardMsg" style="font-size:12px; color:#ef4444; min-height:16px;"></div>
@@ -308,7 +296,6 @@
         </div>
       </div>
 
-      <!-- Change Password Modal (UI only) -->
       <div id="pwModal" class="modal" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-modal="true" aria-label="Change password dialog">
           <div class="modal-head">
@@ -317,17 +304,17 @@
           </div>
             <form id="pwForm" class="modal-form">
               <div class="form-group">
-                <label>Current Password</label>
+                <label for="curPw">Current Password</label>
                 <input id="curPw" class="input" type="password" required>
               </div>
 
               <div class="form-group">
-                <label>New Password</label>
+                <label for="newPw">New Password</label>
                 <input id="newPw" class="input" type="password" required>
               </div>
 
               <div class="form-group">
-                <label>Confirm New Password</label>
+                <label for="confirmPw">Confirm New Password</label>
                 <input id="confirmPw" class="input" type="password" required>
               </div>
 
@@ -339,7 +326,6 @@
     </main>
   </div>
 
-  <!-- Bottom Nav -->
   <footer class="bottom-nav">
     <nav aria-label="Primary">
       <ul class="nav-list">

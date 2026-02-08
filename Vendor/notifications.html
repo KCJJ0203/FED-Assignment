@@ -50,19 +50,19 @@
         </header>
 
         <div class="dashboard-container">
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <div>
                     <h2 style="margin: 0;">Notifications</h2>
                     <p style="margin: 5px 0 0; color: #777;">Stay updated with urgent alerts and system messages.</p>
                 </div>
-                
+
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-outline" onclick="createDemoNotification()">
+                    <button class="btn-outline" id="send-test-alert-btn" type="button">
                         <i class="fas fa-magic"></i> Send Test Alert
                     </button>
-                    
-                    <button class="btn-grey" onclick="openClearModal()">
+
+                    <button class="btn-grey" id="open-clear-modal-btn" type="button">
                         <i class="fas fa-trash"></i> Clear All
                     </button>
                 </div>
@@ -81,20 +81,22 @@
                 <div style="width: 60px; height: 60px; background: #FFEBEE; color: #FF5252; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 24px;">
                     <i class="fas fa-trash-alt"></i>
                 </div>
-                
+
                 <h3 style="margin: 0 0 10px 0; font-size: 18px;">Clear History?</h3>
                 <p style="color: #666; font-size: 14px; margin: 0 0 25px 0; line-height: 1.5;">Are you sure you want to remove all notifications? This cannot be undone.</p>
-                
+
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-grey" onclick="closeClearModal()">Cancel</button>
-                    <button class="btn-grey" style="background-color: #FF5252; color: white;" onclick="performClearAll()">Yes, Clear All</button>
+                    <button class="btn-grey" id="close-clear-modal-btn" type="button">Cancel</button>
+                    <button class="btn-grey" id="confirm-clear-all-btn" type="button" style="background-color: #FF5252; color: white;">Yes, Clear All</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
     <script src="js/notifications.js"></script>
 </body>
 </html>

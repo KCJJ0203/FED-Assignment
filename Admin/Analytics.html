@@ -17,7 +17,6 @@
   --accent-pink:#c084fc;
 }
 
-/* RESET */
 *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",sans-serif;}
 body{
   min-height:100vh;
@@ -30,7 +29,6 @@ body{
   animation: gradientShift 15s ease infinite;
 }
 
-/* Floating blobs */
 .blob{
   position:absolute;
   width:150px; height:150px;
@@ -52,7 +50,6 @@ body{
   100%{background-position:0% 50%;}
 }
 
-/* Sidebar */
 .sidebar {
   width:240px;
   background: linear-gradient(180deg,#4361ee,#3a0ca3);
@@ -69,14 +66,12 @@ body{
 .profile { margin-top:auto; display:flex; align-items:center; gap:10px; font-size:13px; }
 .avatar { width:34px; height:34px; background:#22d3ee; border-radius:50%; }
 
-/* Main Content */
 .main { flex:1; padding:24px 30px; }
 .topbar { display:flex; align-items:center; gap:20px; margin-bottom:30px; }
 .topbar h1 { font-size:20px; }
 .top-search { background:white; padding:8px 14px; border-radius:20px; width:240px; }
 .top-search input { border:none; outline:none; width:100%; }
 
-/* Grid layout */
 .grid {
   display:grid;
   grid-template-columns: repeat(3,1fr);
@@ -84,7 +79,6 @@ body{
 }
 @media(max-width:1000px){.grid{grid-template-columns:1fr;}}
 
-/* Card styling with hover glow and slide-in */
 .card {
   background: linear-gradient(180deg,var(--card-dark),var(--card-dark-2));
   border-radius:18px;
@@ -117,14 +111,13 @@ canvas { flex:1; }
 
 <body>
 
-<!-- floating blobs -->
 <div class="blob"></div>
 <div class="blob"></div>
 <div class="blob"></div>
 
 <aside class="sidebar">
   <h2>Analytics</h2>
-  <div class="search"><input placeholder="Search for..." /></div>
+  <div class="search"><input placeholder="Search for..." aria-label="Search analytics menu" /></div>
   <nav class="menu">
     <a href="Home.html">Home</a>
     <a class="active" href="Analytics.html">Analytics</a>
@@ -136,15 +129,15 @@ canvas { flex:1; }
 <main class="main">
   <div class="topbar">
     <h1>Analytics Page</h1>
-    <div class="top-search"><input placeholder="Search anything here..." /></div>
+    <div class="top-search"><input placeholder="Search anything here..." aria-label="Search analytics content" /></div>
   </div>
 
   <section class="grid">
     <div class="card big">
       <h3>Overall Hawker Sales
-        <button class="btn" onclick="setRange('monthly')">Monthly</button>
-        <button class="btn" onclick="setRange('quarterly')">Quarterly</button>
-        <button class="btn" onclick="setRange('yearly')">Yearly</button>
+        <button class="btn" type="button" data-range="monthly">Monthly</button>
+        <button class="btn" type="button" data-range="quarterly">Quarterly</button>
+        <button class="btn" type="button" data-range="yearly">Yearly</button>
       </h3>
       <canvas id="hawkerLine"></canvas>
     </div>
@@ -168,7 +161,6 @@ window.addEventListener('load', ()=>{
   });
 });
 
-// Overall Hawker Sales Line Chart
 const hawkerCtx = document.getElementById('hawkerLine');
 const hawkerChart = new Chart(hawkerCtx, {
   type:'line',
@@ -201,14 +193,18 @@ function setRange(type){
   hawkerChart.update();
 }
 
-// Customer Satisfaction Pie Chart
+document.querySelectorAll('[data-range]').forEach((button) => {
+  button.addEventListener('click', () => {
+    setRange(button.dataset.range);
+  });
+});
+
 new Chart(document.getElementById('satisfactionChart'),{
   type:'doughnut',
   data:{ labels:['Satisfied','Neutral','Unsatisfied'], datasets:[{data:[65,20,15], backgroundColor:['#22d3ee','#3b82f6','#c084fc'], hoverOffset:10}] },
   options:{ plugins:{legend:{position:'bottom', labels:{color:'white'}}} }
 });
 
-// Sales by Stall Bar Chart
 new Chart(document.getElementById('stallBar'),{
   type:'bar',
   data:{ labels:['Stall A','Stall B','Stall C','Stall D'], datasets:[{label:'Sales', data:[200,250,180,220], backgroundColor:'#22d3ee', hoverBackgroundColor:'#3b82f6'}] },

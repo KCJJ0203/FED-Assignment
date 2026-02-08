@@ -50,19 +50,19 @@
         </header>
 
         <div class="dashboard-container">
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <div>
                     <h2 style="margin: 0;">System Settings</h2>
                     <p style="margin: 5px 0 0; color: #777;">Configure payments, hardware, and stall details.</p>
                 </div>
-                <button class="btn-green" style="width: auto; padding: 12px 24px;" onclick="saveSettings()">
+                <button class="btn-green" id="save-settings-btn" type="button" style="width: auto; padding: 12px 24px;">
                     <i class="fas fa-save"></i> SAVE CHANGES
                 </button>
             </div>
 
             <div class="grid-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                
+
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-store" style="color:#1A237E;"></i> Stall Profile</h3>
@@ -92,7 +92,7 @@
                     <div class="card-header">
                         <h3><i class="fas fa-credit-card" style="color:#1A237E;"></i> Payment & Pricing</h3>
                     </div>
-                    
+
                     <div style="margin-bottom: 20px;">
                         <label style="font-weight:bold; font-size:13px; color:#555; display:block; margin-bottom:10px;">Accepted Methods</label>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -129,16 +129,16 @@
                         <h3><i class="fas fa-print" style="color:#1A237E;"></i> Hardware & Receipts</h3>
                         <button class="btn-outline" style="padding: 5px 10px; font-size: 12px;">Check Status</button>
                     </div>
-                    
+
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <i class="fas fa-receipt" style="font-size: 20px; color: #555;"></i>
                             <div>
                                 <div style="font-weight: bold; font-size: 14px;">Thermal Printer</div>
-                                <div style="font-size: 12px; color: #2ECC71;">● Online (EPSON-T88)</div>
+                                <div style="font-size: 12px; color: #2ECC71;">&bull; Online (EPSON-T88)</div>
                             </div>
                         </div>
-                        <button class="btn-grey" style="padding: 6px 12px; font-size: 12px;" onclick="alert('Test Receipt Printed')">Test Print</button>
+                        <button class="btn-grey" id="test-print-btn" type="button" style="padding: 6px 12px; font-size: 12px;">Test Print</button>
                     </div>
 
                     <div style="margin-bottom: 15px;">
@@ -165,13 +165,13 @@
                     <div class="card-header">
                         <h3><i class="fas fa-cogs" style="color:#1A237E;"></i> Operations</h3>
                     </div>
-                    
+
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <div>
                             <div style="font-weight: bold; font-size: 14px;">Queue Numbers</div>
                             <div style="font-size: 12px; color: #777;">Current Sequence: #106</div>
                         </div>
-                        <button class="btn-grey" onclick="alert('Queue sequence reset to #001')">Reset Sequence</button>
+                        <button class="btn-grey" id="reset-sequence-btn" type="button">Reset Sequence</button>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px;">
@@ -179,7 +179,7 @@
                             <div style="font-weight: bold; font-size: 14px; color: #E74C3C;">Factory Reset</div>
                             <div style="font-size: 12px; color: #777;">Clear all sales data</div>
                         </div>
-                        <button class="btn-grey" style="background:#FFEBEE; color:#C62828;" onclick="alert('Disabled in Demo Mode')">Reset Data</button>
+                        <button class="btn-grey" id="reset-data-btn" type="button" style="background:#FFEBEE; color:#C62828;">Reset Data</button>
                     </div>
                 </div>
 
@@ -190,7 +190,9 @@
     <div id="toast-container"><i class="fas fa-check-circle toast-icon"></i> <span id="toast-message">Settings Saved</span></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
     <script src="js/settings.js"></script>
 </body>
 </html>

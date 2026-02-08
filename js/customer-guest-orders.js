@@ -15,7 +15,7 @@
     const reviewRating = document.getElementById("review-rating");
     const reviewStars = document.getElementById("review-stars");
 
-    let reviewTarget = null; // { uid, userEmail, orderId, stallId, stallName }
+    let reviewTarget = null; 
 
     if (!ordersListEl || !ordersStatusEl) {
         return;
@@ -111,8 +111,8 @@
             const card = document.createElement("article");
             card.className = "order-card";
             card.dataset.orderId = order.orderId || "";
-            card.dataset.stallId = order.stallId || "";      // IMPORTANT
-            card.dataset.stallName = order.stallName || "";  // IMPORTANT
+            card.dataset.stallId = order.stallId || "";      
+            card.dataset.stallName = order.stallName || "";  
 
             const paymentLabel = (order.paymentStatus || "success").toUpperCase();
 
@@ -185,7 +185,7 @@
                 itemsList.appendChild(row);
             });
 
-            // REVIEW BUTTON
+            
             const reviewBtn = document.createElement("button");
             reviewBtn.type = "button";
             reviewBtn.className = "order-review";
@@ -222,9 +222,9 @@
         }
     };
 
-    // Toggle details + Review button handling
+    
     ordersListEl.addEventListener("click", async (event) => {
-        // Toggle
+        
         const toggleBtn = event.target.closest("[data-action=\"toggle\"]");
         if (toggleBtn) {
             const card = toggleBtn.closest(".order-card");
@@ -238,7 +238,7 @@
             return;
         }
 
-        // Review
+        
         const reviewBtn = event.target.closest("[data-action='review']");
         if (!reviewBtn) return;
 
@@ -323,7 +323,7 @@
         }
     };
 
-    // SUBMIT REVIEW TO RTDB
+    
     reviewForm?.addEventListener("submit", async (e) => {
         e.preventDefault();
         setReviewError("");
@@ -361,11 +361,11 @@
                 createdAt: Date.now()
             };
 
-            // Save under stall
+            
             const stallReviewRef = push(ref(rtdb, `reviews/${reviewTarget.stallId}`));
             await set(stallReviewRef, payload);
 
-            // Save under user 
+            
             const userReviewRef = push(ref(rtdb, `userReviews/${reviewTarget.uid}`));
             await set(userReviewRef, payload);
 

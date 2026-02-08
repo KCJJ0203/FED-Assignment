@@ -34,7 +34,7 @@
 
     <main class="main-content">
         <header style="height: 80px !important; min-height: 80px !important; background-color: #1A237E; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 30px;">
-            
+
             <div class="header-title">
                 <i class="fas fa-bars" style="margin-right: 15px; cursor: pointer; color: white; font-size: 22px;"></i>
                 <strong style="font-size: 22px;">Uncle Lim Chicken Rice</strong>
@@ -48,7 +48,7 @@
                 </div>
 
                 <i class="fas fa-bell" style="color: white; font-size: 20px; margin-right: 20px; cursor: pointer;"></i>
-                
+
                 <div class="user-avatar" style="width: 40px; height: 40px; background-color: white; color: #1A237E; display:flex; align-items:center; justify-content:center; border-radius: 50%; font-weight:bold; font-size:15px;">UT</div>
             </div>
         </header>
@@ -60,16 +60,18 @@
             </div>
 
             <div class="grid-layout">
-                
+
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-file-contract" style="color:#1A237E;"></i> Stall Rental</h3>
-                        <i class="fas fa-ellipsis-h" style="color: #ccc; cursor: pointer;" onclick="toggleRentalMenu()"></i>
+                        <button id="rental-menu-trigger" type="button" class="icon-action" aria-label="Open rental options">
+                            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                        </button>
 
                         <div class="menu-dropdown" id="rentalDropdown">
-                            <div onclick="showToast('Downloading PDF Copy...')">Download Copy</div>
-                            <div onclick="showToast('Renewal Request Sent!')">Request Renewal</div>
-                            <div class="danger" onclick="showToast('Issue Reported to Admin', true)">Report Issue</div>
+                            <button id="download-copy-btn" type="button">Download Copy</button>
+                            <button id="request-renewal-btn" type="button">Request Renewal</button>
+                            <button id="report-issue-btn" type="button" class="danger">Report Issue</button>
                         </div>
 
                     </div>
@@ -77,7 +79,7 @@
                         <div class="info-row"><span>Stall Number</span><strong>#04-21</strong></div>
                         <div class="info-row"><span>Status</span><span class="status-pill">Active</span></div>
                         <div class="info-row"><span>Lease Renewal</span><strong>31 Dec 2026</strong></div>
-                        <a href="javascript:void(0)" class="link-btn" onclick="showAgreementDetails()">View Agreement Details &rarr;</a>
+                        <button id="view-agreement-btn" type="button" class="link-btn">View Agreement Details &rarr;</button>
                     </div>
                 </div>
 
@@ -105,7 +107,7 @@
                         <h3>Popular Items</h3>
                         <a href="menu.html" style="font-size: 12px; color: blue;">View Full Menu</a>
                     </div>
-                    
+
                     <div class="popular-items-list" style="max-height: 220px; overflow-y: auto;">
                         <div style="padding: 20px; text-align: center; color: #888; font-size: 13px;">
                             <i class="fas fa-spinner fa-spin"></i> Loading menu data...
@@ -124,7 +126,7 @@
                     <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
                         <canvas id="trafficChart"></canvas>
                     </div>
-                </div>  
+                </div>
 
             </div>
         </div>
@@ -134,7 +136,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Rental Agreement Details</h3>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <button id="agreement-close-btn" class="close-btn" type="button" aria-label="Close agreement modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="doc-row"><span class="label">Agreement ID:</span><span class="value">#SG-NEA-8821</span></div>
@@ -152,7 +154,7 @@
         <div class="modal-content" style="width: 500px;">
             <div class="modal-header">
                 <h3>Menu Performance</h3>
-                <span class="close-btn" onclick="closeItemsModal()">&times;</span>
+                <button id="items-close-btn" class="close-btn" type="button" aria-label="Close menu performance modal">&times;</button>
             </div>
             <div class="modal-body">
                 <table class="report-table">
@@ -165,7 +167,7 @@
                         <tr><td>Soya Bean Milk</td><td><span class="tag drink">Drinks</span></td><td style="text-align:right;">55</td><td style="text-align:right;">$82.50</td></tr>
                     </tbody>
                 </table>
-                <button class="btn-print" onclick="alert('Exporting...')">Export Report</button>
+                <button class="btn-print" id="export-report-btn" type="button">Export Report</button>
             </div>
         </div>
     </div>
@@ -173,8 +175,9 @@
     <div id="toast-container"><i class="fas fa-check-circle toast-icon"></i> <span id="toast-message">Action Successful</span></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

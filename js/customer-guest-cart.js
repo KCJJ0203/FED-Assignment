@@ -245,7 +245,24 @@
         }
 
         const fulfillment = checkoutForm.querySelector('input[name="fulfillment"]:checked')?.value;
-        return { valid: true, fulfillment };
+        if (!["dinein", "takeaway"].includes(fulfillment)) {
+            setGroupError("fulfillment", "Please choose dine-in or takeaway.");
+            return { valid: false };
+        }
+
+        const paymentStatus = paymentResultEl ? paymentResultEl.value : "";
+        if (!["success", "fail"].includes(paymentStatus)) {
+            if (formErrorEl) {
+                formErrorEl.textContent = "Please choose a payment result.";
+            }
+            return { valid: false };
+        }
+
+        return {
+            valid: true,
+            fulfillment,
+            paymentStatus
+        };
     };
 
     const firebaseConfig = {
@@ -315,7 +332,87 @@
         }
     };
 
-    const placeOrder = async (fulfillment) => {
+    const mapOrderTypeForVendor = (order) => {
+        const normalizedFulfillment = String(order?.fulfillment || "").toLowerCase();
+        if (normalizedFulfillment === "takeaway") {
+            return "Takeaway";
+        }
+        const deliveryFee = Number(order?.totals?.deliveryFee || 0);
+        if (deliveryFee > 0) {
+            return "Delivery";
+        }
+        return "Walk-In";
+    };
+
+    const buildVendorOrderPayload = (order, nowMs, Timestamp) => {
+        const orderId = String(order?.orderId || "").trim();
+        const safeCreatedAt = Number.isFinite(Number(order?.createdAt))
+            ? Number(order.createdAt)
+            : nowMs;
+        const items = Array.isArray(order?.items)
+            ? order.items.map((item) => ({
+                ...item,
+                name: String(item?.name || "Item"),
+                qty: Number(item?.qty || 1)
+            }))
+            : [];
+        return {
+            orderID: orderId,
+            orderId,
+            items,
+            total: Number(order?.totals?.grandTotal || order?.total || 0),
+            status: "new",
+            timestamp: Timestamp.fromMillis(nowMs),
+            type: mapOrderTypeForVendor(order),
+            fulfillment: String(order?.fulfillment || "dinein"),
+            paymentStatus: String(order?.paymentStatus || "success"),
+            customerType: String(order?.type || "guest"),
+            userId: order?.userId || null,
+            createdAt: safeCreatedAt,
+            stallId: String(order?.stallId || ""),
+            stallName: String(order?.stallName || ""),
+            hawkerId: String(order?.hawkerId || ""),
+            hawkerName: String(order?.hawkerName || "")
+        };
+    };
+
+    const saveOrdersToVendorQueue = async (orders) => {
+        if (!orders || orders.length === 0) {
+            return false;
+        }
+        try {
+            const { getFirestore, doc, setDoc, Timestamp } = await import(
+                "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js"
+            );
+            const [{ initializeApp, getApps }] = await Promise.all([
+                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js")
+            ]);
+            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            await Promise.all(
+                orders.map((order) => {
+                    const stallId = String(order?.stallId || "").trim();
+                    const orderId = String(order?.orderId || "").trim();
+                    if (!stallId || !orderId) {
+                        throw new Error("Missing stallId/orderId for vendor queue write.");
+                    }
+                    const nowMs = Date.now();
+                    const payload = buildVendorOrderPayload(order, nowMs, Timestamp);
+                    return setDoc(
+                        doc(db, "stalls", stallId, "active_orders", orderId),
+                        payload,
+                        { merge: true }
+                    );
+                })
+            );
+            return true;
+        } catch (error) {
+            console.warn("Vendor queue write failed:", error);
+            return false;
+        }
+    };
+
+    const placeOrder = async ({ fulfillment, paymentStatus }) => {
         if (!window.GuestCart) {
             return;
         }
@@ -324,7 +421,6 @@
         const authUser = await getAuthUser();
         const isRegistered = Boolean(authUser);
         const userId = authUser ? authUser.uid : null;
-        const paymentStatus = paymentResultEl ? paymentResultEl.value : "success";
         const orders = window.GuestCart.buildOrdersFromCart(cart, {
             fulfillment,
             type: isRegistered ? "registered" : "guest",
@@ -337,20 +433,32 @@
             }
             return;
         }
-        let savedOk = true;
+
+        let customerSaveOk = true;
         if (isRegistered) {
-            savedOk = await saveOrdersToRtdb(orders, authUser);
+            customerSaveOk = await saveOrdersToRtdb(orders, authUser);
         } else {
             const existing = window.GuestCart.getGuestOrders();
             const merged = [...orders, ...existing];
             window.GuestCart.saveGuestOrders(merged);
         }
-        if (!savedOk) {
+        if (!customerSaveOk) {
             if (formErrorEl) {
                 formErrorEl.textContent = "Could not save your order. Please try again.";
             }
             return;
         }
+
+        if (paymentStatus !== "fail") {
+            const vendorSaveOk = await saveOrdersToVendorQueue(orders);
+            if (!vendorSaveOk) {
+                if (formErrorEl) {
+                    formErrorEl.textContent = "Order saved, but vendor queue update failed. Please try again.";
+                }
+                return;
+            }
+        }
+
         if (paymentStatus === "fail") {
             if (paymentMsgEl) {
                 paymentMsgEl.textContent = "Payment failed. Please try again.";
@@ -443,7 +551,7 @@
             if (!validation.valid) {
                 return;
             }
-            await placeOrder(validation.fulfillment);
+            await placeOrder(validation);
         });
 
         checkoutForm.querySelectorAll("input").forEach((input) => {

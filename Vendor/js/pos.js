@@ -1,19 +1,6 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-  authDomain: "fed-assignment-9c219.firebaseapp.com",
-  databaseURL: "https://fed-assignment-9c219-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "fed-assignment-9c219",
-  storageBucket: "fed-assignment-9c219.firebasestorage.app",
-  messagingSenderId: "287410844855",
-  appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-  measurementId: "G-CJBDRY9RQ5"
-};
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-const MY_STALL_ID = "0tPLvlPufTsDZ3jH6m5E"; 
+const db = window.vendorDb || firebase.firestore();
+let vendorContext = null;
+let stallId = "";
 
 let cart = [];
 let allMenuItems = []; 
@@ -21,15 +8,53 @@ let currentCategory = 'All';
 let CONTAINER_PRICE = 0.30; 
 let currentOrderMode = 'Dine-In';
 
-document.addEventListener('DOMContentLoaded', () => {
-    listenToSettings();
-    fetchMenu();
-    setupEventListeners();
-    renderCart();
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+function escapeAttr(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+function encodeDataAttr(value) {
+    return encodeURIComponent(String(value ?? ""));
+}
+
+function decodeDataAttr(value) {
+    try {
+        return decodeURIComponent(String(value ?? ""));
+    } catch (error) {
+        return String(value ?? "");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        vendorContext = await window.getVendorContext();
+        stallId = vendorContext.stallId;
+        listenToSettings();
+        fetchMenu();
+        setupEventListeners();
+        renderCart();
+    } catch (error) {
+        console.error("Vendor POS initialization failed:", error);
+        const menuGrid = document.getElementById("menu-grid");
+        if (menuGrid) {
+            menuGrid.innerHTML = '<p style="color:red">Unable to load POS for this account.</p>';
+        }
+    }
 });
 
 function listenToSettings() {
-    db.collection("stalls").doc(MY_STALL_ID)
+    if (!stallId) return;
+    db.collection("stalls").doc(stallId)
       .onSnapshot((doc) => {
           if (doc.exists) {
               const data = doc.data();
@@ -47,7 +72,12 @@ function fetchMenu() {
 
     const sortOrder = { "Mains": 1, "Sides": 2, "Drinks": 3, "Add-ons": 4, "Sets": 5 };
 
-    db.collection("stalls").doc(MY_STALL_ID).collection("menu_items")
+    if (!stallId) {
+        grid.innerHTML = '<p style="color:red">Missing stall mapping for this vendor account.</p>';
+        return;
+    }
+
+    db.collection("stalls").doc(stallId).collection("menu_items")
       .get().then((querySnapshot) => {
         allMenuItems = []; 
         grid.innerHTML = ''; 
@@ -89,19 +119,44 @@ function renderMenu(itemsToRender) {
 
     itemsToRender.forEach(item => {
         const imageSrc = item.image || "https://placehold.co/150";
+        const displayName = escapeHtml(item.name);
+        const displayPrice = Number(item.price || 0).toFixed(2);
         
         const cardHTML = `
-            <div class="menu-card" onclick="addToCart('${item.name}', ${item.price}, '${imageSrc}', '${item.category}')">
-                <img src="${imageSrc}" class="menu-img">
-                <div class="menu-title">${item.name}</div>
-                <div class="menu-price">$${item.price.toFixed(2)}</div>
-            </div>
+            <button
+                type="button"
+                class="menu-card menu-card-btn"
+                data-action="add-menu-item"
+                data-name="${encodeDataAttr(item.name)}"
+                data-price="${Number(item.price || 0)}"
+                data-image="${encodeDataAttr(imageSrc)}"
+                data-category="${encodeDataAttr(item.category || "")}"
+                aria-label="Add ${displayName} to cart"
+            >
+                <img src="${escapeAttr(imageSrc)}" class="menu-img" alt="${displayName}">
+                <div class="menu-title">${displayName}</div>
+                <div class="menu-price">$${displayPrice}</div>
+            </button>
         `;
         grid.innerHTML += cardHTML;
     });
 }
 
 function setupEventListeners() {
+    const menuGrid = document.getElementById('menu-grid');
+    if (menuGrid) {
+        menuGrid.addEventListener('click', (event) => {
+            const card = event.target.closest('[data-action="add-menu-item"]');
+            if (!card) return;
+            addToCart(
+                decodeDataAttr(card.dataset.name),
+                Number(card.dataset.price || 0),
+                decodeDataAttr(card.dataset.image),
+                decodeDataAttr(card.dataset.category)
+            );
+        });
+    }
+
     const tabs = document.querySelectorAll('.cat-pill');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -119,6 +174,33 @@ function setupEventListeners() {
         });
     });
 
+    const cartContainer = document.getElementById('cart-container');
+    if (cartContainer) {
+        cartContainer.addEventListener('click', (event) => {
+            const qtyButton = event.target.closest('[data-action="update-qty"]');
+            if (qtyButton) {
+                const index = Number(qtyButton.dataset.index);
+                const delta = Number(qtyButton.dataset.delta);
+                updateQty(index, delta);
+                return;
+            }
+
+            const tagButton = event.target.closest('[data-action="toggle-tag"]');
+            if (tagButton) {
+                const index = Number(tagButton.dataset.index);
+                const tag = decodeDataAttr(tagButton.dataset.tag);
+                toggleTag(index, tag);
+            }
+        });
+
+        cartContainer.addEventListener('change', (event) => {
+            const noteInput = event.target.closest('[data-action="update-note"]');
+            if (!noteInput) return;
+            const index = Number(noteInput.dataset.index);
+            updateNote(index, noteInput.value);
+        });
+    }
+
     const searchInput = document.querySelector('.search-bar input');
     searchInput.addEventListener('keyup', (e) => {
         const searchTerm = e.target.value.toLowerCase();
@@ -126,6 +208,33 @@ function setupEventListeners() {
             item.name.toLowerCase().includes(searchTerm)
         );
         renderMenu(filtered);
+    });
+
+    document.getElementById('clear-cart-btn')?.addEventListener('click', clearCart);
+    document.getElementById('open-payment-btn')?.addEventListener('click', openPaymentModal);
+    document.getElementById('close-payment-btn')?.addEventListener('click', closePaymentModal);
+    document.getElementById('confirm-payment-btn')?.addEventListener('click', processPayment);
+    document.getElementById('print-receipt-btn')?.addEventListener('click', printReceipt);
+    document.getElementById('expand-qr-btn')?.addEventListener('click', expandQR);
+    document.getElementById('done-next-order-btn')?.addEventListener('click', resetPos);
+
+    document.querySelectorAll('[data-order-mode]').forEach((button) => {
+        button.addEventListener('click', () => {
+            setOrderMode(button.dataset.orderMode);
+        });
+    });
+
+    document.getElementById('payment-methods')?.addEventListener('click', (event) => {
+        const option = event.target.closest('[data-payment-method]');
+        if (!option) return;
+        selectMethod(option, option.dataset.paymentMethod);
+    });
+
+    const qrLightbox = document.getElementById('qrLightbox');
+    qrLightbox?.addEventListener('click', (event) => {
+        if (event.target === qrLightbox) {
+            closeQR();
+        }
     });
 }
 
@@ -142,6 +251,7 @@ function addToCart(name, price, image, category) {
 }
 
 function updateQty(index, change) {
+    if (!Number.isInteger(index) || index < 0 || index >= cart.length) return;
     if (cart[index].name === "Takeaway Charge") return;
 
     if (cart[index].qty + change > 0) {
@@ -167,6 +277,7 @@ function setOrderMode(mode) {
 }
 
 function toggleTag(index, tag) {
+    if (!Number.isInteger(index) || index < 0 || index >= cart.length) return;
     let currentNotes = cart[index].notes || "";
     
     if (currentNotes.includes(tag)) {
@@ -185,6 +296,7 @@ function toggleTag(index, tag) {
 }
 
 function updateNote(index, value) {
+    if (!Number.isInteger(index) || index < 0 || index >= cart.length) return;
     cart[index].notes = value;
 }
 
@@ -230,32 +342,50 @@ function renderCart() {
             let tagsHtml = `<div class="quick-tags">`;
             commonTags.forEach(tag => {
                 const isActive = currentNotes.includes(tag) ? "active" : "";
-                tagsHtml += `<span class="tag-pill ${isActive}" onclick="toggleTag(${index}, '${tag}')">${tag}</span>`;
+                tagsHtml += `
+                    <button
+                        type="button"
+                        class="tag-pill ${isActive}"
+                        data-action="toggle-tag"
+                        data-index="${index}"
+                        data-tag="${encodeDataAttr(tag)}"
+                    >${escapeHtml(tag)}</button>
+                `;
             });
             tagsHtml += `</div>`;
             
             extrasHtml = `
                 <div class="item-extras">
                     ${tagsHtml}
-                    <input type="text" class="note-input" placeholder="Custom note..." value="${currentNotes}" onchange="updateNote(${index}, this.value)">
+                    <input
+                        type="text"
+                        class="note-input"
+                        placeholder="Custom note..."
+                        value="${escapeAttr(currentNotes)}"
+                        data-action="update-note"
+                        data-index="${index}"
+                    >
                 </div>
             `;
         }
 
         const controls = isSystem ? "" : `
             <div class="qty-control">
-                <span class="qty-btn" onclick="updateQty(${index}, -1)">-</span>
+                <button type="button" class="qty-btn" data-action="update-qty" data-index="${index}" data-delta="-1">-</button>
                 <span>${item.qty}</span>
-                <span class="qty-btn" onclick="updateQty(${index}, 1)">+</span>
+                <button type="button" class="qty-btn" data-action="update-qty" data-index="${index}" data-delta="1">+</button>
             </div>
         `;
+
+        const safeImage = escapeAttr(item.img || "https://placehold.co/50");
+        const safeName = escapeHtml(item.name);
 
         const html = `
         <div class="cart-item" style="flex-wrap:wrap; ${rowStyle}">
             <div style="display:flex; width:100%; gap:12px; align-items:center;">
-                <img src="${item.img}" class="cart-item-img">
+                <img src="${safeImage}" class="cart-item-img" alt="${safeName}">
                 <div class="cart-item-details">
-                    <span class="cart-item-title">${item.name}</span>
+                    <span class="cart-item-title">${safeName}</span>
                     <span class="cart-item-price">$${itemTotal.toFixed(2)}</span>
                 </div>
                 ${controls}
@@ -305,6 +435,7 @@ function processPayment() {
     
     const newOrder = {
         orderID: orderID,
+        orderId: orderID,
         items: cart,
         total: totalAmount,
         paymentMethod: selectedPaymentMethod,
@@ -313,7 +444,13 @@ function processPayment() {
         type: currentOrderMode
     };
 
-    db.collection("stalls").doc(MY_STALL_ID).collection("active_orders").add(newOrder)
+    if (!stallId) {
+        alert("Missing stall mapping for this vendor account.");
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> CONFIRM PAYMENT';
+        return;
+    }
+
+    db.collection("stalls").doc(stallId).collection("active_orders").add(newOrder)
     .then(() => {
         closePaymentModal(); 
         document.getElementById('success-order-id').innerText = `Order #${orderIdRaw} Created`;

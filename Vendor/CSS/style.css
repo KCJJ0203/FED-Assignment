@@ -84,6 +84,27 @@ body {
     border-top: 1px solid #eee;
 }
 
+.account-actions {
+    margin-top: 12px;
+    font-size: 13px;
+}
+.sign-out-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #EF4444;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.sign-out-link i {
+    font-size: 14px;
+}
+.sign-out-link:hover {
+    color: #B91C1C;
+}
+
+
 .user-avatar {
     width: 40px;
     height: 40px;
@@ -1319,4 +1340,116 @@ input:checked + .slider:before {
 .note-input:focus { 
     border-bottom: 1px solid #1A237E; 
     background: #f9f9f9;
+}
+
+@media (max-width: 1100px) {
+    .grid-layout,
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+    .card,
+    .kanban-column,
+    .pos-menu-area,
+    .pos-cart-sidebar {
+        padding: 22px;
+    }
+    .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .category-tabs {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        flex-direction: column;
+        overflow: visible;
+    }
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .nav-links li {
+        flex: 1 1 45%;
+    }
+    .nav-links a {
+        justify-content: center;
+        padding: 10px 12px;
+    }
+    .user-profile {
+        width: 100%;
+        justify-content: space-between;
+        border-top: none;
+        padding-top: 0;
+    }
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 20px;
+        gap: 12px;
+    }
+    .header-icons {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .dashboard-container,
+    .pos-menu-area {
+        padding: 20px;
+    }
+    .orders-toolbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .category-tabs {
+        gap: 8px;
+    }
+    .cat-pill {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        min-height: auto;
+    }
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+    .pos-layout {
+        flex-direction: column;
+    }
+    .pos-menu-area,
+    .pos-cart-sidebar {
+        height: auto;
+    }
+    .pos-cart-sidebar {
+        border-left: none;
+        border-top: 1px solid #eee;
+    }
+    .search-bar {
+        width: 100%;
+    }
+    .modal-content,
+    .payment-modal {
+        width: min(90%, 460px);
+    }
+    .account-actions {
+        justify-content: flex-end;
+        width: 100%;
+    }
 }

@@ -10,9 +10,6 @@
 
   <style>
     /* CSS Variable Definitions for consistent theming */
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-  <style>
     :root {
       --green-900: #0a5d3c;
       --green-800: #0b7d38;
@@ -112,9 +109,6 @@
     .legend-dot.scheduled { background: var(--scheduled); }
 
     /* Main content area */
-    .legend-dot.completed { background: var(--completed); }
-    .legend-dot.scheduled { background: var(--scheduled); }
-
     .content {
       padding: 30px 36px 50px;
     }
@@ -262,12 +256,6 @@
     }
 
     /* Icon container in detail card */
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: var(--text-muted);
-    }
-
     .detail-card .icon {
       width: 72px;
       height: 72px;
@@ -440,15 +428,6 @@
     .summary-card.total .badge { background: #e2e8f0; color: #475569; }
 
     /* Tablet responsive breakpoint */
-    .summary-card.completed { border-color: #22c55e; }
-    .summary-card.completed .badge { background: #d9fbe7; color: #16a34a; }
-
-    .summary-card.scheduled { border-color: #facc15; }
-    .summary-card.scheduled .badge { background: #fff4cc; color: #ca8a04; }
-
-    .summary-card.total { border-color: #94a3b8; }
-    .summary-card.total .badge { background: #e2e8f0; color: #475569; }
-
     @media (max-width: 980px) {
       .calendar-grid {
         grid-template-columns: 1fr;
@@ -543,8 +522,6 @@
   <div class="header">
     <div>
       <!-- Back button to dashboard -->
-  <div class="header">
-    <div>
       <a class="back" href="index.html">
         <i class="fas fa-chevron-left"></i> Back to Dashboard
       </a>
@@ -571,9 +548,6 @@
       <!-- Calendar card -->
       <div class="calendar-card">
         <!-- Calendar header with navigation controls -->
-  <div class="content">
-    <div class="calendar-grid">
-      <div class="calendar-card">
         <div class="calendar-header">
           <h2 id="calendarTitle">Month</h2>
           <div class="calendar-controls">
@@ -589,10 +563,6 @@
 
       <!-- Detail card showing inspection details for selected date -->
       <div class="detail-card empty" id="detailCard">
-        <div class="day-grid" id="dayGrid"></div>
-      </div>
-
-      <div class="detail-card" id="detailCard">
         <div class="icon"><i class="far fa-calendar"></i></div>
         <h3>Select a Date</h3>
         <p>Click on any date to view inspection details</p>
@@ -625,9 +595,6 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
     // Firebase configuration object
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
       authDomain: "fed-assignment-9c219.firebaseapp.com",
@@ -642,9 +609,6 @@
     const auth = getAuth(app);
 
     // Check authentication status and redirect if not logged in
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "/login.html";
     });
@@ -659,7 +623,6 @@
     const detailCard = document.getElementById("detailCard");
 
     // Month names for display
-
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -670,8 +633,6 @@
     let selectedDateKey = "";
 
     // Load inspection records from localStorage
-    let currentDate = new Date();
-
     function loadInspections() {
       return JSON.parse(localStorage.getItem("neaInspections") || "[]");
     }
@@ -689,11 +650,6 @@
         return value;
       }
       // Parse and convert to UTC date string
-    function normalizeDateKey(value) {
-      if (!value) return "";
-      if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-        return value;
-      }
       const parsed = new Date(value);
       if (Number.isNaN(parsed.getTime())) return "";
       return new Date(Date.UTC(
@@ -729,8 +685,6 @@
         const dateKey = normalizeDateKey(entry.scheduleDate || entry.completedAt);
         if (!dateKey) return;
         const date = new Date(`${dateKey}T00:00:00`);
-      loadInspections().forEach(entry => {
-        const date = new Date(entry.completedAt);
         if (date.getFullYear() === year && date.getMonth() === month) {
           const key = date.getDate();
           completed[key] = (completed[key] || 0) + 1;
@@ -755,9 +709,6 @@
         const pendingCount = scheduleItems.length
           ? pendingItems.length
           : fallbackLocations.length || 0;
-        const pendingItems = scheduleItems.filter(item => !completedSet.has(item.stallId));
-        const fallbackLocations = entry.locations?.[dateKey] || [];
-        const pendingCount = pendingItems.length || fallbackLocations.length || 0;
         if (pendingCount) {
           scheduled[dayKey] = (scheduled[dayKey] || 0) + pendingCount;
         }
@@ -869,7 +820,7 @@
           <div class="icon"><i class="far fa-calendar-check"></i></div>
           <div>
             <h3>${formatDateHeading(dateKey)}</h3>
-            <p>${pendingItems.length} scheduled Â· ${completedItems.length} completed</p>
+            <p>${pendingItems.length} scheduled · ${completedItems.length} completed</p>
           </div>
         </div>
         <div class="detail-section">
@@ -907,26 +858,6 @@
     }
 
     // Render the summary statistics for the current month
-    function handleDayClick(targetDate, isFuture, scheduledStallId, scheduledCentreId) {
-      if (scheduledStallId && scheduledCentreId) {
-        localStorage.setItem("selectedStallId", scheduledStallId);
-        localStorage.setItem("selectedHawkerCentreId", scheduledCentreId);
-        window.location.href = "inspect-stall.html";
-        return;
-      }
-
-      if (isFuture) {
-        alert("Inspection date saved! See you soon!");
-        return;
-      }
-
-      const inspections = loadInspections();
-      if (inspections.length) {
-        localStorage.setItem("selectedReportId", inspections[0].id);
-      }
-      window.location.href = "report.html";
-    }
-
     function renderSummary(month, year) {
       const inspections = loadInspections();
       const schedules = loadSchedules();
@@ -953,7 +884,6 @@
         return total + (scheduleItems.length
           ? pendingItems.length
           : (fallbackLocations.length || 0));
-        return total + (pendingItems.length || fallbackLocations.length || 0);
       }, 0);
 
       const total = completedCount + scheduledCount;
@@ -995,16 +925,6 @@
       dayGrid.innerHTML = dayNames.map(day => `<div class="day-name">${day}</div>`).join("");
 
       // Add empty cells for days before the 1st of the month
-      const firstDay = new Date(year, month, 1).getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const { completed, scheduled, completedByDate } = buildDayMap(year, month);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const schedules = loadSchedules();
-
-      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      dayGrid.innerHTML = dayNames.map(day => `<div class="day-name">${day}</div>`).join("");
-
       for (let i = 0; i < firstDay; i += 1) {
         dayGrid.innerHTML += `<div></div>`;
       }
@@ -1024,14 +944,9 @@
         if (selectedDateKey === dateKey) classes.push("active");
 
         // Build label showing inspection counts
-        const isFuture = targetDate > today;
-        const classes = ["day"];
-        if (isCompleted) classes.push("completed");
-        if (isScheduled) classes.push("scheduled");
-
         let label = "";
         if (isCompleted && isScheduled) {
-          label = `${completed[day]} done Â· ${scheduled[day]} scheduled`;
+          label = `${completed[day]} done · ${scheduled[day]} scheduled`;
         } else if (isCompleted) {
           label = `${completed[day]} done`;
         } else if (isScheduled) {
@@ -1039,7 +954,6 @@
         }
 
         // Get scheduled items and locations for this day
-        const dateKey = new Date(Date.UTC(year, month, day)).toISOString().split("T")[0];
         const scheduleItems = schedules
           .flatMap(entry => entry.scheduledStalls?.[dateKey] || [])
           .filter(Boolean);
@@ -1062,10 +976,6 @@
         // Render day button
         dayGrid.innerHTML += `
           <button type="button" class="${classes.join(" ")}" data-date="${targetDate.toISOString()}" data-date-key="${dateKey}" ${dataAttrs}>
-        const labelContent = [label, locationLabel].filter(Boolean).map(text => `<div>${text}</div>`).join("");
-
-        dayGrid.innerHTML += `
-          <button type="button" class="${classes.join(" ")}" data-date="${targetDate.toISOString()}" ${dataAttrs}>
             <div class="day-number">${day}</div>
             ${labelContent ? `<div class="day-labels">${labelContent}</div>` : ""}
           </button>
@@ -1084,18 +994,6 @@
           dayButton.classList.add("active");
           renderDetail(dateKey);
         });
-      document.querySelectorAll(".day[data-date]").forEach(dayButton => {
-        const dateValue = new Date(dayButton.dataset.date);
-        dateValue.setHours(0, 0, 0, 0);
-        const isFuture = dateValue > today;
-        const scheduledStallId = dayButton.dataset.stallId;
-        const scheduledCentreId = dayButton.dataset.centreId;
-        dayButton.addEventListener("click", () => handleDayClick(
-          dateValue,
-          isFuture,
-          scheduledStallId,
-          scheduledCentreId
-        ));
       });
 
       renderSummary(month, year);
@@ -1141,17 +1039,5 @@
   </script>
 </body>
 </html>
-    renderCalendar(currentDate);
 
-    const selectedCalendarDate = localStorage.getItem("selectedCalendarDate");
-    if (selectedCalendarDate) {
-      const parsedDate = new Date(selectedCalendarDate);
-      if (!Number.isNaN(parsedDate.getTime())) {
-        currentDate = parsedDate;
-        renderCalendar(currentDate);
-      }
-      localStorage.removeItem("selectedCalendarDate");
-    }
-  </script>
-</body>
-</html>
+

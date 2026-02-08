@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -22,6 +22,49 @@
     }
 
     * {
+      --green-900: #0b6d33;
+      --green-800: #0b7d38;
+      --green-700: #0a6a32;
+      --green-600: #0f7a3b;
+      --white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #6b7280;
+      --border: #e2e8f0;
+      --page-bg: #f6f7fb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--text-dark);
+    }
+
+    .header {
+      background: linear-gradient(180deg, var(--green-800), var(--green-700));
+      color: #fff;
+      padding: 26px 32px 36px;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-bottom: 16px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    h1 {
+      font-size: 28px;
+    body {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -83,6 +126,11 @@
       backdrop-filter: blur(6px);
     }
 
+    .sub {
+      opacity: 0.9;
+      font-size: 15px;
+    }
+
     .meta-chip {
       display: inline-flex;
       align-items: center;
@@ -91,6 +139,182 @@
       background: rgba(255, 255, 255, 0.2);
       padding: 8px 14px;
       border-radius: 999px;
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .inspector-card {
+      background: rgba(255, 255, 255, 0.18);
+      padding: 14px 18px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .content {
+      padding: 28px 32px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 24px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green-800);
+      margin-bottom: 16px;
+    }
+
+    .criteria-card {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .criteria-card h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .criteria-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 90px auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .score-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5f5;
+      font-size: 16px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .score-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .score-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .score-bar span {
+      display: block;
+      height: 100%;
+      background: var(--green-600);
+      width: 0;
+      transition: width 0.2s ease;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5f5;
+      font-size: 14px;
+      resize: none;
+      min-height: 120px;
+    }
+
+    .summary-card {
+      background: linear-gradient(180deg, var(--green-800), var(--green-700));
+      color: #fff;
+      border-radius: 22px;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      height: fit-content;
+    }
+
+    .summary-score {
+      text-align: center;
+    }
+
+    .summary-score h2 {
+      font-size: 44px;
+      margin-bottom: 4px;
+    }
+
+    .summary-score span {
+      font-size: 16px;
+    }
+
+    .summary-bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .summary-bar span {
+      display: block;
+      height: 100%;
+      background: #fff;
+      width: 0;
+      transition: width 0.2s ease;
+    }
+
+    .grade-select {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .grade-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 14px;
+      padding: 16px 0;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .grade-btn.active {
+      background: #fff;
+      color: var(--green-700);
+    }
+
+    .save-btn {
+      margin-top: 6px;
+      background: #fff;
+      color: var(--green-700);
       font-size: 14px;
     }
 
@@ -260,6 +484,27 @@
       padding: 12px 16px;
       border: none;
       border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1100px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        padding: 24px 20px 30px;
+      }
+
+      .content {
+        padding: 24px 20px 36px;
+      }
+    }
+      font-weight: 600;
       cursor: pointer;
     }
 
@@ -335,6 +580,13 @@
             <i class="far fa-calendar"></i>
             <span id="scheduleMeta">Not scheduled</span>
           </div>
+          <i class="fas fa-chevron-left"></i> Back to Stalls
+        </a>
+        <h1 id="stallTitle">#01-01 - Stall</h1>
+        <div class="sub" id="centreName">Hawker Centre</div>
+        <div class="meta-chip">
+          <i class="far fa-calendar"></i>
+          <span id="scheduleMeta">Not scheduled</span>
         </div>
       </div>
       <div class="inspector-card">
@@ -344,6 +596,131 @@
           <strong>Officer NEA-12345</strong>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div>
+      <div class="section-title">Inspection Criteria</div>
+
+      <div class="criteria-card" data-max="25">
+        <h3>Food Hygiene <i class="fas fa-pen"></i></h3>
+        <p>Proper food storage, temperature control, and handling</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="25" min="0" id="foodHygiene" value="0">
+          <div class="score-meta">
+            <span>/ 25 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="20">
+        <h3>Premises Cleanliness <i class="fas fa-pen"></i></h3>
+        <p>Overall cleanliness of cooking and dining areas</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="20" min="0" id="cleanliness" value="0">
+          <div class="score-meta">
+            <span>/ 20 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="15">
+        <h3>Food Handler Hygiene <i class="fas fa-pen"></i></h3>
+        <p>Personal hygiene and food handler certification</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="15" min="0" id="handlerHygiene" value="0">
+          <div class="score-meta">
+            <span>/ 15 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="15">
+        <h3>Pest Control <i class="fas fa-pen"></i></h3>
+        <p>Evidence of pest control and safe practices</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="15" min="0" id="pestControl" value="0">
+          <div class="score-meta">
+            <span>/ 15 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="10">
+        <h3>Waste Management <i class="fas fa-pen"></i></h3>
+        <p>Waste disposal practices and bins management</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="10" min="0" id="wasteManagement" value="0">
+          <div class="score-meta">
+            <span>/ 10 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="10">
+        <h3>Equipment & Facilities <i class="fas fa-pen"></i></h3>
+        <p>Equipment hygiene and maintenance</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="10" min="0" id="equipment" value="0">
+          <div class="score-meta">
+            <span>/ 10 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="5">
+        <h3>Licensing & Documentation <i class="fas fa-pen"></i></h3>
+        <p>Licensing, documentation, and compliance checks</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="5" min="0" id="licensing" value="0">
+          <div class="score-meta">
+            <span>/ 5 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <h3>Remarks</h3>
+        <textarea id="remarks" placeholder="Enter remarks..."></textarea>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div style="text-align: center; font-weight: 600;">TOTAL INSPECTION SCORE</div>
+      <div class="summary-score">
+        <h2 id="totalScore">0</h2>
+        <span>/ 100</span>
+      </div>
+      <div class="summary-bar">
+        <span id="totalProgress"></span>
+      </div>
+      <div style="text-align: center; font-size: 20px; font-weight: 700;">
+        <span id="totalPercent">0%</span>
+      </div>
+      <div style="text-align: center; font-weight: 600;">HYGIENE GRADE</div>
+      <div class="grade-select">
+        <button class="grade-btn" data-grade="A">A</button>
+        <button class="grade-btn" data-grade="B">B</button>
+        <button class="grade-btn" data-grade="C">C</button>
+        <button class="grade-btn" data-grade="D">D</button>
+      </div>
+      <button class="save-btn">SAVE INSPECTION</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+    <div class="back" onclick="window.history.back()">
+      <i class="fas fa-chevron-left"></i> Back to Stalls
     </div>
   </div>
 
@@ -483,6 +860,12 @@
       if (!user) window.location.href = "/login.html";
     });
 
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, user => {
+      if (!user) window.location.href = "/login.html";
+    });
+
     const stallId = localStorage.getItem("selectedStallId");
     if (!stallId) window.location.href = "index.html";
 
@@ -499,7 +882,7 @@
         day: "numeric",
         month: "short",
         year: "numeric"
-      })} • ${scheduleTime}`;
+      })} â€¢ ${scheduleTime}`;
     }
 
     const stallSnap = await getDoc(doc(db, "stalls", stallId));
@@ -510,6 +893,8 @@
       document.getElementById("stallTitle").textContent = stallLocation
         ? `${stallLocation} - ${stallName}`
         : stallName;
+      document.getElementById("stallTitle").textContent =
+        `${s.location || ""} - ${s.name}`;
     }
 
     const centreId = localStorage.getItem("selectedHawkerCentreId");
@@ -593,6 +978,25 @@
       wasteManagement.value = d.wasteManagement || "0";
       equipment.value = d.equipment || "0";
       licensing.value = d.licensing || "0";
+      remarks.value = d.remarks || "";
+      updateTotals();
+    }
+
+    function loadInspections() {
+      return JSON.parse(localStorage.getItem(inspectionsKey) || "[]");
+    }
+
+    function saveInspection(entry) {
+      const inspections = loadInspections();
+      inspections.unshift(entry);
+      localStorage.setItem(inspectionsKey, JSON.stringify(inspections));
+      foodHygiene.value = d.foodHygiene || "";
+      cleanliness.value = d.cleanliness || "";
+      handlerHygiene.value = d.handlerHygiene || "";
+      pestControl.value = d.pestControl || "";
+      wasteManagement.value = d.wasteManagement || "";
+      equipment.value = d.equipment || "";
+      licensing.value = d.licensing || "";
       remarks.value = d.remarks || "";
       updateTotals();
     }

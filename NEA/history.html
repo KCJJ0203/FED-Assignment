@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -10,6 +10,9 @@
 
   <style>
     /* CSS Variable Definitions for consistent theming */
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
     :root {
       --green-900: #046a51;
       --green-800: #057a5f;
@@ -257,6 +260,10 @@
     .grade-d { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
 
     /* View report button */
+    .grade-b { background: #fff7ed; color: #b45309; border-color: #fde68a; }
+    .grade-c { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    .grade-d { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+
     .view-btn {
       border: none;
       background: #059669;
@@ -419,6 +426,8 @@
     <!-- Filter controls -->
     <div class="filters">
       <!-- Search input -->
+  <div class="content">
+    <div class="filters">
       <div class="search">
         <i class="fas fa-search"></i>
         <input type="text" id="searchInput" placeholder="Search by stall name, food centre, or stall ID...">
@@ -443,6 +452,9 @@
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
     // Firebase configuration
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
       authDomain: "fed-assignment-9c219.firebaseapp.com",
@@ -457,6 +469,9 @@
     const auth = getAuth(app);
 
     // Check authentication status and redirect if not logged in
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "/login.html";
     });
@@ -475,6 +490,8 @@
     function updateSummary(inspections) {
       const total = inspections.length;
       // Count inspections by grade
+    function updateSummary(inspections) {
+      const total = inspections.length;
       const gradeCounts = inspections.reduce((acc, entry) => {
         acc[entry.grade] = (acc[entry.grade] || 0) + 1;
         return acc;
@@ -496,6 +513,8 @@
     const fallbackImage = "../image/default-hawker.jpg";
 
     // Normalize image URL to proper format
+    const fallbackImage = "../image/default-hawker.jpg";
+
     function normalizeImageUrl(url) {
       if (!url) return fallbackImage;
       if (url.startsWith("http://") || url.startsWith("https://")) return url;
@@ -513,6 +532,10 @@
       if (directImage) return normalizeImageUrl(directImage);
 
       // Try to match known centres by name
+    function resolveCentreImage(entry) {
+      const directImage = entry.centreImage || entry.imageUrl;
+      if (directImage) return normalizeImageUrl(directImage);
+
       const centreName = (entry.centreName || "").toLowerCase();
       if (centreName.includes("maxwell")) {
         return normalizeImageUrl("maxwell.jpg");
@@ -533,6 +556,9 @@
       const gradeValue = gradeFilter.value;
       
       // Filter inspections based on search and grade
+    function renderHistory() {
+      const term = searchInput.value.trim().toLowerCase();
+      const gradeValue = gradeFilter.value;
       const inspections = loadInspections().filter(entry => {
         const combined = `${entry.stallTitle} ${entry.centreName}`.toLowerCase();
         const matchesSearch = combined.includes(term);
@@ -599,6 +625,12 @@
     gradeFilter.addEventListener("change", renderHistory);
     
     // Initial render
+    renderHistory();
+  </script>
+</body>
+</html>
+    searchInput.addEventListener("input", renderHistory);
+    gradeFilter.addEventListener("change", renderHistory);
     renderHistory();
   </script>
 </body>

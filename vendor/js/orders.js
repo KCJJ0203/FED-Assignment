@@ -113,6 +113,7 @@ function subscribeToOrders() {
 }
 
 function normalizeOrder(order) {
+  // Consolidate historical order-type variants into canonical board labels.
   const normalizedType = String(order.type || "").toLowerCase();
   const normalizedFulfillment = String(order.fulfillment || "").toLowerCase();
   let displayType = order.type || "Walk-In";
@@ -243,6 +244,7 @@ function createOrderCard(order, docId, showNewBadge) {
 function updateStatus(docId, newStatus) {
   if (!docId || !newStatus) return;
 
+  // Completing an order removes it from the active queue; other transitions update status in place.
   if (newStatus === "completed") {
     getActiveOrdersRef()
       .doc(docId)

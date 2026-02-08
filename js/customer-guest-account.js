@@ -16,6 +16,8 @@ import { getFirebaseApp } from "./firebase-config.js";
 const app = getFirebaseApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storageApi = window.AppStorage || null;
+const storageKeys = storageApi ? storageApi.KEYS : {};
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
@@ -45,10 +47,23 @@ $$(".fav-tab").forEach(btn => {
 });
 
 function getPrefs() {
-  try { return JSON.parse(localStorage.getItem("cg_prefs")) || {}; }
+  const prefsKey = storageKeys.CUSTOMER_PREFS || "cg_prefs";
+  try {
+    if (storageApi && typeof storageApi.readJSON === "function") {
+      return storageApi.readJSON(localStorage, prefsKey, {}) || {};
+    }
+    return JSON.parse(localStorage.getItem(prefsKey)) || {};
+  }
   catch { return {}; }
 }
-function setPrefs(p) { localStorage.setItem("cg_prefs", JSON.stringify(p)); }
+function setPrefs(p) {
+  const prefsKey = storageKeys.CUSTOMER_PREFS || "cg_prefs";
+  if (storageApi && typeof storageApi.writeJSON === "function") {
+    storageApi.writeJSON(localStorage, prefsKey, p);
+    return;
+  }
+  localStorage.setItem(prefsKey, JSON.stringify(p));
+}
 
 function restorePrefs() {
   const prefs = getPrefs();
@@ -75,7 +90,12 @@ $$(".star").forEach(star => {
 
 $("#logoutBtn")?.addEventListener("click", async () => {
   await signOut(auth);
-  localStorage.removeItem("userType");
+  const userTypeKey = storageKeys.USER_TYPE || "userType";
+  if (storageApi && typeof storageApi.remove === "function") {
+    storageApi.remove(localStorage, userTypeKey);
+  } else {
+    localStorage.removeItem(userTypeKey);
+  }
   window.location.href = "../login.html";
 });
 
@@ -175,9 +195,9 @@ function escapeHtml(s) {
 }
 
 const FAV_KEYS = {
-  hawker: "cg_fav_hawker",
-  stall: "cg_fav_stall",
-  dish: "cg_fav_dish"
+  hawker: storageKeys.FAVORITE_HAWKERS || "cg_fav_hawker",
+  stall: storageKeys.FAVORITE_STALLS || "cg_fav_stall",
+  dish: storageKeys.FAVORITE_DISHES || "cg_fav_dish"
 };
 
 function readFavs(type) {
@@ -420,7 +440,7 @@ async function loadMyReviews() {
   if (!currentUser) return;
 
   try {
-    const rtdb = getDatabase(app, firebaseConfig.databaseURL);
+    const rtdb = getDatabase(app);
     const snap = await get(ref(rtdb, `userReviews/${currentUser.uid}`));
 
     myReviewsList.innerHTML = "";

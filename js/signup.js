@@ -5,6 +5,8 @@ import { getFirebaseApp } from "./firebase-config.js";
 const app = getFirebaseApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storageApi = window.AppStorage || null;
+const USER_TYPE_KEY = storageApi?.KEYS?.USER_TYPE || "userType";
 
 const form = document.querySelector(".login-form");
 const nameInput = form.querySelector('input[name="name"]');
@@ -78,7 +80,7 @@ form.addEventListener("submit", async (e) => {
       createdAt: new Date().toISOString()
     });
 
-    localStorage.setItem("userType", "customer");
+    localStorage.setItem(USER_TYPE_KEY, "customer");
 
     alert("Account created successfully! Redirecting to login...");
     

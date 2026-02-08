@@ -11,9 +11,9 @@ Orders now use a linked dual-write flow for customer checkout:
 ## Team & Roles (With Student IDs)
 - Ten Yen Kiat James (S10275024K) - Buyer: customer ordering, checkout, and order history (guest/local + registered/DB).
 - Htet Myat Aung (S10268492G) - Account management and engagement (login/out, preferences, feedback, likes, payment methods). Planned/design scope.
-- Ngoo Kah Chun (S10269307) - Vendor/operations features (notification hub, queue management, walk-in digitization, analytics, menu and sustainability control). Planned/design scope.
+- Ngoo Kah Chun (S10269307) - vendor/operations features (notification hub, queue management, walk-in digitization, analytics, menu and sustainability control). Planned/design scope.
 - Niranjan Palani Selvam (S10272462A) - Regulatory and compliance/inspection system (scheduling, logging, grades, filtering, autosave). Planned/design scope.
-- Ding Yi Xian (S10275030G) - Admin/operator analytics and vendor contract management. Planned/design scope.
+- Ding Yi Xian (S10275030G) - admin/operator analytics and vendor contract management. Planned/design scope.
 
 ## Buyer Scope (Member 1)
 
@@ -58,20 +58,11 @@ Registered order history:
 - Firebase: Auth, Firestore, and Realtime Database.
 
 ## Firebase Details
-Firebase init is now partially centralized:
+Firebase runtime is centralized through shared helpers:
 
-- Modular Customer/Auth scripts share `js/firebase-config.js` (`getFirebaseApp()` helper).
-- Vendor compat scripts share `Vendor/js/firebase-init.js`.
-- Remaining duplicated/inline config still exists in NEA pages and classic scripts:
-  - `js/customer-guest-cart.js`
-  - `js/customer-guest-orders.js`
-  - `NEA/index.html`
-  - `NEA/calendar.html`
-  - `NEA/history.html`
-  - `NEA/inspection.html`
-  - `NEA/inspect-stall.html`
-  - `NEA/report.html`
-  - `NEA/today.html`
+- `js/app-firebase.js` exposes `window.AppFirebase` for non-module pages/scripts.
+- `js/firebase-config.js` reads the same shared config for module-based scripts.
+- Vendor compat scripts (`vendor/js/firebase-init.js`) now consume shared config from `window.AppFirebase`.
 
 Firebase products used:
 - Auth: login, registered vs guest flow, and sign-out for guest mode.
@@ -81,12 +72,12 @@ Firebase products used:
 ## User Types & Routing
 User routing based on `userType`:
 - `customer` -> `customer-guest/index.html`
-- `vendor` -> `Vendor/index.html`
-- `nea` -> `NEA/index.html`
-- `admin` -> `Admin/Home.html`
+- `vendor` -> `vendor/index.html`
+- `nea` -> `nea/index.html`
+- `admin` -> `admin/home.html`
 - `guest` -> `customer-guest/index.html`
 
-Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match this casing on case-sensitive hosting.
+Note: role folder paths are normalized to lowercase (`vendor`, `nea`, `admin`) for case-safe hosting.
 
 ## APIs / Data Sources
 - data.gov.sg API: hawker centre list in `js/customer-guest-hawkers.js`.
@@ -103,11 +94,11 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
 ## File Structure (Actual)
 ```text
 /
-  Admin/
-    Analytics.html
-    Home.html
-    Report.html
-  NEA/
+  admin/
+    analytics.html
+    home.html
+    report.html
+  nea/
     calendar.html
     history.html
     index.html
@@ -115,8 +106,8 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
     inspection.html
     report.html
     today.html
-  Vendor/
-    CSS/
+  vendor/
+    css/
       style.css
     js/
       firebase-init.js
@@ -139,12 +130,16 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
     orders.html
   css/
     customer-guest.css
+    design-tokens.css
     main.css
   image/
     default-hawker.jpg
     placeholder.svg
     ...jpg assets
   js/
+    app-firebase.js
+    app-storage.js
+    app-validation.js
     customer-guest-account.js
     customer-guest-cart-utils.js
     customer-guest-cart.js
@@ -169,8 +164,9 @@ See [credits.html](credits.html) for the full credits list (including image sour
 ## Known Limitations
 - Payment success/failure is simulated; no real payment integration.
 - Failed payments do not redirect to Orders; the user remains on checkout.
-- Some legacy scripts/pages still initialize Firebase inline (NEA pages + selected classic customer scripts).
 
 ## Future Improvements
 - Add real payment integration.
 - Add stronger checkout validation (address/payment details).
+
+

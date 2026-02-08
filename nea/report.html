@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inspection Report</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
@@ -338,34 +339,41 @@
     </div>
   </div>
 
+  <script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-      authDomain: "fed-assignment-9c219.firebaseapp.com",
-      projectId: "fed-assignment-9c219",
-      storageBucket: "fed-assignment-9c219.firebasestorage.app",
-      messagingSenderId: "287410844855",
-      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+    const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const STORAGE = {
+      reportId: storageKeys.NEA_SELECTED_REPORT_ID || "selectedReportId",
+      inspections: storageKeys.NEA_INSPECTIONS || "neaInspections"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const readLocalJson = (key, fallback) => {
+      if (storageApi && typeof storageApi.readJSON === "function") {
+        return storageApi.readJSON(localStorage, key, fallback);
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    };
 
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "../login.html";
     });
 
-    const reportId = localStorage.getItem("selectedReportId");
-    const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
+    const reportId = localStorage.getItem(STORAGE.reportId);
+    const inspections = readLocalJson(STORAGE.inspections, []);
     const report = inspections.find(entry => entry.id === reportId) || inspections[0];
     const backLink = document.getElementById("backLink");
 
     const criteriaList = document.getElementById("criteriaList");
 
-    const fallbackTarget = document.referrer && document.referrer.includes("/NEA/")
+    const fallbackTarget = document.referrer && document.referrer.includes("/nea/")
       ? document.referrer
       : "history.html";
 
@@ -424,3 +432,4 @@
   </main>
 </body>
 </html>
+

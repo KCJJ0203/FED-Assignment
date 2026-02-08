@@ -37,15 +37,15 @@
         return Number.isNaN(date.getTime()) ? "" : date.toLocaleString();
     };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-        authDomain: "fed-assignment-9c219.firebaseapp.com",
-        databaseURL: "https://fed-assignment-9c219-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "fed-assignment-9c219",
-        storageBucket: "fed-assignment-9c219.firebasestorage.app",
-        messagingSenderId: "287410844855",
-        appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-        measurementId: "G-CJBDRY9RQ5"
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const CHECKOUT_SUCCESS_KEY = storageKeys.CHECKOUT_SUCCESS || "guestOrderSuccess";
+
+    const getRealtimeDb = async () => {
+        if (!window.AppFirebase || typeof window.AppFirebase.getRealtimeDb !== "function") {
+            throw new Error("AppFirebase.getRealtimeDb is unavailable.");
+        }
+        return window.AppFirebase.getRealtimeDb();
     };
 
     const setReviewError = (msg) => {
@@ -208,17 +208,36 @@
         if (!successEl) {
             return;
         }
-        const stored = sessionStorage.getItem("guestOrderSuccess");
-        if (!stored) {
+        const storedPayload = storageApi && typeof storageApi.readJSON === "function"
+            ? storageApi.readJSON(sessionStorage, CHECKOUT_SUCCESS_KEY, null)
+            : (() => {
+                const raw = sessionStorage.getItem(CHECKOUT_SUCCESS_KEY);
+                if (!raw) {
+                    return null;
+                }
+                try {
+                    return JSON.parse(raw);
+                } catch (error) {
+                    return null;
+                }
+            })();
+        if (!storedPayload) {
             return;
         }
         try {
-            JSON.parse(stored);
             successEl.classList.remove("is-hidden");
             ordersStatusEl.parentElement?.parentElement?.classList.add("is-hidden");
-            sessionStorage.removeItem("guestOrderSuccess");
+            if (storageApi && typeof storageApi.remove === "function") {
+                storageApi.remove(sessionStorage, CHECKOUT_SUCCESS_KEY);
+            } else {
+                sessionStorage.removeItem(CHECKOUT_SUCCESS_KEY);
+            }
         } catch (error) {
-            sessionStorage.removeItem("guestOrderSuccess");
+            if (storageApi && typeof storageApi.remove === "function") {
+                storageApi.remove(sessionStorage, CHECKOUT_SUCCESS_KEY);
+            } else {
+                sessionStorage.removeItem(CHECKOUT_SUCCESS_KEY);
+            }
         }
     };
 
@@ -271,46 +290,26 @@
 
     const getAuthUser = async () => {
         try {
-            const [{ initializeApp, getApps }, { getAuth, onAuthStateChanged }] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js"),
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js")
-            ]);
-
-            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-
-            return await new Promise((resolve) => {
-                const timer = setTimeout(() => {
-                    unsub();
-                    resolve(auth.currentUser || null);
-                }, 1200);
-
-                const unsub = onAuthStateChanged(auth, (user) => {
-                    clearTimeout(timer);
-                    unsub();
-                    resolve(user || null);
-                });
-            });
+            if (!window.AppFirebase || typeof window.AppFirebase.getAuthUser !== "function") {
+                throw new Error("AppFirebase.getAuthUser is unavailable.");
+            }
+            return await window.AppFirebase.getAuthUser(1200);
         } catch (error) {
+            console.warn("Unable to resolve auth user for orders:", error);
             return null;
         }
     };
 
     const loadOrdersFromRtdb = async (user) => {
         try {
-            const [{ initializeApp, getApps }] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js")
-            ]);
-            const { getDatabase, ref, get } = await import(
+            const { ref, get } = await import(
                 "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js"
             );
-
-            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
             if (!user) {
                 return null;
             }
 
-            const db = getDatabase(app);
+            const db = await getRealtimeDb();
             const snap = await get(ref(db, `orders/${user.uid}`));
             if (!snap.exists()) {
                 return [];
@@ -339,15 +338,11 @@
         if (!message) return setReviewError("Enter your message.");
 
         try {
-            const [{ initializeApp, getApps }] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js")
-            ]);
-            const { getDatabase, ref, push, set } = await import(
+            const { ref, push, set } = await import(
                 "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js"
             );
 
-            const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-            const rtdb = getDatabase(app);
+            const rtdb = await getRealtimeDb();
 
             const payload = {
                 orderId: reviewTarget.orderId,

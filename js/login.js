@@ -1,10 +1,12 @@
-import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+﻿import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 import { getFirebaseApp } from "./firebase-config.js";
 
 const app = getFirebaseApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storageApi = window.AppStorage || null;
+const USER_TYPE_KEY = storageApi?.KEYS?.USER_TYPE || "userType";
 
 const form = document.querySelector(".login-form");
 const emailInput = form.querySelector('input[name="email"]');
@@ -52,16 +54,16 @@ form.addEventListener("submit", async (e) => {
     }
 
     const userType = snap.data().userType;
-    localStorage.setItem("userType", userType);
+    localStorage.setItem(USER_TYPE_KEY, userType);
 
     if (userType === "customer") {
       window.location.href = "customer-guest/index.html";
     } else if (userType === "vendor") {
-      window.location.href = "Vendor/index.html";
+      window.location.href = "vendor/index.html";
     } else if (userType === "nea") {
-      window.location.href = "NEA/index.html";
+      window.location.href = "nea/index.html";
     } else if (userType === "admin") {
-      window.location.href = "Admin/Home.html";
+      window.location.href = "admin/home.html";
     } else {
       setError("User type missing or not recognized. Please contact support.");
     }
@@ -70,3 +72,5 @@ form.addEventListener("submit", async (e) => {
     console.error(err);
   }
 });
+
+

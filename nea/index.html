@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Officer Dashboard</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
 
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -446,28 +447,53 @@
     <div id="centresList" class="cards"></div>
   </div>
 
+  <script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
   <script type="module">
-    
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+    import { signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-      authDomain: "fed-assignment-9c219.firebaseapp.com",
-      projectId: "fed-assignment-9c219",
-      storageBucket: "fed-assignment-9c219.firebasestorage.app",
-      messagingSenderId: "287410844855",
-      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+    const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+    const db = await window.AppFirebase.getFirestoreDb();
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const STORAGE = {
+      inspections: storageKeys.NEA_INSPECTIONS || "neaInspections",
+      schedules: storageKeys.NEA_SCHEDULES || "neaSchedules",
+      centreId: storageKeys.NEA_SELECTED_CENTRE_ID || "selectedHawkerCentreId",
+      centreName: storageKeys.NEA_SELECTED_CENTRE_NAME || "selectedHawkerCentreName",
+      stallId: storageKeys.NEA_SELECTED_STALL_ID || "selectedStallId",
+      scheduleDate: storageKeys.NEA_SCHEDULE_DATE || "scheduleDate",
+      scheduleTime: storageKeys.NEA_SCHEDULE_TIME || "scheduleTime",
+      reportId: storageKeys.NEA_SELECTED_REPORT_ID || "selectedReportId",
+      calendarDate: storageKeys.NEA_SELECTED_CALENDAR_DATE || "selectedCalendarDate",
+      calendarStallId: storageKeys.NEA_SELECTED_CALENDAR_STALL_ID || "selectedCalendarStallId",
+      calendarCentreId: storageKeys.NEA_SELECTED_CALENDAR_CENTRE_ID || "selectedCalendarCentreId",
+      thisWeek: storageKeys.NEA_THIS_WEEK_INSPECTIONS || "thisWeekInspections",
+      draftPrefix: storageKeys.NEA_DRAFT_PREFIX || "inspectionDraft_"
     };
 
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const readLocalJson = (key, fallback) => {
+      if (storageApi && typeof storageApi.readJSON === "function") {
+        return storageApi.readJSON(localStorage, key, fallback);
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    };
 
-    
+    const setLocalValue = (key, value) => localStorage.setItem(key, value);
+    const removeLocalKey = (key) => {
+      if (storageApi && typeof storageApi.remove === "function") {
+        storageApi.remove(localStorage, key);
+      } else {
+        localStorage.removeItem(key);
+      }
+    };
+
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "../login.html";
     });
@@ -492,7 +518,7 @@
 
     
     function getCompletedTodaySet(todayKey) {
-      const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
+      const inspections = readLocalJson(STORAGE.inspections, []);
       return new Set(
         inspections
           .filter(entry => entry.completedAt && toLocalDateKey(new Date(entry.completedAt)) === todayKey)
@@ -504,8 +530,8 @@
     
     function getTodayCount() {
   const todayKey = toLocalDateKey(new Date());
-  const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
-  const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
+  const schedules = readLocalJson(STORAGE.schedules, []);
+  const inspections = readLocalJson(STORAGE.inspections, []);
 
   const makeInspectionKey = (stallId, centreId, label) => {
     const normalizedStallId = String(stallId || "").trim();
@@ -680,15 +706,8 @@
     
     document.querySelectorAll(".centre-card").forEach(card => {
       card.addEventListener("click", () => {
-        localStorage.setItem(
-          "selectedHawkerCentreId",
-          card.dataset.centreId
-        );
-
-        localStorage.setItem(
-          "selectedHawkerCentreName",
-          card.dataset.centreName
-        );
+        setLocalValue(STORAGE.centreId, card.dataset.centreId);
+        setLocalValue(STORAGE.centreName, card.dataset.centreName);
 
         window.location.href = "inspection.html";
       });
@@ -711,23 +730,23 @@
     async function handleLogout() {
       await signOut(auth);
       const keysToRemove = [
-        "selectedHawkerCentreId",
-        "selectedHawkerCentreName",
-        "selectedStallId",
-        "scheduleDate",
-        "scheduleTime",
-        "selectedCalendarDate",
-        "selectedCalendarStallId",
-        "selectedCalendarCentreId",
-        "selectedReportId",
-        "thisWeekInspections",
-        "neaSchedules",
-        "neaInspections"
+        STORAGE.centreId,
+        STORAGE.centreName,
+        STORAGE.stallId,
+        STORAGE.scheduleDate,
+        STORAGE.scheduleTime,
+        STORAGE.calendarDate,
+        STORAGE.calendarStallId,
+        STORAGE.calendarCentreId,
+        STORAGE.reportId,
+        STORAGE.thisWeek,
+        STORAGE.schedules,
+        STORAGE.inspections
       ];
-      keysToRemove.forEach((key) => localStorage.removeItem(key));
+      keysToRemove.forEach((key) => removeLocalKey(key));
       Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith("inspectionDraft_")) {
-          localStorage.removeItem(key);
+        if (key.startsWith(STORAGE.draftPrefix)) {
+          removeLocalKey(key);
         }
       });
       window.location.href = "../login.html";

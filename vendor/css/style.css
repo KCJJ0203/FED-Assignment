@@ -1203,6 +1203,22 @@ input:checked + .slider:before {
 }
 .toggle-btn input { margin: 0; }
 
+.field-error {
+    color: #c62828;
+    font-size: 12px;
+    min-height: 16px;
+    margin-top: 6px;
+}
+
+#settings-form-error {
+    margin: 0 0 12px;
+}
+
+#settings-form input.is-invalid {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.15);
+}
+
 .order-mode-tabs {
     display: flex;
     background: #f0f2f5;

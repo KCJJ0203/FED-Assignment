@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inspection Calendar</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
@@ -522,26 +523,43 @@
     </div>
   </div>
 
+  <script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
   <script type="module">
-    
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-      authDomain: "fed-assignment-9c219.firebaseapp.com",
-      projectId: "fed-assignment-9c219",
-      storageBucket: "fed-assignment-9c219.firebasestorage.app",
-      messagingSenderId: "287410844855",
-      appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
+    const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const STORAGE = {
+      inspections: storageKeys.NEA_INSPECTIONS || "neaInspections",
+      schedules: storageKeys.NEA_SCHEDULES || "neaSchedules",
+      centreId: storageKeys.NEA_SELECTED_CENTRE_ID || "selectedHawkerCentreId",
+      stallId: storageKeys.NEA_SELECTED_STALL_ID || "selectedStallId",
+      reportId: storageKeys.NEA_SELECTED_REPORT_ID || "selectedReportId",
+      calendarDate: storageKeys.NEA_SELECTED_CALENDAR_DATE || "selectedCalendarDate",
+      calendarStallId: storageKeys.NEA_SELECTED_CALENDAR_STALL_ID || "selectedCalendarStallId",
+      calendarCentreId: storageKeys.NEA_SELECTED_CALENDAR_CENTRE_ID || "selectedCalendarCentreId"
     };
 
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const readLocalJson = (key, fallback) => {
+      if (storageApi && typeof storageApi.readJSON === "function") {
+        return storageApi.readJSON(localStorage, key, fallback);
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    };
 
-    
+    const removeLocalKey = (key) => {
+      if (storageApi && typeof storageApi.remove === "function") {
+        storageApi.remove(localStorage, key);
+      } else {
+        localStorage.removeItem(key);
+      }
+    };
+
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "../login.html";
     });
@@ -567,12 +585,12 @@
 
     
     function loadInspections() {
-      return JSON.parse(localStorage.getItem("neaInspections") || "[]");
+      return readLocalJson(STORAGE.inspections, []);
     }
 
     
     function loadSchedules() {
-      return JSON.parse(localStorage.getItem("neaSchedules") || "[]");
+      return readLocalJson(STORAGE.schedules, []);
     }
 
     
@@ -753,7 +771,7 @@
           <div class="icon"><i class="far fa-calendar-check"></i></div>
           <div>
             <h3>${formatDateHeading(dateKey)}</h3>
-            <p>${pendingItems.length} scheduled · ${completedItems.length} completed</p>
+            <p>${pendingItems.length} scheduled � ${completedItems.length} completed</p>
           </div>
         </div>
         <div class="detail-section">
@@ -769,9 +787,9 @@
       
       detailCard.querySelectorAll(".action-btn.start").forEach(button => {
         button.addEventListener("click", () => {
-          localStorage.setItem("selectedStallId", button.dataset.stallId);
+          localStorage.setItem(STORAGE.stallId, button.dataset.stallId);
           if (button.dataset.centreId) {
-            localStorage.setItem("selectedHawkerCentreId", button.dataset.centreId);
+            localStorage.setItem(STORAGE.centreId, button.dataset.centreId);
           }
           localStorage.setItem("scheduleDate", dateKey);
           if (button.dataset.time) {
@@ -784,7 +802,7 @@
       
       detailCard.querySelectorAll(".action-btn.view").forEach(button => {
         button.addEventListener("click", () => {
-          localStorage.setItem("selectedReportId", button.dataset.reportId);
+          localStorage.setItem(STORAGE.reportId, button.dataset.reportId);
           window.location.href = "report.html";
         });
       });
@@ -879,7 +897,7 @@
         
         let label = "";
         if (isCompleted && isScheduled) {
-          label = `${completed[day]} done · ${scheduled[day]} scheduled`;
+          label = `${completed[day]} done � ${scheduled[day]} scheduled`;
         } else if (isCompleted) {
           label = `${completed[day]} done`;
         } else if (isScheduled) {
@@ -920,7 +938,7 @@
         const dateKey = dayButton.dataset.dateKey;
         dayButton.addEventListener("click", () => {
           selectedDateKey = dateKey;
-          localStorage.setItem("selectedCalendarDate", dateKey);
+          localStorage.setItem(STORAGE.calendarDate, dateKey);
           
           document.querySelectorAll(".day.active").forEach(btn => btn.classList.remove("active"));
           
@@ -954,8 +972,8 @@
     renderCalendar(currentDate);
 
     
-    const selectedCalendarDate = localStorage.getItem("selectedCalendarDate");
-    const selectedCalendarStallId = localStorage.getItem("selectedCalendarStallId") || "";
+    const selectedCalendarDate = localStorage.getItem(STORAGE.calendarDate);
+    const selectedCalendarStallId = localStorage.getItem(STORAGE.calendarStallId) || "";
     if (selectedCalendarDate) {
       const parsedDate = new Date(`${selectedCalendarDate}T00:00:00`);
       if (!Number.isNaN(parsedDate.getTime())) {
@@ -965,9 +983,9 @@
         renderDetail(selectedCalendarDate, selectedCalendarStallId);
       }
       
-      localStorage.removeItem("selectedCalendarDate");
-      localStorage.removeItem("selectedCalendarStallId");
-      localStorage.removeItem("selectedCalendarCentreId");
+      removeLocalKey(STORAGE.calendarDate);
+      removeLocalKey(STORAGE.calendarStallId);
+      removeLocalKey(STORAGE.calendarCentreId);
     }
   </script>
   </main>

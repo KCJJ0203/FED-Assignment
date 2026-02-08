@@ -1626,6 +1626,7 @@ function toggleFavorite(type, item) {
         });
     }
 
+    // Merge Firestore stalls with API mock stalls so the UI remains populated in partial-data scenarios.
     const ensureStallsLoaded = async () => {
         if (!hasStallUi || stallsLoaded || stallsLoading) {
             return;
@@ -1656,6 +1657,7 @@ function toggleFavorite(type, item) {
         }
     };
 
+    // Load from both Firebase and data.gov.sg, then normalize into one render cache.
     const loadHawkers = async () => {
         try {
             setStatus("Loading hawker centres...");

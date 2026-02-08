@@ -3,9 +3,9 @@
 ## Overview
 A front-end web application for an NEA-style hawker centre ordering experience. Users can browse hawker centres and stalls, add items to a cart, checkout, and view order history.
 
-Orders are stored differently depending on user type:
-- Guest users are stored locally in the browser.
-- Registered users are stored in Firebase Realtime Database (RTDB), tied to the logged-in user.
+Orders are currently split by module:
+- Customer checkout/orders use Firebase Realtime Database (`orders/{uid}/{orderId}`) for registered users, and browser storage for guests.
+- Vendor POS/queue flow uses Firestore under `stalls/{stallId}/active_orders`.
 
 ## Team & Roles (With Student IDs)
 - Ten Yen Kiat James (S10275024K) - Buyer: customer ordering, checkout, and order history (guest/local + registered/DB).
@@ -56,17 +56,35 @@ Registered order history:
 - Firebase: Auth, Firestore, and Realtime Database.
 
 ## Firebase Details
-Firebase config is included in multiple files (no single `firebase.js`):
+Firebase config is currently duplicated across multiple files (no shared `firebase.js` yet), including Customer, Vendor, NEA, and auth scripts/pages.
+Current files containing `const firebaseConfig` include:
+
 - `js/index.js`
 - `js/login.js`
+- `js/signup.js`
+- `js/forgotpassword.js`
+- `js/customer-guest-account.js`
 - `js/customer-guest-cart.js`
 - `js/customer-guest-orders.js`
 - `js/customer-guest-hawkers.js`
+- `Vendor/js/index.js`
+- `Vendor/js/menu.js`
+- `Vendor/js/orders.js`
+- `Vendor/js/notifications.js`
+- `Vendor/js/pos.js`
+- `Vendor/js/settings.js`
+- `NEA/index.html`
+- `NEA/calendar.html`
+- `NEA/history.html`
+- `NEA/inspection.html`
+- `NEA/inspect-stall.html`
+- `NEA/report.html`
+- `NEA/today.html`
 
 Firebase products used:
 - Auth: login, registered vs guest flow, and sign-out for guest mode.
-- Firestore: `users/{uid}` for user type routing, and `hawkers` / `stalls` collections for custom records.
-- Realtime Database (orders): `orders/{uid}/{orderId}`.
+- Firestore: `users/{uid}`, `hawkers`, `stalls`, `stalls/{stallId}/menu_items`, and Vendor `stalls/{stallId}/active_orders`.
+- Realtime Database: customer order history under `orders/{uid}/{orderId}` and review-related paths.
 
 ## User Types & Routing
 User routing based on `userType`:
@@ -91,35 +109,58 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
 ```text
 /
   Admin/
+    Analytics.html
     Home.html
+    Report.html
   NEA/
+    calendar.html
+    history.html
     index.html
+    inspect-stall.html
+    inspection.html
+    report.html
+    today.html
   Vendor/
-    index.html
-    orders.html
     CSS/
       style.css
     js/
+      index.js
+      menu.js
+      notifications.js
       orders.js
-  customer-guest/
+      pos.js
+      settings.js
     index.html
-    cart.html
+    menu.html
+    notifications.html
     orders.html
+    pos.html
+    settings.html
+  customer-guest/
     account.html
+    cart.html
+    index.html
+    orders.html
   css/
-    main.css
     customer-guest.css
+    main.css
   image/
     ...jpg assets
   js/
+    customer-guest-account.js
+    customer-guest-cart-utils.js
+    customer-guest-cart.js
     index.js
     login.js
-    customer-guest-hawkers.js
-    customer-guest-cart.js
-    customer-guest-cart-utils.js
     customer-guest-orders.js
+    customer-guest-hawkers.js
+    forgotpassword.js
+    signup.js
+  credits.html
+  forgotpassword.html
   index.html
   login.html
+  signup.html
   README.md
 ```
 
@@ -129,6 +170,7 @@ See [credits.html](credits.html) for the full credits list (including image sour
 ## Known Limitations
 - Payment success/failure is simulated; no real payment integration.
 - Failed payments do not redirect to Orders; the user remains on checkout.
+- Customer and Vendor order pipelines are not yet unified (RTDB for customer checkout history vs Firestore `active_orders` for vendor operations).
 
 ## Future Improvements
 - Add real payment integration.

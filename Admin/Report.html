@@ -21,12 +21,11 @@
   --danger: #f87171;
 }
 
-
 * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
 
-body { 
-  min-height:100vh; 
-  display:flex; 
+body {
+  min-height:100vh;
+  display:flex;
   color:white;
   position: relative;
   overflow-x: hidden;
@@ -40,7 +39,6 @@ body {
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
-
 
 .sidebar {
   width:240px;
@@ -75,13 +73,11 @@ body {
 .profile { margin-top:auto; display:flex; align-items:center; gap:10px; font-size:13px; }
 .avatar { width:34px; height:34px; background:var(--accent-blue); border-radius:50%; }
 
-
 .main { flex:1; padding:24px 30px; z-index:10; overflow-y: auto; height: 100vh; }
 .topbar { display:flex; align-items:center; gap:20px; margin-bottom:30px; }
 .topbar h1 { font-size:20px; }
 .top-search { background:white; padding:8px 14px; border-radius:20px; width:260px; }
 .top-search input { border:none; outline:none; width:100%; color: #333; }
-
 
 .card {
   background: linear-gradient(180deg, var(--card-dark), var(--card-dark-2));
@@ -97,12 +93,10 @@ body {
 }
 .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 
-
 table { width:100%; border-collapse:collapse; }
 th { text-align:left; font-size:12px; color:var(--text-muted); padding-bottom:12px; text-transform: uppercase; }
 td { padding:18px 0; border-top:1px solid rgba(255,255,255,0.08); font-size:14px; }
 .owner-email { font-size:12px; color:var(--text-muted); }
-
 
 .progress-container { width: 100px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; }
 .progress-bar { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
@@ -113,13 +107,11 @@ td { padding:18px 0; border-top:1px solid rgba(255,255,255,0.08); font-size:14px
 .next-audit { font-size: 11px; color: var(--text-muted); display: block; margin-top: 4px; }
 .overdue { color: var(--danger); font-weight: bold; }
 
-
 .status { font-weight:600; }
 .completed { color:var(--accent-blue); }
 .expired { color:var(--danger); }
 .active { color:var(--success); }
 .ended { color:var(--warning); }
-
 
 .modal { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index: 100; backdrop-filter: blur(5px); }
 .modal.show { display:flex; }
@@ -128,14 +120,23 @@ td { padding:18px 0; border-top:1px solid rgba(255,255,255,0.08); font-size:14px
 .modal-box label { font-size: 12px; color: var(--text-muted); margin-top: 10px; display: block; }
 .modal-box input, .modal-box select { width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #1e293b; background:#0f172a; color:white; outline: none; }
 .btn-save { background:var(--accent-pink); color:white; border:none; padding:12px; width:100%; margin-top:20px; border-radius:8px; cursor:pointer; font-weight: bold; }
-
+.icon-action {
+  background: transparent;
+  border: none;
+  color: var(--accent-blue);
+  cursor: pointer;
+  font-size: 14px;
+}
+.icon-action:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
 
 .blob { position:absolute; width:150px; height:150px; background: rgba(34,211,238,0.2); border-radius:50%; animation: float 12s ease-in-out infinite; z-index: 0; }
 .blob:nth-child(1) { top:10%; left:75%; animation-delay:0s; }
 .blob:nth-child(2) { top:40%; left:15%; animation-delay:4s; }
 
 @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(50px);} }
-
 
 tbody tr { transform: translateX(-20px); opacity:0; transition: 0.4s ease; }
 tbody tr.show { transform: translateX(0); opacity:1; }
@@ -148,7 +149,7 @@ tbody tr.show { transform: translateX(0); opacity:1; }
 
 <aside class="sidebar">
   <h2>Dashboard</h2>
-  <div class="search"><input type="text" placeholder="Search menu..." /></div>
+  <div class="search"><input type="text" placeholder="Search menu..." aria-label="Search report menu" /></div>
   <nav class="menu">
     <a href="Home.html"><i class="fas fa-home"></i> Home</a>
     <a href="Analytics.html"><i class="fas fa-chart-line"></i> Analytics</a>
@@ -160,7 +161,7 @@ tbody tr.show { transform: translateX(0); opacity:1; }
 <main class="main">
   <div class="topbar">
     <h1>Vendor Reports</h1>
-    <div class="top-search"><input type="text" id="globalSearch" placeholder="Search stall or owner..." /></div>
+    <div class="top-search"><input type="text" id="globalSearch" placeholder="Search stall or owner..." aria-label="Search stall or owner" /></div>
   </div>
 
   <div class="card">
@@ -217,8 +218,8 @@ tbody tr.show { transform: translateX(0); opacity:1; }
       <option>Active</option>
       <option>Ended</option>
     </select>
-    <button class="btn-save" onclick="saveEdit()">Update Changes</button>
-    <button onclick="closeModal('editModal')" style="background:transparent; border:none; color:var(--text-muted); width:100%; margin-top:10px; cursor:pointer;">Cancel</button>
+    <button id="saveEditBtn" class="btn-save" type="button">Update Changes</button>
+    <button id="cancelEditBtn" type="button" style="background:transparent; border:none; color:var(--text-muted); width:100%; margin-top:10px; cursor:pointer;">Cancel</button>
   </div>
 </div>
 
@@ -235,8 +236,8 @@ tbody tr.show { transform: translateX(0); opacity:1; }
     </select>
     <label>Last Inspected Date</label><input type="text" id="hDate">
     <label>Next Audit Text</label><input id="hNext" placeholder="e.g. Mar 15 or OVERDUE">
-    <button class="btn-save" onclick="saveHygiene()">Update Audit</button>
-    <button onclick="closeModal('hygieneModal')" style="background:transparent; border:none; color:var(--text-muted); width:100%; margin-top:10px; cursor:pointer;">Cancel</button>
+    <button id="saveHygieneBtn" class="btn-save" type="button">Update Audit</button>
+    <button id="cancelHygieneBtn" type="button" style="background:transparent; border:none; color:var(--text-muted); width:100%; margin-top:10px; cursor:pointer;">Cancel</button>
   </div>
 </div>
 
@@ -269,7 +270,11 @@ function renderTable(){
       <td class="status ${c.status.toLowerCase()}">${c.status}</td>
       <td>${c.country}</td>
       <td>${c.total}</td>
-      <td><span onclick="openEdit(${i})" style="cursor:pointer; color:var(--accent-blue)"><i class="fas fa-edit"></i></span></td>
+      <td>
+        <button type="button" class="icon-action" data-action="edit-contract" data-index="${i}" aria-label="Edit contract ${c.owner}">
+          <i class="fas fa-edit"></i>
+        </button>
+      </td>
     `;
     tableBody.appendChild(row);
     setTimeout(()=>{row.classList.add('show');}, i*100);
@@ -288,13 +293,16 @@ function renderHygiene(){
       <td>${h.score}% <div class="progress-container"><div class="progress-bar" style="width:${h.score}%; background:${color}"></div></div></td>
       <td><span class="grade-pill bg-${h.grade.toLowerCase()}">Grade ${h.grade}</span></td>
       <td>${h.lastDate}</td>
-      <td><span onclick="openHygieneEdit(${i})" style="cursor:pointer; color:var(--accent-blue)"><i class="fas fa-sliders-h"></i></span></td>
+      <td>
+        <button type="button" class="icon-action" data-action="edit-hygiene" data-index="${i}" aria-label="Edit hygiene audit for ${h.name}">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+      </td>
     `;
     hygBody.appendChild(row);
     setTimeout(()=>{row.classList.add('show');}, i*100);
   });
 }
-
 
 function openEdit(i){ editIdx=i; const c=contracts[i]; document.getElementById('editOwner').value=c.owner; document.getElementById('editEmail').value=c.email; document.getElementById('editCountry').value=c.country; document.getElementById('editTotal').value=c.total; document.getElementById('editStatus').value=c.status; showModal('editModal'); }
 function openHygieneEdit(i){ hygIdx=i; const h=hygieneData[i]; document.getElementById('hName').value=h.name; document.getElementById('hScore').value=h.score; document.getElementById('hGrade').value=h.grade; document.getElementById('hDate').value=h.lastDate; document.getElementById('hNext').value=h.next; showModal('hygieneModal'); }
@@ -310,6 +318,29 @@ document.getElementById('globalSearch').addEventListener('input', e=>{
     row.style.display = text.includes(query) ? '' : 'none';
   });
 });
+
+document.getElementById('tableBody').addEventListener('click', (event) => {
+  const actionButton = event.target.closest('[data-action="edit-contract"]');
+  if (!actionButton) return;
+  const index = Number(actionButton.dataset.index);
+  if (Number.isInteger(index)) {
+    openEdit(index);
+  }
+});
+
+document.getElementById('hygieneBody').addEventListener('click', (event) => {
+  const actionButton = event.target.closest('[data-action="edit-hygiene"]');
+  if (!actionButton) return;
+  const index = Number(actionButton.dataset.index);
+  if (Number.isInteger(index)) {
+    openHygieneEdit(index);
+  }
+});
+
+document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+document.getElementById('cancelEditBtn').addEventListener('click', () => closeModal('editModal'));
+document.getElementById('saveHygieneBtn').addEventListener('click', saveHygiene);
+document.getElementById('cancelHygieneBtn').addEventListener('click', () => closeModal('hygieneModal'));
 
 renderTable();
 renderHygiene();

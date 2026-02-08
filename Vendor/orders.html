@@ -34,7 +34,7 @@
 
     <main class="main-content">
         <header style="height: 80px !important; min-height: 80px !important; background-color: #1A237E; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 30px;">
-            
+
             <div class="header-title">
                 <i class="fas fa-bars" style="margin-right: 15px; cursor: pointer; color: white; font-size: 22px;"></i>
                 <strong style="font-size: 22px;">Uncle Lim Chicken Rice</strong>
@@ -48,31 +48,31 @@
                 </div>
 
                 <i class="fas fa-bell" style="color: white; font-size: 20px; margin-right: 20px; cursor: pointer;"></i>
-                
+
                 <div class="user-avatar" style="width: 40px; height: 40px; background-color: white; color: #1A237E; display:flex; align-items:center; justify-content:center; border-radius: 50%; font-weight:bold; font-size:15px;">UT</div>
             </div>
         </header>
 
         <div class="dashboard-container">
-            
+
             <div class="orders-toolbar">
                 <h2 style="margin: 0; display: flex; align-items: center; font-size: 22px;">
-                    Order Management 
+                    Order Management
                     <span class="live-badge">LIVE</span>
                 </h2>
-                <button class="btn-walkin" onclick="window.location.href='pos.html'">
+                <button class="btn-walkin" id="new-walkin-btn" type="button">
                     <i class="fas fa-plus"></i> NEW WALK-IN ORDER
                 </button>
             </div>
 
             <div class="kanban-board">
-                
+
                 <div class="kanban-column col-new">
                     <div class="col-header">
                         <span><i class="fas fa-receipt" style="color: #FF5252; margin-right: 8px;"></i> New Orders</span>
                         <span class="count-badge" id="count-new">0</span>
                     </div>
-                    <div id="list-new"></div> 
+                    <div id="list-new"></div>
                 </div>
 
                 <div class="kanban-column col-cooking">
@@ -96,7 +96,9 @@
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
 
     <script src="js/orders.js"></script>
 </body>

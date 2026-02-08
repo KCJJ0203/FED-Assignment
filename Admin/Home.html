@@ -16,9 +16,9 @@
 
 * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
 
-body { 
-  min-height:100vh; 
-  display:flex; 
+body {
+  min-height:100vh;
+  display:flex;
   color:white;
   position: relative;
   overflow-x: hidden;
@@ -27,7 +27,6 @@ body {
   animation: gradientShift 15s ease infinite;
 }
 
-/* Sidebar */
 .sidebar{
   width:240px;
   background:linear-gradient(180deg,#4361ee,#3a0ca3);
@@ -58,17 +57,15 @@ body {
 .profile{ margin-top:auto; display:flex; align-items:center; gap:10px; font-size:13px; }
 .avatar{ width:34px; height:34px; background:#22d3ee; border-radius:50%; }
 
-/* Main */
 .main{ flex:1; padding:24px 30px; z-index:10; position: relative; }
 .topbar{ display:flex; align-items:center; gap:20px; margin-bottom:30px; }
 .topbar h1{ font-size:20px; }
 .top-search{ background:white; padding:8px 14px; border-radius:20px; width:240px; }
 .top-search input{ border:none; outline:none; width:100%; }
 
-/* Dashboard Layout */
 .dashboard{
   display:grid;
-  grid-template-columns: 1fr 1fr; 
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
   gap:24px;
 }
@@ -93,7 +90,6 @@ body {
 .card h3{ font-size:16px; color:var(--text-light); margin-bottom:12px; }
 .value{ font-size:24px; font-weight:bold; margin-bottom:12px; text-shadow: 0 0 5px #22d3ee; animation: pulse 2s infinite; }
 
-/* Card positions */
 .monthly{ grid-column:1; grid-row:1; }
 .yearly{ grid-column:1; grid-row:2; }
 .overall{ grid-column:2; grid-row:1 / span 2; }
@@ -113,7 +109,6 @@ canvas{ flex:1; }
 }
 .btn:hover{ background: rgba(219,39,119,0.4); }
 
-/* Animations */
 @keyframes pulse{
   0%,100%{text-shadow:0 0 5px #22d3ee;}
   50%{text-shadow:0 0 20px #22d3ee;}
@@ -124,7 +119,6 @@ canvas{ flex:1; }
   100%{background-position:0% 50%;}
 }
 
-/* Floating blobs */
 .blob{
   position:absolute;
   width:150px; height:150px;
@@ -144,18 +138,17 @@ canvas{ flex:1; }
 </head>
 <body>
 
-<!-- floating blobs -->
 <div class="blob"></div>
 <div class="blob"></div>
 <div class="blob"></div>
 
 <aside class="sidebar">
   <h2>Dashboard</h2>
-  <div class="search"><input type="text" placeholder="Search for..." /></div>
+  <div class="search"><input type="text" placeholder="Search for..." aria-label="Search dashboard menu" /></div>
   <nav class="menu">
     <a class="active" href="Home.html">Home</a>
     <a href="Analytics.html">Analytics</a>
-    <a href="Report.html">Report</a> <!-- updated href -->
+    <a href="Report.html">Report</a>
   </nav>
   <div class="profile"><div class="avatar"></div>John Carter</div>
 </aside>
@@ -163,7 +156,7 @@ canvas{ flex:1; }
 <main class="main">
   <div class="topbar">
     <h1>Home Page</h1>
-    <div class="top-search"><input type="text" placeholder="Search anything here..." /></div>
+    <div class="top-search"><input type="text" placeholder="Search anything here..." aria-label="Search dashboard content" /></div>
   </div>
 
   <section class="dashboard">
@@ -181,9 +174,9 @@ canvas{ flex:1; }
 
     <div class="card overall">
       <h3>Monthly Expenses & Revenue
-        <button class="btn" onclick="setRange('monthly')">Monthly</button>
-        <button class="btn" onclick="setRange('quarterly')">Quarterly</button>
-        <button class="btn" onclick="setRange('yearly')">Yearly</button>
+        <button class="btn" type="button" data-range="monthly">Monthly</button>
+        <button class="btn" type="button" data-range="quarterly">Quarterly</button>
+        <button class="btn" type="button" data-range="yearly">Yearly</button>
       </h3>
       <canvas id="overallLine"></canvas>
     </div>
@@ -200,7 +193,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
-// Monthly Sales Bar Chart
 new Chart(document.getElementById('monthlyBar'), {
   type:'bar',
   data:{ labels:['Jollibee','Prime','KFG','Samsung','Sonia','Singtel'], datasets:[{ data:[20,35,45,30,55,25], backgroundColor:'#22d3ee' }] },
@@ -208,7 +200,6 @@ new Chart(document.getElementById('monthlyBar'), {
   plugins:[ChartDataLabels]
 });
 
-// Yearly Sales Bar Chart
 new Chart(document.getElementById('yearlyBar'), {
   type:'bar',
   data:{ labels:['2019','2020','2021','2022','2023','2024'], datasets:[{ data:[80,90,100,110,130,145], backgroundColor:'#22d3ee' }] },
@@ -216,7 +207,6 @@ new Chart(document.getElementById('yearlyBar'), {
   plugins:[ChartDataLabels]
 });
 
-// Overall Expenses & Revenue Line Chart
 const overallCtx = document.getElementById('overallLine');
 const overallChart = new Chart(overallCtx,{
   type:'line',
@@ -233,6 +223,12 @@ function setRange(type){
   overallChart.data.datasets[1].data = ranges[type];
   overallChart.update();
 }
+
+document.querySelectorAll('[data-range]').forEach((button) => {
+  button.addEventListener('click', () => {
+    setRange(button.dataset.range);
+  });
+});
 </script>
 </body>
 </html>

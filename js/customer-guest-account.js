@@ -1,6 +1,5 @@
-// customer-guest-account.js (FULL: profile edit + cards add/remove + feedback history + PFP + Favorites from localStorage)
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+
 import {
   getAuth, onAuthStateChanged, signOut, updateEmail,
   updatePassword, EmailAuthProvider, reauthenticateWithCredential
@@ -12,18 +11,9 @@ import {
   serverTimestamp, deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+import { getFirebaseApp } from "./firebase-config.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-  authDomain: "fed-assignment-9c219.firebaseapp.com",
-  databaseURL: "https://fed-assignment-9c219-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "fed-assignment-9c219",
-  storageBucket: "fed-assignment-9c219.firebasestorage.app",
-  messagingSenderId: "287410844855",
-  appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
-};
-
-const app = initializeApp(firebaseConfig);
+const app = getFirebaseApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -32,7 +22,6 @@ const $$ = (s) => document.querySelectorAll(s);
 
 let currentUser = null;
 
-// ---------------- Tabs (top section switch) ----------------
 $$(".acc-tab").forEach(btn => {
   btn.addEventListener("click", () => {
     $$(".acc-tab").forEach(b => b.classList.remove("active"));
@@ -44,7 +33,6 @@ $$(".acc-tab").forEach(btn => {
   });
 });
 
-// ---------------- Favorites switch ----------------
 $$(".fav-tab").forEach(btn => {
   btn.addEventListener("click", () => {
     $$(".fav-tab").forEach(b => b.classList.remove("active"));
@@ -56,7 +44,6 @@ $$(".fav-tab").forEach(btn => {
   });
 });
 
-// ---------------- Preferences save (localStorage) ----------------
 function getPrefs() {
   try { return JSON.parse(localStorage.getItem("cg_prefs")) || {}; }
   catch { return {}; }
@@ -77,7 +64,6 @@ function restorePrefs() {
 }
 restorePrefs();
 
-// ---------------- Feedback stars ----------------
 const ratingValue = $("#ratingValue");
 $$(".star").forEach(star => {
   star.addEventListener("click", () => {
@@ -87,18 +73,16 @@ $$(".star").forEach(star => {
   });
 });
 
-// ---------------- Logout ----------------
 $("#logoutBtn")?.addEventListener("click", async () => {
   await signOut(auth);
   localStorage.removeItem("userType");
   window.location.href = "../login.html";
 });
 
-// ---------------- Change Password modal (UI only) ----------------
 const pwModal = $("#pwModal");
 $("#openPwModal")?.addEventListener("click", () => pwModal?.classList.add("show"));
 $("#closePwModal")?.addEventListener("click", () => pwModal?.classList.remove("show"));
-const pwMsg = $("#pwMsg"); // optional message text
+const pwMsg = $("#pwMsg"); 
 function setPwMsg(text = "") {
   if (pwMsg) pwMsg.textContent = text;
 }
@@ -120,7 +104,7 @@ $("#pwForm")?.addEventListener("submit", async (e) => {
   try {
     setPwMsg("Verifying...");
 
-    // Re-authenticate user
+    
     const cred = EmailAuthProvider.credential(currentUser.email, currentPw);
     await reauthenticateWithCredential(currentUser, cred);
 
@@ -146,8 +130,6 @@ $("#pwForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-
-// ---------------- Edit Profile modal ----------------
 const editModal = $("#editModal");
 const editMsg = $("#editMsg");
 function setEditMsg(text = "") { if (editMsg) editMsg.textContent = text; }
@@ -158,7 +140,6 @@ $("#openEditModal2")?.addEventListener("click", openEditModal);
 $("#closeEditModal")?.addEventListener("click", () => editModal?.classList.remove("show"));
 editModal?.addEventListener("click", (e) => { if (e.target === editModal) editModal.classList.remove("show"); });
 
-// ---------------- Add Card modal ----------------
 const cardModal = $("#cardModal");
 const cardMsg = $("#cardMsg");
 function setCardMsg(text = "") { if (cardMsg) cardMsg.textContent = text; }
@@ -184,7 +165,6 @@ function isValidExp(mmYY) {
   return yy >= 0 && yy <= 99;
 }
 
-// ---------------- HTML escape ----------------
 function escapeHtml(s) {
   return String(s ?? "")
     .replaceAll("&", "&amp;")
@@ -194,7 +174,6 @@ function escapeHtml(s) {
     .replaceAll("'", "&#039;");
 }
 
-// ================= FAVORITES (localStorage) =================
 const FAV_KEYS = {
   hawker: "cg_fav_hawker",
   stall: "cg_fav_stall",
@@ -236,7 +215,7 @@ function renderFavPanel(type, list) {
   list.forEach(item => {
     const name = escapeHtml(item.name || "Untitled");
     const sub = escapeHtml(item.sub || "");
-    const img = item.imageUrl ? escapeHtml(item.imageUrl) : "../image/lau pa sat.jpg";
+    const img = item.imageUrl ? escapeHtml(item.imageUrl) : "../image/lau-pa-sat.jpg";
 
     const row = document.createElement("div");
     row.className = "fav-item";
@@ -264,7 +243,6 @@ function loadFavoritesUI() {
   renderFavPanel("dish", readFavs("dish"));
 }
 
-// Re-render if other pages update favorites
 window.addEventListener("cg:favs-updated", (e) => {
   const t = e?.detail?.type;
   if (t && FAV_KEYS[t]) {
@@ -274,7 +252,6 @@ window.addEventListener("cg:favs-updated", (e) => {
   }
 });
 
-// ---------------- PFP helpers ----------------
 function showPfp(urlOrBase64) {
   const img = $("#pfpImg");
   const ph = $("#pfpPlaceholder");
@@ -295,7 +272,6 @@ function setPfpMsg(text = "") {
   if (el) el.textContent = text;
 }
 
-// Convert image file -> resized JPEG base64 (small)
 async function fileToSmallBase64(file, maxSize = 256, quality = 0.75) {
   const dataUrl = await new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -325,7 +301,6 @@ async function fileToSmallBase64(file, maxSize = 256, quality = 0.75) {
   return canvas.toDataURL("image/jpeg", quality);
 }
 
-// ---------------- Renderers ----------------
 function renderFeedbackList(items) {
   const list = $("#pastFeedbackList");
   const empty = $("#fbEmpty");
@@ -408,7 +383,6 @@ function renderCardsList(cards) {
   });
 }
 
-// ---------------- Load lists ----------------
 async function loadFeedback() {
   if (!currentUser) return;
 
@@ -458,7 +432,7 @@ async function loadMyReviews() {
 
     myReviewsEmpty.style.display = "none";
 
-    // Sort newest first
+    
     const dataObj = snap.val() || {};
     const data = Object.values(dataObj).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
@@ -485,12 +459,12 @@ async function loadMyReviews() {
 }
 
 async function loadUserDocAndFillUI(user) {
-  // fallback
+  
   $("#profileName") && ($("#profileName").textContent = user.displayName || "User");
   $("#profileEmail") && ($("#profileEmail").textContent = user.email || "-");
   $("#profilePhone") && ($("#profilePhone").textContent = "-");
 
-  // prefill edit modal
+  
   $("#editName") && ($("#editName").value = user.displayName || "");
   $("#editEmail") && ($("#editEmail").value = user.email || "");
   $("#editUsername") && ($("#editUsername").value = "");
@@ -521,7 +495,6 @@ async function loadUserDocAndFillUI(user) {
   }
 }
 
-// ---------------- Auth state ----------------
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "../login.html";
@@ -539,7 +512,6 @@ onAuthStateChanged(auth, async (user) => {
   try { await loadMyReviews(); } catch (e) { console.error("loadMyReviews:", e); }
 });
 
-// ---------------- Save profile (Firestore + Auth email) ----------------
 $("#editForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser) return;
@@ -580,7 +552,6 @@ $("#editForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// ---------------- Add Card -> Firestore ----------------
 $("#cardForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser) return;
@@ -614,7 +585,6 @@ $("#cardForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// ---------------- Feedback submit -> Firestore ----------------
 $("#feedbackForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser) return;
@@ -643,7 +613,6 @@ $("#feedbackForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// ---------------- PFP Upload (Firestore Base64) ----------------
 $("#uploadPfpBtn")?.addEventListener("click", async () => {
   if (!currentUser) return;
 

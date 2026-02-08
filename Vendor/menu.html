@@ -50,23 +50,23 @@
         </header>
 
         <div class="dashboard-container">
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                 <div>
                     <h2 style="margin: 0;">Menu Items</h2>
                     <p style="margin: 5px 0 0; color: #777;">Manage your dishes, prices, and availability.</p>
                 </div>
-                <button class="btn-green" style="width: auto; padding: 12px 24px;" onclick="openAddModal()">
+                <button id="openAddModalBtn" class="btn-green" style="width: auto; padding: 12px 24px;" type="button">
                     <i class="fas fa-plus"></i> ADD NEW ITEM
                 </button>
             </div>
 
             <div class="category-tabs" style="margin-bottom: 25px;">
-                <div class="cat-pill active" onclick="filterMenu('All', this)">All</div>
-                <div class="cat-pill" onclick="filterMenu('Mains', this)">Mains</div>
-                <div class="cat-pill" onclick="filterMenu('Sides', this)">Sides</div>
-                <div class="cat-pill" onclick="filterMenu('Drinks', this)">Drinks</div>
-                <div class="cat-pill" onclick="filterMenu('Add-ons', this)">Add-ons</div>
+                <button class="cat-pill active" data-category="All" type="button">All</button>
+                <button class="cat-pill" data-category="Mains" type="button">Mains</button>
+                <button class="cat-pill" data-category="Sides" type="button">Sides</button>
+                <button class="cat-pill" data-category="Drinks" type="button">Drinks</button>
+                <button class="cat-pill" data-category="Add-ons" type="button">Add-ons</button>
             </div>
 
             <div class="menu-grid" id="admin-menu-grid">
@@ -79,11 +79,11 @@
         <div class="modal-content" style="width: 500px;">
             <div class="modal-header">
                 <h3 id="modal-title">Add New Item</h3>
-                <span class="close-btn" onclick="closeItemModal()">&times;</span>
+                <button id="closeItemModalBtn" class="close-btn" type="button" aria-label="Close item modal">&times;</button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="edit-doc-id">
-                
+
                 <div style="margin-bottom: 15px;">
                     <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:14px;">Item Name</label>
                     <input type="text" id="inp-name" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" placeholder="e.g. Steamed Chicken Rice">
@@ -112,13 +112,15 @@
                     <small style="color:#888;">Paste a link to an image.</small>
                 </div>
 
-                <button class="btn-green" onclick="saveItem()">SAVE ITEM</button>
+                <button id="saveItemBtn" class="btn-green" type="button">SAVE ITEM</button>
             </div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
     <script src="js/menu.js"></script>
 </body>
 </html>

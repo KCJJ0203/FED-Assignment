@@ -8,30 +8,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <nav aria-label="Vendor Navigation" hidden></nav>
 
     <div class="pos-layout">
 
         <main class="pos-menu-area">
-            
+
             <div class="pos-top-bar">
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <a href="orders.html" style="color: #333; font-size: 20px;"><i class="fas fa-arrow-left"></i></a>
                     <h2 style="margin: 0;">Uncle Lim Chicken Rice</h2>
                 </div>
-                
+
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search menu items...">
+                    <input type="text" placeholder="Search menu items..." aria-label="Search menu items">
                 </div>
             </div>
 
             <div class="category-tabs">
-                <div class="cat-pill active">All</div>
-                <div class="cat-pill">Mains</div>
-                <div class="cat-pill">Sides</div>
-                <div class="cat-pill">Drinks</div>
-                <div class="cat-pill">Add-ons</div>
-                <div class="cat-pill">Sets</div>
+                <button class="cat-pill active" type="button">All</button>
+                <button class="cat-pill" type="button">Mains</button>
+                <button class="cat-pill" type="button">Sides</button>
+                <button class="cat-pill" type="button">Drinks</button>
+                <button class="cat-pill" type="button">Add-ons</button>
+                <button class="cat-pill" type="button">Sets</button>
             </div>
 
             <div class="menu-grid" id="menu-grid">
@@ -40,19 +41,19 @@
         </main>
 
         <aside class="pos-cart-sidebar">
-            
+
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                 <div style="font-weight: bold; font-size: 18px;">Current Order</div>
-                <span style="color: #FF5252; font-size: 13px; cursor: pointer; font-weight: bold;" onclick="clearCart()">
+                <button id="clear-cart-btn" type="button" style="color: #FF5252; font-size: 13px; cursor: pointer; font-weight: bold; background:none; border:none; padding:0;">
                     <i class="fas fa-trash"></i> Clear
-                </span>
+                </button>
             </div>
 
             <div class="order-mode-tabs">
-                <button class="mode-btn active" id="btn-dinein" onclick="setOrderMode('Dine-In')">
+                <button class="mode-btn active" id="btn-dinein" data-order-mode="Dine-In" type="button">
                     <i class="fas fa-utensils"></i> Dine-In
                 </button>
-                <button class="mode-btn" id="btn-takeaway" onclick="setOrderMode('Takeaway')">
+                <button class="mode-btn" id="btn-takeaway" data-order-mode="Takeaway" type="button">
                     <i class="fas fa-shopping-bag"></i> Takeaway
                 </button>
             </div>
@@ -65,13 +66,13 @@
                     <span>Subtotal</span>
                     <span id="cart-subtotal">$0.00</span>
                 </div>
-                
+
                 <div class="cart-row cart-total">
                     <span>Total</span>
                     <span id="cart-total">$0.00</span>
                 </div>
 
-                <button class="btn-checkout" onclick="openPaymentModal()">
+                <button class="btn-checkout" id="open-payment-btn" type="button">
                     PROCEED TO PAYMENT <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -80,13 +81,15 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
 
     <div id="paymentModal" class="modal-overlay">
         <div class="modal-content payment-modal">
             <div class="modal-header">
                 <h3>Confirm Payment</h3>
-                <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+                <button class="close-btn" id="close-payment-btn" type="button" aria-label="Close payment modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div style="text-align: center; margin-bottom: 25px;">
@@ -95,19 +98,19 @@
                 </div>
 
                 <div style="margin-bottom: 20px; font-weight: bold; font-size: 14px;">Select Payment Method:</div>
-                <div class="payment-methods">
-                    <div class="pay-option selected" onclick="selectMethod(this, 'Cash')">
+                <div class="payment-methods" id="payment-methods">
+                    <button class="pay-option selected" data-payment-method="Cash" type="button">
                         <i class="fas fa-money-bill-wave"></i><span>Cash</span>
-                    </div>
-                    <div class="pay-option" onclick="selectMethod(this, 'PayNow')">
+                    </button>
+                    <button class="pay-option" data-payment-method="PayNow" type="button">
                         <i class="fas fa-qrcode"></i><span>PayNow</span>
-                    </div>
-                    <div class="pay-option" onclick="selectMethod(this, 'NETS')">
+                    </button>
+                    <button class="pay-option" data-payment-method="NETS" type="button">
                         <i class="fas fa-credit-card"></i><span>NETS</span>
-                    </div>
+                    </button>
                 </div>
 
-                <button class="btn-confirm-pay" onclick="processPayment()">
+                <button class="btn-confirm-pay" id="confirm-payment-btn" type="button">
                     <i class="fas fa-check-circle"></i> CONFIRM PAYMENT
                 </button>
             </div>
@@ -122,23 +125,23 @@
             <h2 style="text-align: center; margin: 0 0 5px 0;">Order Created!</h2>
             <div style="text-align: center; color: #666; margin-bottom: 20px;" id="success-order-id">Order #---</div>
             <div class="qr-container">
-                <img src="" id="success-qr-img" alt="Order QR Code">
+                <img src="../image/placeholder.svg" id="success-qr-img" alt="Order QR Code">
                 <div style="font-size: 12px; color: #888; margin-top: 10px;">Scan for digital queue</div>
             </div>
             <div class="success-total">Total: <span id="success-total-amount">$0.00</span></div>
             <div class="success-actions">
                 <div class="row-btns">
-                    <button class="btn-secondary" onclick="printReceipt()"><i class="fas fa-print"></i> Print Receipt</button>
-                    <button class="btn-secondary" onclick="expandQR()"><i class="fas fa-expand"></i> Expand QR</button>
+                    <button class="btn-secondary" id="print-receipt-btn" type="button"><i class="fas fa-print"></i> Print Receipt</button>
+                    <button class="btn-secondary" id="expand-qr-btn" type="button"><i class="fas fa-expand"></i> Expand QR</button>
                 </div>
-                <button class="btn-done" onclick="resetPos()">DONE / NEXT ORDER <i class="fas fa-arrow-right"></i></button>
+                <button class="btn-done" id="done-next-order-btn" type="button">DONE / NEXT ORDER <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
 
-    <div id="qrLightbox" class="modal-overlay" onclick="closeQR()">
+    <div id="qrLightbox" class="modal-overlay">
         <div style="background: white; padding: 20px; border-radius: 12px; text-align: center;">
-            <img id="big-qr-img" src="" style="width: 300px; height: 300px;">
+            <img id="big-qr-img" src="../image/placeholder.svg" alt="Expanded order QR code" style="width: 300px; height: 300px;">
             <div style="margin-top: 10px; color: #666; font-size: 14px;">Click anywhere to close</div>
         </div>
     </div>

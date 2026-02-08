@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Today's Inspections</title>
 
-  <!-- Font Awesome for icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <style>
-    /* CSS Variable Definitions for consistent theming */
+
     :root {
       --green-900: #046a51;
       --green-800: #057a5f;
@@ -20,7 +19,6 @@
       --border: #e2e8f0;
     }
 
-    /* Global reset and base font */
     * {
       margin: 0;
       padding: 0;
@@ -28,14 +26,12 @@
       font-family: "Inter", Arial, sans-serif;
     }
 
-    /* Body background and text color */
     body {
       background: var(--page-bg);
       color: var(--text-dark);
       min-height: 100vh;
     }
 
-    /* Header section styling */
     .header {
       background: #007e63;
       color: #fff;
@@ -43,7 +39,6 @@
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
     }
 
-    /* Back navigation link */
     .back {
       display: inline-flex;
       align-items: center;
@@ -55,24 +50,20 @@
       margin-bottom: 12px;
     }
 
-    /* Header title styling */
     .header h1 {
       font-size: 28px;
       margin-bottom: 8px;
     }
 
-    /* Header description text */
     .header p {
       font-size: 15px;
       opacity: 0.9;
     }
 
-    /* Main content area */
     .content {
       padding: 32px 40px 48px;
     }
 
-    /* Date display pill */
     .date-pill {
       display: inline-flex;
       align-items: center;
@@ -87,13 +78,11 @@
       margin-bottom: 20px;
     }
 
-    /* Inspection list grid */
     .list {
       display: grid;
       gap: 16px;
     }
 
-    /* Individual inspection card */
     .card {
       background: #fff;
       border: 1px solid var(--border);
@@ -107,30 +96,25 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Card hover effect */
     .card:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
     }
 
-    /* Card information section */
     .card-info {
       display: grid;
       gap: 6px;
     }
 
-    /* Card title */
     .card-info h3 {
       font-size: 18px;
     }
 
-    /* Card subtitle text */
     .card-info span {
       color: var(--text-muted);
       font-size: 14px;
     }
 
-    /* Time/status pill */
     .time-pill {
       background: #e8f5e9;
       color: #047857;
@@ -140,13 +124,11 @@
       font-weight: 600;
     }
 
-    /* Completed status pill */
     .time-pill.completed {
       background: #dcfce7;
       color: #15803d;
     }
 
-    /* Empty state message */
     .empty {
       background: #fff;
       border: 1px dashed var(--border);
@@ -156,7 +138,6 @@
       color: var(--text-muted);
     }
 
-    /* Mobile responsive breakpoint */
     @media (max-width: 720px) {
       .header {
         padding: 24px 20px 30px;
@@ -167,7 +148,6 @@
       }
     }
 
-    /* Tablet adjustments */
     @media (max-width: 768px) {
       .list {
         gap: 12px;
@@ -184,24 +164,20 @@
       }
     }
 
-    /* Global mobile styles */
     @media (max-width: 768px) {
-      /* Reduce base font size on mobile */
+
       body {
         font-size: 14px;
       }
 
-      /* Reduce header padding on mobile */
       .header {
         padding: 20px 16px 28px;
       }
 
-      /* Reduce content padding on mobile */
       .content {
         padding: 20px 16px 32px;
       }
 
-      /* Smaller heading sizes on mobile */
       h1 {
         font-size: 24px !important;
       }
@@ -214,12 +190,10 @@
         font-size: 17px !important;
       }
 
-      /* Smaller back button text */
       .back {
         font-size: 14px;
       }
 
-      /* Improve touch targets on mobile */
       button, .card, .stall-card {
         touch-action: manipulation;
       }
@@ -228,7 +202,9 @@
 </head>
 
 <body>
-  <!-- Header with back button and title -->
+  <nav aria-label="NEA Navigation" hidden></nav>
+  <main>
+
   <div class="header">
     <a class="back" href="index.html">
       <i class="fas fa-chevron-left"></i> Back to Dashboard
@@ -237,23 +213,22 @@
     <p>Select an inspection to continue</p>
   </div>
 
-  <!-- Main content area -->
   <div class="content">
-    <!-- Date display -->
+
     <div class="date-pill">
       <i class="far fa-calendar"></i>
       <span id="todayLabel">Today</span>
     </div>
-    <!-- Inspection list (populated by JavaScript) -->
+
     <div class="list" id="inspectionList"></div>
   </div>
 
   <script type="module">
-    // Import Firebase modules
+    
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-    // Firebase configuration
+    
     const firebaseConfig = {
       apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
       authDomain: "fed-assignment-9c219.firebaseapp.com",
@@ -263,38 +238,38 @@
       appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
     };
 
-    // Initialize Firebase
+    
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Check authentication status and redirect if not logged in
+    
     onAuthStateChanged(auth, user => {
       if (!user) window.location.href = "../login.html";
     });
 
-    // DOM element reference
+    
     const list = document.getElementById("inspectionList");
 
-    // Convert date to local date key (YYYY-MM-DD)
+    
     function dateKey(d) {
       return d.toISOString().split("T")[0];
     }
 
-    // Get today's date and display it
+    
     const today = new Date();
     document.getElementById("todayLabel").textContent = today.toLocaleDateString(
       "en-SG",
       { weekday: "long", day: "numeric", month: "long", year: "numeric" }
     );
 
-    // Get today's date key
+    
     const todayKey = dateKey(new Date());
 
-    // Load schedules and inspections from localStorage
+    
     const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
     const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
 
-    // Get scheduled inspections for today
+    
     const scheduled = schedules.flatMap(entry =>
       (entry.scheduledStalls?.[todayKey] || []).map(item => ({
         ...item,
@@ -304,7 +279,7 @@
       }))
     );
 
-    // Get completed inspections for today
+    
     const completed = inspections.filter(i =>
       i.completedAt && dateKey(new Date(i.completedAt)) === todayKey
     ).map(i => ({
@@ -315,10 +290,10 @@
       status: "completed"
     }));
 
-    // Combine both scheduled and completed inspections
+    
     const all = [...scheduled, ...completed];
 
-    // Render the inspection list
+    
     if (!all.length) {
       list.innerHTML = `<div class="empty">No inspections today.</div>`;
     } else {
@@ -334,7 +309,7 @@
         </div>
       `).join("");
 
-      // Add click handlers only to scheduled (not completed) cards
+      
       document.querySelectorAll(".card[data-stall-id]").forEach(card => {
         card.addEventListener("click", () => {
           localStorage.setItem("selectedStallId", card.dataset.stallId);
@@ -344,5 +319,6 @@
       });
     }
   </script>
+  </main>
 </body>
 </html>

@@ -1,5 +1,5 @@
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getFirebaseApp } from "./firebase-config.js";
 
 (function () {
     const API_URL = "https://data.gov.sg/api/action/datastore_search?resource_id=d_68a42f09f350881996d83f9cd73ab02f&limit=200";
@@ -84,16 +84,6 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
         return;
     }
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-        authDomain: "fed-assignment-9c219.firebaseapp.com",
-        projectId: "fed-assignment-9c219",
-        storageBucket: "fed-assignment-9c219.firebasestorage.app",
-        messagingSenderId: "287410844855",
-        appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-        measurementId: "G-CJBDRY9RQ5"
-    };
-
 const FAV_KEYS = {
     hawker: "cg_fav_hawker",
     stall: "cg_fav_stall",
@@ -125,22 +115,22 @@ function toggleFavorite(type, item) {
     const index = list.findIndex(x => String(x.id) === id);
     
     if (index >= 0) {
-        // Remove
+        
         list.splice(index, 1);
         writeFavs(type, list);
         window.dispatchEvent(new CustomEvent("cg:favs-updated", { detail: { type } }));
         return false;
     } else {
-        // Add
+        
         list.push(item);
         writeFavs(type, list);
         window.dispatchEvent(new CustomEvent("cg:favs-updated", { detail: { type } }));
         return true;
     }
-}
+    }
     let db = null;
     try {
-        const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        const app = getFirebaseApp();
         db = getFirestore(app);
     } catch (error) {
         console.warn("Firebase not initialized:", error);
@@ -174,7 +164,7 @@ function toggleFavorite(type, item) {
         try {
             candidates.push(new URL(normalized, window.location.href).toString());
         } catch (error) {
-            // Ignore URL construction issues, keep building candidates below.
+            
         }
         if (normalized.startsWith("/")) {
             candidates.push(normalized, `..${normalized}`);
@@ -439,17 +429,17 @@ function toggleFavorite(type, item) {
         metaLine.append(star, metaText);
 
         info.append(name, metaLine);
-        // ===== FAVORITE HEART =====
+        
         const heart = document.createElement("button");
         heart.className = "fav-heart";
         heart.type = "button";
         heart.setAttribute("aria-label", "Toggle favorite hawker");
 
-        // check if already favorited
+        
         heart.textContent = isFavorite("hawker", record._id) ? "\u2764" : "\u2661";
 
         heart.addEventListener("click", (e) => {
-        e.stopImmediatePropagation(); // stop card click
+        e.stopImmediatePropagation(); 
 
         const itemData = {
             id: record._id,
@@ -906,7 +896,7 @@ function toggleFavorite(type, item) {
             return;
         }
         const candidates = getImageCandidates(imageUrl);
-        const fallback = "/image/placeholder.svg";
+        const fallback = "../image/placeholder.svg";
         let index = 0;
 
         const tryNext = () => {
@@ -1057,7 +1047,7 @@ function toggleFavorite(type, item) {
             price.className = "menu-item-price";
             price.textContent = formatPrice(item.price);
 
-            // Create heart button
+            
             const likeBtn = document.createElement("button");
             likeBtn.type = "button";
             likeBtn.className = "like-btn";
@@ -1067,7 +1057,7 @@ function toggleFavorite(type, item) {
             likeBtn.setAttribute("aria-label", `Add ${item.name} to favorites`);
             likeBtn.textContent = "\u2661";
 
-            // Check if already favorited
+            
             const isFav = isFavorite("dish", item.id);
             if (isFav) {
                 likeBtn.classList.add("is-on");
@@ -1089,7 +1079,7 @@ function toggleFavorite(type, item) {
             addBtn.setAttribute("aria-label", `Add ${item.name} to cart`);
             addBtn.textContent = "+";
 
-            // Create button container
+            
             const btnContainer = document.createElement("div");
             btnContainer.style.display = "flex";
             btnContainer.style.gap = "8px";
@@ -1110,10 +1100,10 @@ function toggleFavorite(type, item) {
     };
 
     const handleMenuClick = (event) => {
-    // Handle favorite toggle
+    
     const likeBtn = event.target.closest("[data-action=\"toggle-favorite\"]");
     if (likeBtn) {
-        event.stopPropagation(); // Prevent card click
+        event.stopPropagation(); 
         
         const card = likeBtn.closest(".menu-card");
         if (!card) return;
@@ -1635,7 +1625,6 @@ function toggleFavorite(type, item) {
             }
         });
     }
-
 
     const ensureStallsLoaded = async () => {
         if (!hasStallUi || stallsLoaded || stallsLoading) {

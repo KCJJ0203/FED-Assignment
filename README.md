@@ -3,9 +3,10 @@
 ## Overview
 A front-end web application for an NEA-style hawker centre ordering experience. Users can browse hawker centres and stalls, add items to a cart, checkout, and view order history.
 
-Orders are currently split by module:
-- Customer checkout/orders use Firebase Realtime Database (`orders/{uid}/{orderId}`) for registered users, and browser storage for guests.
-- Vendor POS/queue flow uses Firestore under `stalls/{stallId}/active_orders`.
+Orders now use a linked dual-write flow for customer checkout:
+- Customer checkout writes order history to Firebase Realtime Database (`orders/{uid}/{orderId}`) for registered users, and browser storage for guests.
+- The same checkout writes to Firestore vendor queue at `stalls/{stallId}/active_orders/{orderId}` so vendor order management receives customer orders.
+- Vendor POS walk-in flow also writes to `stalls/{stallId}/active_orders`.
 
 ## Team & Roles (With Student IDs)
 - Ten Yen Kiat James (S10275024K) - Buyer: customer ordering, checkout, and order history (guest/local + registered/DB).
@@ -28,14 +29,15 @@ Orders are currently split by module:
 
 ### Checkout Behavior
 - Checkout includes fulfillment options (`dinein` / `takeaway`), a payment result selector (success/fail), and a delivery toggle. File: `customer-guest/cart.html`.
-- Validation is minimal: checks cart has items, otherwise shows "Your cart is empty. Add items before placing an order." Function: `validateForm()` in `js/customer-guest-cart.js`.
+- Validation checks cart presence, fulfillment selection, and payment selector state. Function: `validateForm()` in `js/customer-guest-cart.js`.
 
 On submit steps:
 1. Build per-stall orders from cart (`buildOrdersFromCart`).
-2. Save orders to RTDB (registered) or `localStorage` (guest), including `paymentStatus`.
-3. If payment fails, save order with `paymentStatus = "fail"`, show "Payment failed. Please try again.", do not clear cart, and do not redirect.
-4. If payment succeeds, clear cart, write a success payload to `sessionStorage`, and redirect to `orders.html`.
-5. Success key: `guestOrderSuccess` containing `orderIds`, `total`, and `count`.
+2. Save customer history to RTDB (registered) or `localStorage` (guest), including `paymentStatus`.
+3. For successful payment attempts, dual-write to Firestore vendor queue (`stalls/{stallId}/active_orders/{orderId}`).
+4. If payment fails, save order with `paymentStatus = "fail"`, show "Payment failed. Please try again.", do not clear cart, and do not redirect.
+5. If payment succeeds, clear cart, write a success payload to `sessionStorage`, and redirect to `orders.html`.
+6. Success key: `guestOrderSuccess` containing `orderIds`, `total`, and `count`.
 
 ### Order History
 Guest order history:
@@ -56,30 +58,20 @@ Registered order history:
 - Firebase: Auth, Firestore, and Realtime Database.
 
 ## Firebase Details
-Firebase config is currently duplicated across multiple files (no shared `firebase.js` yet), including Customer, Vendor, NEA, and auth scripts/pages.
-Current files containing `const firebaseConfig` include:
+Firebase init is now partially centralized:
 
-- `js/index.js`
-- `js/login.js`
-- `js/signup.js`
-- `js/forgotpassword.js`
-- `js/customer-guest-account.js`
-- `js/customer-guest-cart.js`
-- `js/customer-guest-orders.js`
-- `js/customer-guest-hawkers.js`
-- `Vendor/js/index.js`
-- `Vendor/js/menu.js`
-- `Vendor/js/orders.js`
-- `Vendor/js/notifications.js`
-- `Vendor/js/pos.js`
-- `Vendor/js/settings.js`
-- `NEA/index.html`
-- `NEA/calendar.html`
-- `NEA/history.html`
-- `NEA/inspection.html`
-- `NEA/inspect-stall.html`
-- `NEA/report.html`
-- `NEA/today.html`
+- Modular Customer/Auth scripts share `js/firebase-config.js` (`getFirebaseApp()` helper).
+- Vendor compat scripts share `Vendor/js/firebase-init.js`.
+- Remaining duplicated/inline config still exists in NEA pages and classic scripts:
+  - `js/customer-guest-cart.js`
+  - `js/customer-guest-orders.js`
+  - `NEA/index.html`
+  - `NEA/calendar.html`
+  - `NEA/history.html`
+  - `NEA/inspection.html`
+  - `NEA/inspect-stall.html`
+  - `NEA/report.html`
+  - `NEA/today.html`
 
 Firebase products used:
 - Auth: login, registered vs guest flow, and sign-out for guest mode.
@@ -105,6 +97,9 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
 2. Run using Live Server.
 3. Start from `index.html`.
 
+## Deployment
+- [(Link)](https://kcjj0203.github.io/FED-Assignment/)
+
 ## File Structure (Actual)
 ```text
 /
@@ -124,6 +119,7 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
     CSS/
       style.css
     js/
+      firebase-init.js
       index.js
       menu.js
       notifications.js
@@ -145,11 +141,14 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match
     customer-guest.css
     main.css
   image/
+    default-hawker.jpg
+    placeholder.svg
     ...jpg assets
   js/
     customer-guest-account.js
     customer-guest-cart-utils.js
     customer-guest-cart.js
+    firebase-config.js
     index.js
     login.js
     customer-guest-orders.js
@@ -170,7 +169,7 @@ See [credits.html](credits.html) for the full credits list (including image sour
 ## Known Limitations
 - Payment success/failure is simulated; no real payment integration.
 - Failed payments do not redirect to Orders; the user remains on checkout.
-- Customer and Vendor order pipelines are not yet unified (RTDB for customer checkout history vs Firestore `active_orders` for vendor operations).
+- Some legacy scripts/pages still initialize Firebase inline (NEA pages + selected classic customer scripts).
 
 ## Future Improvements
 - Add real payment integration.

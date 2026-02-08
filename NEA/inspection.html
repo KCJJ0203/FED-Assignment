@@ -182,175 +182,6 @@
 
     .scheduled-bar {
       margin-top: 20px;
-      background: #d9fff1;
-      border-left: 4px solid #00a471;
-      border-radius: 16px;
-      padding: 14px 18px;
-      font-size: 15px;
-      color: #046a51;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #f5f7fb;
-      min-height: 100vh;
-      color: var(--text-dark);
-    }
-
-    .header {
-      background: #007e63;
-      color: var(--white);
-      padding: 26px 40px 36px;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
-    }
-
-    .back {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-bottom: 16px;
-      color: var(--white);
-      text-decoration: none;
-    }
-
-    .header h1 {
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    .header p,
-    .header .address {
-      font-size: 16px;
-      opacity: 0.95;
-      margin-bottom: 4px;
-    }
-
-    .header .address {
-      font-size: 15px;
-      opacity: 0.9;
-    }
-
-    .header-actions {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
-      gap: 22px;
-      margin-top: 26px;
-      align-items: stretch;
-    }
-
-    .schedule-card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px 24px;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
-      display: grid;
-      gap: 18px;
-    }
-
-    .schedule-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-
-    .schedule-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: #00b37a;
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-size: 20px;
-    }
-
-    .schedule-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .field label {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .field .input-wrap {
-      margin-top: 8px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .field .input-wrap i {
-      color: #00a471;
-      font-size: 18px;
-    }
-
-    .field input {
-      border: none;
-      background: transparent;
-      font-size: 16px;
-      width: 100%;
-      outline: none;
-      color: var(--text-dark);
-    }
-
-    .info-card {
-      background: #00966f;
-      border-radius: 20px;
-    .content {
-      padding: 32px 40px 48px;
-    }
-
-    .title {
-      color: var(--text-dark);
-      font-size: 26px;
-      font-weight: 700;
-      padding: 24px;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
-    }
-
-    .info-card h3 {
-      font-size: 16px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .info-card strong {
-      font-size: 42px;
-      font-weight: 700;
-      margin-top: 10px;
-    }
-
-    .info-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      display: grid;
-      place-items: center;
-      font-size: 24px;
-      align-self: flex-end;
-    }
-
-    .scheduled-bar {
-      margin-top: 20px;
       border-left: 4px solid #00a471;
       border-radius: 16px;
       padding: 14px 18px;
@@ -384,9 +215,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 18px;
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 20px;
     }
 
     .card {
@@ -395,15 +223,6 @@
       border: 1px solid var(--border);
       padding: 18px;
       box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       display: flex;
@@ -450,37 +269,9 @@
       color: var(--text-muted);
     }
 
-    .grade-pill {
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 600;
-    }
-
-    .grade-a { background: #dcfce7; color: #15803d; }
-    .grade-b { background: #fef3c7; color: #b45309; }
-    .grade-c { background: #fee2e2; color: #b91c1c; }
-    .grade-d { background: #fecaca; color: #991b1b; }
-
-    .card h3 {
-      font-size: 17px;
-    }
-
-    .desc {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
     .last {
       font-size: 13px;
       color: var(--text-muted);
-    }
-
-    .last strong {
-      color: #047857;
-      display: block;
-      margin-top: 4px;
-      color: #1f5cff;
     }
 
     .last strong {
@@ -620,59 +411,12 @@
         <div class="info-icon"><i class="fas fa-store"></i></div>
       </div>
     </div>
-    <div class="back" onclick="window.history.back()">
-      <i class="fas fa-chevron-left"></i> Back
-    </div>
-
-    <h1 id="centreName">Hawker Centre</h1>
-    <p id="centreLocation"></p>
-    <div class="address" id="centreAddress"></div>
-
-    <div class="header-actions">
-      <div>
-        <div class="schedule-card">
-          <div class="schedule-title">
-            <div class="schedule-icon"><i class="far fa-calendar"></i></div>
-            Schedule Inspection
-          </div>
-          <div class="schedule-fields">
-            <div class="field">
-              <label for="scheduleDate">Date</label>
-              <div class="input-wrap">
-                <i class="far fa-calendar"></i>
-                <input type="date" id="scheduleDate">
-              </div>
-            </div>
-            <div class="field">
-              <label for="scheduleTime">Time</label>
-              <div class="input-wrap">
-                <i class="far fa-clock"></i>
-                <input type="time" id="scheduleTime" value="10:00">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="scheduled-bar" id="scheduledBar">
-          <i class="far fa-calendar"></i>
-          Scheduled for: Not set
-        </div>
-      </div>
-      <div class="info-card">
-        <div>
-          <h3><i class="fas fa-store"></i> Stalls Available</h3>
-          <strong id="stallCount">0</strong>
-        </div>
-        <div class="info-icon"><i class="fas fa-store"></i></div>
-      </div>
-    </div>
   </div>
 
   <div class="content">
     <div class="title">Select a stall to inspect</div>
     <div class="subtitle">Click on any stall to begin the inspection process</div>
     <div id="stallList" class="cards"></div>
-    <div class="subtitle">Tap on any stall to begin inspection</div>
-    <div id="stallList"></div>
   </div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
@@ -701,193 +445,6 @@
   const scheduleDate = document.getElementById("scheduleDate");
   const scheduleTime = document.getElementById("scheduleTime");
   const scheduledBar = document.getElementById("scheduledBar");
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-  authDomain: "fed-assignment-9c219.firebaseapp.com",
-  projectId: "fed-assignment-9c219",
-  storageBucket: "fed-assignment-9c219.firebasestorage.app",
-  messagingSenderId: "287410844855",
-  appId: "1:287410844855:web:8c15e5cbe42c321b1e0932"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// ðŸ” Auth guard
-onAuthStateChanged(auth, user => {
-  if (!user) window.location.href = "/login.html";
-});
-
-const centreId = localStorage.getItem("selectedHawkerCentreId");
-
-  if (!user) window.location.href = "index.html";
-});
-
-// âœ… THIS WAS MISSING
-const centreId = localStorage.getItem("selectedHawkerCentreId");
-
-console.log("CENTRE ID =", centreId);
-
-if (!centreId) {
-  alert("No hawker centre selected.");
-  window.location.href = "index.html";
-}
-
-const stallList = document.getElementById("stallList");
-const stallCountEl = document.getElementById("stallCount");
-const scheduledBar = document.getElementById("scheduledBar");
-const scheduleDate = document.getElementById("scheduleDate");
-const scheduleTime = document.getElementById("scheduleTime");
-
-const schedulesKey = "neaSchedules";
-
-function loadSchedules() {
-  return JSON.parse(localStorage.getItem(schedulesKey) || "[]");
-}
-
-function saveSchedules(schedules) {
-  localStorage.setItem(schedulesKey, JSON.stringify(schedules));
-}
-
-function updateScheduleLocations(stallLocation) {
-  if (!scheduleDate.value) return;
-  const schedules = loadSchedules();
-  const scheduleEntry = schedules.find(item => item.centreId === centreId);
-  if (!scheduleEntry) return;
-
-  if (!scheduleEntry.locations) scheduleEntry.locations = {};
-  if (!scheduleEntry.locations[scheduleDate.value]) {
-    scheduleEntry.locations[scheduleDate.value] = [];
-  }
-
-  if (stallLocation && !scheduleEntry.locations[scheduleDate.value].includes(stallLocation)) {
-    scheduleEntry.locations[scheduleDate.value].push(stallLocation);
-  }
-
-  saveSchedules(schedules);
-}
-
-function updateScheduleStalls(stallId, stallLocation) {
-  if (!scheduleDate.value) return;
-  const schedules = loadSchedules();
-  const scheduleEntry = schedules.find(item => item.centreId === centreId);
-  if (!scheduleEntry) return;
-
-  if (!scheduleEntry.scheduledStalls) scheduleEntry.scheduledStalls = {};
-  if (!scheduleEntry.scheduledStalls[scheduleDate.value]) {
-    scheduleEntry.scheduledStalls[scheduleDate.value] = [];
-  }
-
-  const alreadyAdded = scheduleEntry.scheduledStalls[scheduleDate.value]
-    .some(item => item.stallId === stallId);
-
-  if (!alreadyAdded) {
-    scheduleEntry.scheduledStalls[scheduleDate.value].push({
-      stallId,
-      centreId,
-      location: stallLocation
-    });
-  }
-
-  saveSchedules(schedules);
-}
-
-function updateScheduleBar() {
-  if (scheduleDate.value && scheduleTime.value) {
-    const formatted = new Date(`${scheduleDate.value}T${scheduleTime.value}`);
-    scheduledBar.textContent = `Scheduled for: ${formatted.toLocaleDateString("en-SG", {
-      day: "numeric",
-      month: "short",
-      year: "numeric"
-    })} at ${scheduleTime.value}`;
-  } else {
-    scheduledBar.textContent = "Scheduled for: Not set";
-  }
-}
-
-const savedDate = localStorage.getItem("scheduleDate");
-const savedTime = localStorage.getItem("scheduleTime");
-if (savedDate) scheduleDate.value = savedDate;
-if (savedTime) scheduleTime.value = savedTime;
-
-scheduleDate.addEventListener("change", () => {
-  localStorage.setItem("scheduleDate", scheduleDate.value);
-  saveSchedule();
-  updateScheduleBar();
-});
-
-scheduleTime.addEventListener("change", () => {
-  localStorage.setItem("scheduleTime", scheduleTime.value);
-  saveSchedule();
-  updateScheduleBar();
-});
-
-function saveSchedule() {
-  if (!scheduleDate.value || !scheduleTime.value) return;
-  const schedules = loadSchedules();
-  const centreName = document.getElementById("centreName").textContent;
-  const existingIndex = schedules.findIndex(item => item.centreId === centreId);
-  const scheduleEntry = {
-    centreId,
-    centreName,
-    date: scheduleDate.value,
-    time: scheduleTime.value,
-    locations: existingIndex >= 0 && schedules[existingIndex].locations
-      ? schedules[existingIndex].locations
-      : {},
-    scheduledStalls: existingIndex >= 0 && schedules[existingIndex].scheduledStalls
-      ? schedules[existingIndex].scheduledStalls
-      : {}
-  };
-
-  if (existingIndex >= 0) {
-    schedules[existingIndex] = scheduleEntry;
-  } else {
-    schedules.push(scheduleEntry);
-  }
-
-  saveSchedules(schedules);
-}
-
-updateScheduleBar();
-// DOM
-const stallList = document.getElementById("stallList");
-const stallCountEl = document.getElementById("stallCount");
-
-// ---- Load hawker centre ----
-const centreSnap = await getDoc(doc(db, "hawkers", centreId));
-
-if (!centreSnap.exists()) {
-  stallList.innerHTML = `<div class="message">Hawker centre not found.</div>`;
-  throw new Error("Invalid centre ID");
-}
-
-const centre = centreSnap.data();
-document.getElementById("centreName").textContent = centre.name;
-document.getElementById("centreLocation").textContent = centre.area || "";
-document.getElementById("centreAddress").textContent = centre.address || centre.location || "";
-
-const schedules = loadSchedules();
-const centreSchedule = schedules.find(item => item.centreId === centreId);
-if (centreSchedule) {
-  scheduleDate.value = centreSchedule.date;
-  scheduleTime.value = centreSchedule.time;
-}
-updateScheduleBar();
 
   const schedulesKey = "neaSchedules";
 
@@ -901,12 +458,6 @@ updateScheduleBar();
 
   function saveSchedule() {
     if (!scheduleDate.value || !scheduleTime.value) return;
-if (snapshot.empty) {
-  stallList.innerHTML = `<div class="message">No stalls found for this centre.</div>`;
-  stallCountEl.textContent = "0";
-  stallCountEl.textContent = "0 Stalls";
-  
-}
 
     const schedules = loadSchedules();
     const centreName = document.getElementById("centreName").textContent;
@@ -926,24 +477,6 @@ if (snapshot.empty) {
     if (!entry.scheduledStalls[scheduleDate.value]) {
       entry.scheduledStalls[scheduleDate.value] = [];
     }
-  const gradeClass =
-    d.grade === "A" ? "grade-a" :
-    d.grade === "B" ? "grade-b" :
-    d.grade === "C" ? "grade-c" : "grade-d";
-
-  stallList.innerHTML += `
-    <div class="card" data-id="${docSnap.id}">
-      <div class="card-top">
-        <div class="stall-number">${d.location || "#"}</div>
-        <div class="grade-pill ${gradeClass}">Grade ${d.grade || "-"}</div>
-      </div>
-      <h3>${d.hawkerName || d.name || "Stall"}</h3>
-      <div class="desc">${d.category || d.hours || ""}</div>
-      <div class="last">Last Inspection
-        <strong>${d.lastInspectedAt ? "Last inspected: recently" : "Last inspected: N/A"}</strong>
-      </div>
-    d.grade === "A" ? "a" :
-    d.grade === "B" ? "b" : "c";
 
     saveSchedules(schedules);
     updateScheduleBar();
@@ -1005,27 +538,6 @@ if (snapshot.empty) {
       localStorage.setItem("selectedCalendarStallId", card.dataset.id);
       window.location.href = "calendar.html";
     });
-stallCountEl.textContent = count;
-stallCountEl.textContent = `${count} Stall${count !== 1 ? "s" : ""}`;
-
-// ---- Click stall ----
-document.querySelectorAll(".card").forEach(card => {
-  card.addEventListener("click", () => {
-    if (!scheduleDate.value || !scheduleTime.value) {
-      alert("Please select a date and time before scheduling.");
-      return;
-    }
-
-    const stallLocation = card.querySelector(".stall-number")?.textContent?.trim() || "";
-
-    saveSchedule();
-    updateScheduleLocations(stallLocation);
-    updateScheduleStalls(card.dataset.id, stallLocation);
-
-    localStorage.setItem("selectedCalendarDate", scheduleDate.value || "");
-    window.location.href = "calendar.html";
-    localStorage.setItem("selectedStallId", card.dataset.id);
-    window.location.href = "inspect-stall.html";
   });
 </script>
 

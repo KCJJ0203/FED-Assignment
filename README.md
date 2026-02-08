@@ -88,6 +88,18 @@ Note: role folder paths are normalized to lowercase (`vendor`, `nea`, `admin`) f
 2. Run using Live Server.
 3. Start from `index.html`.
 
+## Teacher Test Accounts
+Use the following accounts for grading and role-based testing:
+
+| Role | Email | Password |
+|---|---|---|
+| NEA | niranjan.palani.selvam@gmail.com | 888888 |
+| Admin | Dingyixian1234567@gmail.com | 888888 |
+| Customer | htetm2417@gmail.com | 888888 |
+| Vendor | kahchunn@gmail.com | 888888 |
+
+All listed test accounts currently use the same password: `888888`.
+
 ## Deployment
 - [(Link)](https://kcjj0203.github.io/FED-Assignment/)
 

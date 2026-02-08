@@ -71,12 +71,12 @@ Firebase products used:
 ## User Types & Routing
 User routing based on `userType`:
 - `customer` -> `customer-guest/index.html`
-- `vendor` -> `vendor/index.html`
-- `nea` -> `nea/index.html`
-- `admin` -> `admin/index.html`
+- `vendor` -> `Vendor/index.html`
+- `nea` -> `NEA/index.html`
+- `admin` -> `Admin/Home.html`
 - `guest` -> `customer-guest/index.html`
 
-Note: folder casing is `Vendor`, `NEA`, `Admin` on disk. Routes in `js/login.js` use lowercase. Case-sensitive hosting will require matching folder names or updated routes.
+Note: folder casing is `Vendor`, `NEA`, `Admin` on disk, and routes should match this casing on case-sensitive hosting.
 
 ## APIs / Data Sources
 - data.gov.sg API: hawker centre list in `js/customer-guest-hawkers.js`.
@@ -91,13 +91,13 @@ Note: folder casing is `Vendor`, `NEA`, `Admin` on disk. Routes in `js/login.js`
 ```text
 /
   Admin/
-    index.html
+    Home.html
   NEA/
     index.html
   Vendor/
     index.html
     orders.html
-    css/
+    CSS/
       style.css
     js/
       orders.js

@@ -436,7 +436,7 @@
   const db = getFirestore(app);
 
   onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "/login.html";
+    if (!user) window.location.href = "../login.html";
   });
 
   const centreId = localStorage.getItem("selectedHawkerCentreId");
@@ -526,11 +526,18 @@
         entry.scheduledStalls[dateKey] = [];
       }
 
-      entry.scheduledStalls[dateKey].push({
-        stallId: card.dataset.id,
-        centreId,
-        location: card.querySelector(".stall-number")?.textContent || ""
-      });
+      const scheduledStalls = entry.scheduledStalls[dateKey];
+      const exists = scheduledStalls.some(item => (
+        String(item.stallId) === String(card.dataset.id)
+      ));
+
+      if (!exists) {
+        scheduledStalls.push({
+          stallId: card.dataset.id,
+          centreId,
+          location: card.querySelector(".stall-number")?.textContent || ""
+        });
+      }
 
       saveSchedules(schedules);
 

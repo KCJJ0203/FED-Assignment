@@ -519,7 +519,7 @@
 
     // Check authentication status and redirect if not logged in
     onAuthStateChanged(auth, user => {
-      if (!user) window.location.href = "/login.html";
+      if (!user) window.location.href = "../login.html";
     });
 
     // DOM element reference
@@ -557,17 +557,42 @@
   const schedules = JSON.parse(localStorage.getItem("neaSchedules") || "[]");
   const inspections = JSON.parse(localStorage.getItem("neaInspections") || "[]");
 
-  // Count completed inspections today
-  const completedToday = inspections.filter(i =>
-    i.completedAt && toLocalDateKey(new Date(i.completedAt)) === todayKey
-  ).length;
+  const makeInspectionKey = (stallId, centreId, label) => {
+    const normalizedStallId = String(stallId || "").trim();
+    if (normalizedStallId) {
+      return `stall:${normalizedStallId}`;
+    }
+    const normalizedCentreId = String(centreId || "").trim();
+    const normalizedLabel = String(label || "").trim().toLowerCase();
+    return `fallback:${normalizedCentreId}:${normalizedLabel}`;
+  };
 
-  // Count scheduled inspections today
-  const scheduledToday = schedules.reduce((sum, entry) => {
-    return sum + (entry.scheduledStalls?.[todayKey]?.length || 0);
-  }, 0);
+  const uniqueInspections = new Set();
 
-  return scheduledToday + completedToday;
+  schedules.forEach(entry => {
+    const todaySchedules = entry.scheduledStalls?.[todayKey] || [];
+    todaySchedules.forEach(item => {
+      const key = makeInspectionKey(
+        item.stallId,
+        item.centreId || entry.centreId,
+        item.location || item.name || item.stallTitle
+      );
+      uniqueInspections.add(key);
+    });
+  });
+
+  inspections
+    .filter(i => i.completedAt && toLocalDateKey(new Date(i.completedAt)) === todayKey)
+    .forEach(i => {
+      const key = makeInspectionKey(
+        i.stallId,
+        i.centreId,
+        i.stallTitle || i.location || i.name
+      );
+      uniqueInspections.add(key);
+    });
+
+  return uniqueInspections.size;
 }
 
     // Fetch hawker centres and stalls from Firestore
@@ -736,7 +761,7 @@
     async function handleLogout() {
       await signOut(auth);
       localStorage.clear();
-      window.location.href = "/login.html";
+      window.location.href = "../login.html";
     }
 
     document.getElementById("logoutBtn").addEventListener("click", handleLogout);

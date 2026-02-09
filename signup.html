@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('image/lau-pa-sat.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="login-page">
+    <nav aria-label="Primary Navigation" hidden></nav>
+    <header class="login-header">
+        <a class="back" href="index.html" aria-label="Back">&larr;</a>
+        <div class="spacer" aria-hidden="true"></div>
+    </header>
+    <main class="login">
+        <div class="login-box">
+            <form class="login-form">
+                <h1>Create Account</h1>
+                <label class="field">
+                    <span class="sr-only">Full Name</span>
+                    <input type="text" name="name" placeholder="FULL NAME" autocomplete="name" required>
+                </label>
+                <label class="field">
+                    <span class="sr-only">Email</span>
+                    <input type="email" name="email" placeholder="EMAIL" autocomplete="email" required>
+                </label>
+                <label class="field">
+                    <span class="sr-only">Password</span>
+                    <input type="password" name="password" placeholder="PASSWORD" autocomplete="new-password" required>
+                </label>
+                <label class="field">
+                    <span class="sr-only">Confirm Password</span>
+                    <input type="password" name="confirm-password" placeholder="CONFIRM PASSWORD" autocomplete="new-password" required>
+                </label>
+                <p class="form-error" role="alert" aria-live="polite" hidden></p>
+                <button class="login-btn" type="submit">CREATE ACCOUNT</button>
+                <p class="signup">Already have an account? <a href="login.html">Sign in Here</a></p>
+            </form>
+        </div>
+    </main>
+    <script src="js/app-firebase.js"></script>
+    <script src="js/app-storage.js"></script>
+    <script type="module" src="js/signup.js"></script>
+</body>
+</html>

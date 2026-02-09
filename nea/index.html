@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Officer Dashboard</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
+
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    :root {
+      --green-900: #046a51;
+      --green-800: #057a5f;
+      --green-700: #06886b;
+      --white: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --card-border: #e2e8f0;
+      --page-bg: #f5f9f7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    body {
+      background: var(--page-bg);
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    .header {
+  background: linear-gradient(180deg, #0f766e, #065f46);
+  color: #fff;
+  padding: 28px 24px 40px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  box-shadow: 0 4px 12px rgba(6, 95, 70, 0.35);
+}
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--white);
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .welcome h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .welcome p {
+      margin-top: 6px;
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      border: none;
+      background: transparent;
+      color: var(--white);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .stats {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 22px 24px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      border: 1px solid #eef2f7;
+      text-align: left;
+    }
+
+    .stat-card button {
+      all: unset;
+      display: block;
+      cursor: pointer;
+    }
+
+    .stat-title {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .stat-sub {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .content {
+      padding: 24px;
+      margin-top: -20px;
+      background: var(--page-bg);
+    }
+
+    .content-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .blue-title {
+      color: #1f5cff;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      color: var(--text-dark);
+      font-size: 15px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .centre-card {
+      background: var(--white);
+      border: 1px solid #e7eef1;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .centre-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+    }
+
+    .centre-image {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .centre-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .centre-image .grade-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .centre-info {
+      padding: 18px 20px 20px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .centre-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .meta-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .address {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #edf2f6;
+      margin: 8px 0;
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .last-inspection {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .last-inspection strong {
+      display: block;
+      color: #008c6a;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .stall-info {
+      text-align: right;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .stall-info strong {
+      display: block;
+      color: var(--text-dark);
+      font-size: 18px;
+      margin-top: 4px;
+    }
+
+    .grade-a { background: #dcfce7; color: #15803d; }
+    .grade-b { background: #fef3c7; color: #b45309; }
+    .grade-c { background: #fee2e2; color: #b91c1c; }
+    .grade-d { background: #fecaca; color: #991b1b; }
+
+    .message-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      color: #64748b;
+      border: 1px dashed #cbd5f5;
+    }
+
+    @media (max-width: 900px) {
+      .header {
+        padding: 24px 24px 32px;
+      }
+
+      .content {
+        padding: 28px 24px 40px;
+      }
+
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .centre-image {
+        height: 160px;
+      }
+    }
+
+@media (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .header {
+    padding: 20px 16px 28px;
+  }
+
+  .content {
+    padding: 20px 16px 32px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  h3 {
+    font-size: 17px !important;
+  }
+
+  .back {
+    font-size: 14px;
+  }
+
+  button, .card, .stall-card {
+    touch-action: manipulation;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <nav aria-label="NEA Navigation" hidden></nav>
+  <main>
+
+  <div class="header">
+    <div class="header-top">
+
+      <div class="profile">
+        <button class="profile-icon" id="logoutBtn" aria-label="Logout">
+          <i class="fas fa-user"></i>
+        </button>
+        <div class="welcome">
+          <h1>Welcome back, Officer NEA-12345</h1>
+          <p>Food Establishment Inspection System</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="action-btn" id="calendarBtn" type="button">
+          <i class="fas fa-calendar"></i>
+          Calendar
+        </button>
+        <button class="action-btn" id="historyBtn" type="button">
+          <i class="fas fa-history"></i>
+          History
+        </button>
+        <button class="action-btn" id="logoutActionBtn" type="button">
+          <i class="fas fa-right-from-bracket"></i>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-title">Total Food Centres</div>
+        <div class="stat-value" id="foodCentreCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Total Stalls</div>
+        <div class="stat-value" id="stallCount">0</div>
+      </div>
+      <div class="stat-card" id="todayCard">
+        <button type="button">
+          <div class="stat-title">Today</div>
+          <div class="stat-value" id="todayCount">0</div>
+        </button>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Avg Grade</div>
+        <div class="stat-value" id="avgGrade">-</div>
+        <div class="stat-sub">
+          <i class="fas fa-arrow-trend-up"></i>
+          Stable
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="content-header">
+      <div>
+        <h2 class="blue-title">Schedule your next inspection!</h2>
+        <p class="subtitle">Select a food centre to begin inspection workflow</p>
+      </div>
+      <div class="date-pill">
+        <i class="far fa-calendar"></i>
+        <span id="todayDate">Loading date...</span>
+      </div>
+    </div>
+
+    <div id="centresList" class="cards"></div>
+  </div>
+
+  <script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
+  <script type="module">
+    import { signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+    const db = await window.AppFirebase.getFirestoreDb();
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const STORAGE = {
+      inspections: storageKeys.NEA_INSPECTIONS || "neaInspections",
+      schedules: storageKeys.NEA_SCHEDULES || "neaSchedules",
+      centreId: storageKeys.NEA_SELECTED_CENTRE_ID || "selectedHawkerCentreId",
+      centreName: storageKeys.NEA_SELECTED_CENTRE_NAME || "selectedHawkerCentreName",
+      stallId: storageKeys.NEA_SELECTED_STALL_ID || "selectedStallId",
+      scheduleDate: storageKeys.NEA_SCHEDULE_DATE || "scheduleDate",
+      scheduleTime: storageKeys.NEA_SCHEDULE_TIME || "scheduleTime",
+      reportId: storageKeys.NEA_SELECTED_REPORT_ID || "selectedReportId",
+      calendarDate: storageKeys.NEA_SELECTED_CALENDAR_DATE || "selectedCalendarDate",
+      calendarStallId: storageKeys.NEA_SELECTED_CALENDAR_STALL_ID || "selectedCalendarStallId",
+      calendarCentreId: storageKeys.NEA_SELECTED_CALENDAR_CENTRE_ID || "selectedCalendarCentreId",
+      thisWeek: storageKeys.NEA_THIS_WEEK_INSPECTIONS || "thisWeekInspections",
+      draftPrefix: storageKeys.NEA_DRAFT_PREFIX || "inspectionDraft_"
+    };
+
+    const readLocalJson = (key, fallback) => {
+      if (storageApi && typeof storageApi.readJSON === "function") {
+        return storageApi.readJSON(localStorage, key, fallback);
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    };
+
+    const setLocalValue = (key, value) => localStorage.setItem(key, value);
+    const removeLocalKey = (key) => {
+      if (storageApi && typeof storageApi.remove === "function") {
+        storageApi.remove(localStorage, key);
+      } else {
+        localStorage.removeItem(key);
+      }
+    };
+
+    onAuthStateChanged(auth, user => {
+      if (!user) window.location.href = "../login.html";
+    });
+
+    
+    const list = document.getElementById("centresList");
+    list.innerHTML = `<div class="message-box">Loading food centres...</div>`;
+
+    
+    document.getElementById("todayDate").textContent = new Date().toLocaleDateString(
+      "en-SG",
+      { weekday: "long", day: "numeric", month: "long", year: "numeric" }
+    );
+
+    
+    function toLocalDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    
+    function getCompletedTodaySet(todayKey) {
+      const inspections = readLocalJson(STORAGE.inspections, []);
+      return new Set(
+        inspections
+          .filter(entry => entry.completedAt && toLocalDateKey(new Date(entry.completedAt)) === todayKey)
+          .map(entry => entry.stallId)
+          .filter(Boolean)
+      );
+    }
+
+    
+    function getTodayCount() {
+  const todayKey = toLocalDateKey(new Date());
+  const schedules = readLocalJson(STORAGE.schedules, []);
+  const inspections = readLocalJson(STORAGE.inspections, []);
+
+  const makeInspectionKey = (stallId, centreId, label) => {
+    const normalizedStallId = String(stallId || "").trim();
+    if (normalizedStallId) {
+      return `stall:${normalizedStallId}`;
+    }
+    const normalizedCentreId = String(centreId || "").trim();
+    const normalizedLabel = String(label || "").trim().toLowerCase();
+    return `fallback:${normalizedCentreId}:${normalizedLabel}`;
+  };
+
+  const uniqueInspections = new Set();
+
+  schedules.forEach(entry => {
+    const todaySchedules = entry.scheduledStalls?.[todayKey] || [];
+    todaySchedules.forEach(item => {
+      const key = makeInspectionKey(
+        item.stallId,
+        item.centreId || entry.centreId,
+        item.location || item.name || item.stallTitle
+      );
+      uniqueInspections.add(key);
+    });
+  });
+
+  inspections
+    .filter(i => i.completedAt && toLocalDateKey(new Date(i.completedAt)) === todayKey)
+    .forEach(i => {
+      const key = makeInspectionKey(
+        i.stallId,
+        i.centreId,
+        i.stallTitle || i.location || i.name
+      );
+      uniqueInspections.add(key);
+    });
+
+  return uniqueInspections.size;
+}
+
+    
+    const [centresSnap, stallsSnap] = await Promise.all([
+      getDocs(collection(db, "hawkers")),
+      getDocs(collection(db, "stalls"))
+    ]);
+
+    
+    const fallbackImage = "../image/default-hawker.jpg";
+
+    
+    function normalizeImageUrl(url) {
+      if (!url) return fallbackImage;
+      if (url.startsWith("http://") || url.startsWith("https://")) return url;
+      if (url.startsWith("./") || url.startsWith("../")) return url;
+      if (url.startsWith("/image/") || url.startsWith("/images/")) return `..${url}`;
+      if (url.startsWith("image/") || url.startsWith("images/")) return `../${url}`;
+      return url;
+    }
+
+    
+    const stallCounts = {};
+    const stallLocationsByCentre = {};
+    const gradeTotals = {};
+    const gradeMap = { A: 4, B: 3, C: 2, D: 1 };
+
+    
+    stallsSnap.forEach(stallDoc => {
+      const stall = stallDoc.data();
+      const hawkerId = stall.hawkerId;
+      if (!hawkerId) return;
+
+      
+      stallCounts[hawkerId] = (stallCounts[hawkerId] || 0) + 1;
+
+      
+      if (!stallLocationsByCentre[hawkerId]) {
+        stallLocationsByCentre[hawkerId] = new Set();
+      }
+      if (stall.location) {
+        stallLocationsByCentre[hawkerId].add(stall.location);
+      }
+
+      
+      if (!gradeTotals[hawkerId]) {
+        gradeTotals[hawkerId] = { sum: 0, count: 0 };
+      }
+
+      const gradeValue = gradeMap[stall.grade] || 0;
+      if (gradeValue) {
+        gradeTotals[hawkerId].sum += gradeValue;
+        gradeTotals[hawkerId].count += 1;
+      }
+    });
+
+    
+    const totalGrade = Object.values(gradeTotals).reduce(
+      (acc, entry) => {
+        return {
+          sum: acc.sum + entry.sum,
+          count: acc.count + entry.count
+        };
+      },
+      { sum: 0, count: 0 }
+    );
+
+    const overallAvg = totalGrade.count ? totalGrade.sum / totalGrade.count : 0;
+    const overallGrade = overallAvg >= 3.5 ? "A" : overallAvg >= 2.5 ? "B" : overallAvg >= 1.5 ? "C" : overallAvg > 0 ? "D" : "-";
+
+    
+    document.getElementById("foodCentreCount").textContent = centresSnap.size;
+    document.getElementById("stallCount").textContent = stallsSnap.size;
+    document.getElementById("todayCount").textContent = getTodayCount();
+    document.getElementById("avgGrade").textContent = overallGrade;
+
+    list.innerHTML = "";
+
+    
+    if (centresSnap.empty) {
+      list.innerHTML = `<div class="message-box">No food centres available.</div>`;
+    }
+
+    
+    centresSnap.forEach(docSnap => {
+      const h = docSnap.data();
+      const centreId = docSnap.id;
+      const stallTotal = stallCounts[centreId] || 0;
+      const gradeData = gradeTotals[centreId];
+
+      
+      const avgGrade = gradeData && gradeData.count
+        ? gradeData.sum / gradeData.count
+        : 0;
+      const gradeLetter = avgGrade >= 3.5 ? "A" : avgGrade >= 2.5 ? "B" : avgGrade >= 1.5 ? "C" : avgGrade > 0 ? "D" : "-";
+      const gradeClass = gradeLetter !== "-" ? `grade-${gradeLetter.toLowerCase()}` : "";
+      const imageUrl = normalizeImageUrl(h.imageUrl);
+
+      
+      const locationList = Array.from(stallLocationsByCentre[centreId] || []).sort();
+      const address = locationList.length
+        ? locationList.join(", ")
+        : "Locations unavailable";
+
+      
+      list.innerHTML += `
+        <div class="centre-card" data-centre-id="${centreId}" data-centre-name="${h.name}">
+          <div class="centre-image">
+            <img src="${imageUrl}" alt="${h.name}" onerror="this.onerror=null;this.src='${fallbackImage}';">
+            <div class="grade-badge ${gradeClass}">${gradeLetter}</div>
+          </div>
+          <div class="centre-info">
+            <div class="centre-title">${h.name}</div>
+            <div class="meta-line">
+              <i class="fas fa-location-dot"></i>
+              ${h.area || "Area unavailable"}
+            </div>
+            <div class="address">${address}</div>
+            <div class="divider"></div>
+            <div class="card-bottom">
+              <div class="last-inspection">
+                Last Inspection
+                <strong>${h.lastInspectedAt ? "Last inspected: recently" : "Last inspected: N/A"}</strong>
+              </div>
+              <div class="stall-info">
+                Total Stalls
+                <strong>${stallTotal || "-"}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    
+    document.querySelectorAll(".centre-card").forEach(card => {
+      card.addEventListener("click", () => {
+        setLocalValue(STORAGE.centreId, card.dataset.centreId);
+        setLocalValue(STORAGE.centreName, card.dataset.centreName);
+
+        window.location.href = "inspection.html";
+      });
+    });
+
+    
+    document.getElementById("calendarBtn").addEventListener("click", () => {
+      window.location.href = "calendar.html";
+    });
+
+    document.getElementById("historyBtn").addEventListener("click", () => {
+      window.location.href = "history.html";
+    });
+
+    document.getElementById("todayCard").addEventListener("click", () => {
+      window.location.href = "today.html";
+    });
+
+    
+    async function handleLogout() {
+      await signOut(auth);
+      const keysToRemove = [
+        STORAGE.centreId,
+        STORAGE.centreName,
+        STORAGE.stallId,
+        STORAGE.scheduleDate,
+        STORAGE.scheduleTime,
+        STORAGE.calendarDate,
+        STORAGE.calendarStallId,
+        STORAGE.calendarCentreId,
+        STORAGE.reportId,
+        STORAGE.thisWeek,
+        STORAGE.schedules,
+        STORAGE.inspections
+      ];
+      keysToRemove.forEach((key) => removeLocalKey(key));
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith(STORAGE.draftPrefix)) {
+          removeLocalKey(key);
+        }
+      });
+      window.location.href = "../login.html";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+    document.getElementById("logoutActionBtn").addEventListener("click", handleLogout);
+  </script>
+  </main>
+</body>
+</html>

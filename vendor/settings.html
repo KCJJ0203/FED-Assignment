@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | HawkerHub</title>
+    <link rel="stylesheet" href="../css/design-tokens.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon"><i class="fas fa-store"></i></div>
+                HawkerHub
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-th-large"></i> Overview</a></li>
+                <li><a href="orders.html"><i class="fas fa-clipboard-list"></i> Order Management</a></li>
+                <li><a href="menu.html"><i class="fas fa-utensils"></i> Menu Items</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+        <div class="user-profile">
+            <div class="user-avatar"></div>
+            <div>
+                <div style="font-weight: bold; font-size: 14px;">Uncle Tan</div>
+                <div style="font-size: 12px; color: #777;">Stall #04-21</div>
+            </div>
+        </div>
+        <div class="account-actions">
+            <a class="sign-out-link" href="../login.html">
+                <i class="fas fa-sign-out-alt"></i> Sign out
+            </a>
+        </div>
+
+    </nav>
+
+    <main class="main-content">
+        <header style="height: 80px !important; min-height: 80px !important; background-color: #1A237E; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 30px;">
+            <div class="header-title">
+                <i class="fas fa-bars" style="margin-right: 15px; cursor: pointer; color: white; font-size: 22px;"></i>
+                <strong style="font-size: 22px;" id="header-stall-name">Uncle Lim Chicken Rice</strong>
+            </div>
+            <div class="header-icons">
+                <div style="display: flex; align-items: center; gap: 10px; margin-right: 30px; background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 30px;">
+                    <span style="font-size: 13px; color: #eee; font-weight: 500;">Store Status</span>
+                    <i class="fas fa-toggle-on" style="color: #69F0AE; font-size: 24px;"></i>
+                    <span style="font-size: 13px; font-weight: bold; color: white;">OPEN</span>
+                </div>
+                <i class="fas fa-bell" style="color: white; font-size: 20px; margin-right: 20px; cursor: pointer;"></i>
+                <div class="user-avatar" style="width: 40px; height: 40px; background-color: white; color: #1A237E; display:flex; align-items:center; justify-content:center; border-radius: 50%; font-weight:bold; font-size:15px;">UT</div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <h2 style="margin: 0;">System Settings</h2>
+                    <p style="margin: 5px 0 0; color: #777;">Configure payments, hardware, and stall details.</p>
+                </div>
+                <button class="btn-green" id="save-settings-btn" type="submit" form="settings-form" style="width: auto; padding: 12px 24px;">
+                    <i class="fas fa-save"></i> SAVE CHANGES
+                </button>
+            </div>
+            <p id="settings-form-error" class="field-error" role="alert" aria-live="polite" hidden></p>
+
+            <form id="settings-form" novalidate>
+            <div class="grid-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-store" style="color:#1A237E;"></i> Stall Profile</h3>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 2;">
+                            <label for="inp-stall-name" style="display:block; margin-bottom:5px; font-weight:bold; font-size:13px; color:#555;">Stall Name</label>
+                            <input type="text" id="inp-stall-name" aria-describedby="err-stall-name" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" placeholder="Loading...">
+                            <p class="field-error" id="err-stall-name" data-error-for="inp-stall-name" role="alert" aria-live="polite" hidden></p>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="inp-stall-no" style="display:block; margin-bottom:5px; font-weight:bold; font-size:13px; color:#555;">Stall No.</label>
+                            <input type="text" id="inp-stall-no" value="#04-21" readonly style="width:100%; padding:10px; border:1px solid #eee; background:#f9f9f9; border-radius:6px; color:#777;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="inp-uen" style="display:block; margin-bottom:5px; font-weight:bold; font-size:13px; color:#555;">UEN / Business Reg No.</label>
+                        <input type="text" id="inp-uen" aria-describedby="err-uen" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:13px;" placeholder="e.g. 53123456A">
+                        <p class="field-error" id="err-uen" data-error-for="inp-uen" role="alert" aria-live="polite" hidden></p>
+                        <small style="color:#999; font-size:11px;">Required for business receipts</small>
+                    </div>
+                    <div>
+                        <label for="inp-banner" style="display:block; margin-bottom:5px; font-weight:bold; font-size:13px; color:#555;">Banner Image URL</label>
+                        <input type="text" id="inp-banner" aria-describedby="err-banner" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:13px;" placeholder="https://...">
+                        <p class="field-error" id="err-banner" data-error-for="inp-banner" role="alert" aria-live="polite" hidden></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-credit-card" style="color:#1A237E;"></i> Payment & Pricing</h3>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight:bold; font-size:13px; color:#555; display:block; margin-bottom:10px;">Accepted Methods</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <label class="toggle-btn"><input type="checkbox" checked disabled> Cash</label>
+                            <label class="toggle-btn"><input type="checkbox" checked> PayNow QR</label>
+                            <label class="toggle-btn"><input type="checkbox" checked> CDC Voucher</label>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 15px;">
+                         <label for="inp-takeaway" style="font-weight:bold; font-size:13px; color:#555; display:block; margin-bottom:10px;">Takeaway Configuration</label>
+                         <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:14px;">Container Charge</span>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span style="font-weight: bold; color: #555;">$</span>
+                                <input type="number" id="inp-takeaway" value="0.30" min="0" max="20" step="0.01" aria-describedby="err-takeaway" style="width:70px; padding:6px; border:1px solid #ddd; border-radius:6px; text-align:center;">
+                            </div>
+                        </div>
+                        <p class="field-error" id="err-takeaway" data-error-for="inp-takeaway" role="alert" aria-live="polite" hidden></p>
+                    </div>
+
+                    <div style="border-top: 1px solid #eee; padding-top: 15px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-weight:bold; font-size:14px;">Pricing Policy</div>
+                                <div style="font-size:12px; color:#777;">GST & Service Charge</div>
+                            </div>
+                            <span style="background:#E8F5E9; color:#2ECC71; padding:5px 10px; border-radius:4px; font-weight:bold; font-size:12px; border:1px solid #2ECC71;">Prices are NETT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-print" style="color:#1A237E;"></i> Hardware & Receipts</h3>
+                        <button class="btn-outline" style="padding: 5px 10px; font-size: 12px;">Check Status</button>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-receipt" style="font-size: 20px; color: #555;"></i>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Thermal Printer</div>
+                                <div style="font-size: 12px; color: #2ECC71;">&bull; Online (EPSON-T88)</div>
+                            </div>
+                        </div>
+                        <button class="btn-grey" id="test-print-btn" type="button" style="padding: 6px 12px; font-size: 12px;">Test Print</button>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="inp-footer" style="display:block; margin-bottom:5px; font-weight:bold; font-size:13px; color:#555;">Receipt Footer Message</label>
+                        <input type="text" id="inp-footer" aria-describedby="err-footer" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:13px;" placeholder="e.g. Thank you! Visit us again!">
+                        <p class="field-error" id="err-footer" data-error-for="inp-footer" role="alert" aria-live="polite" hidden></p>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-volume-up" style="font-size: 20px; color: #555;"></i>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Loud Notification</div>
+                                <div style="font-size: 12px; color:#777;">For noisy hawker environment</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cogs" style="color:#1A237E;"></i> Operations</h3>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">Queue Numbers</div>
+                            <div style="font-size: 12px; color: #777;">Current Sequence: #106</div>
+                        </div>
+                        <button class="btn-grey" id="reset-sequence-btn" type="button">Reset Sequence</button>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px; color: #E74C3C;">Factory Reset</div>
+                            <div style="font-size: 12px; color: #777;">Clear all sales data</div>
+                        </div>
+                        <button class="btn-grey" id="reset-data-btn" type="button" style="background:#FFEBEE; color:#C62828;">Reset Data</button>
+                    </div>
+                </div>
+
+            </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="toast-container"><i class="fas fa-check-circle toast-icon"></i> <span id="toast-message">Settings Saved</span></div>
+
+    <script src="../js/app-firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+    <script src="../js/app-validation.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

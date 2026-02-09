@@ -4,30 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hawker Centre Management</title>
+    <link rel="stylesheet" href="css/design-tokens.css">
     <link rel="stylesheet" href="css/main.css">
     <style>
         body {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('image/lau\ pa\ sat.jpg');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('image/lau-pa-sat.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             min-height: 100vh;
             margin: 0;
         }
-
-        .container {
-            background-color: transparent !important;
-        }
     </style>
 </head>
-<body>
-    <main class="container">
-        <section class="content">
-            <button class="btn sign-in" id="signInButton">Sign In</button>
-            <button class="btn register">Register</button>
-            <button class="btn guest" id="continueAsGuest">Continue as guest</button>
-        </section>
+<body class="login-page">
+    <nav aria-label="Primary Navigation" hidden></nav>
+    <main class="login">
+        <div class="login-box">
+            <div class="login-form">
+                <h1>Hawker Centre Management</h1>
+                <p style="color: #c9d2ff; font-size: 13px; margin: 0 0 20px 0; text-align: center;">
+                    Manage your stalls, orders, and operations efficiently
+                </p>
+                <button class="btn sign-in" id="signInButton">Sign In</button>
+                <button class="btn register" id="registerButton">Register</button>
+                <button class="btn guest" id="continueAsGuest">Continue as guest</button>
+            </div>
+        </div>
     </main>
+    <script src="js/app-firebase.js"></script>
+    <script src="js/app-storage.js"></script>
     <script type="module" src="js/index.js"></script>
 </body>
 </html>

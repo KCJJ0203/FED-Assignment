@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="img" aria-labelledby="title desc">
+  <title id="title">Image unavailable</title>
+  <desc id="desc">Fallback placeholder for missing food image.</desc>
+  <rect width="320" height="180" fill="#eef2f7"/>
+  <rect x="12" y="12" width="296" height="156" rx="12" fill="#dde5ef" stroke="#c0ccdb"/>
+  <circle cx="120" cy="82" r="26" fill="#c0ccdb"/>
+  <path d="M56 146c14-27 33-40 55-40 18 0 35 7 50 24 8 10 18 16 29 16h74v20H56z" fill="#b1bfd1"/>
+  <text x="160" y="162" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#4a5a70">Image not available</text>
+</svg>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits</title>
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .credits-page {
+            padding: 48px 20px;
+        }
+
+        .credits-card {
+            width: min(720px, 92vw);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+            padding: 28px 28px 24px;
+            text-align: left;
+            box-shadow: 0 18px 36px rgba(10, 24, 70, 0.2);
+        }
+
+        .credits-card h1 {
+            margin: 0 0 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .credits-card h2 {
+            margin: 22px 0 12px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .credits-intro {
+            margin: 0 0 18px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .credits-list {
+            margin: 0;
+            padding-left: 20px;
+            display: grid;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .credits-list a {
+            color: #ffffff;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
+        .credits-label {
+            font-weight: 600;
+        }
+
+        .credits-missing {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        @media (max-width: 480px) {
+            .credits-page {
+                padding: 32px 16px;
+            }
+
+            .credits-card {
+                padding: 22px 20px;
+            }
+
+            .credits-card h1 {
+                font-size: 20px;
+            }
+
+            .credits-card h2 {
+                margin-top: 18px;
+            }
+
+            .credits-list {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav aria-label="Primary Navigation" hidden></nav>
+    <main class="container credits-page">
+        <section class="credits-card" aria-labelledby="credits-title">
+            <h1 id="credits-title">Credits &amp; References</h1>
+            <p class="credits-intro">
+                Thanks to the following sources, services, and images used in this project.
+            </p>
+
+            <h2>Tools &amp; Data</h2>
+            <ul class="credits-list" aria-label="Tools and data sources">
+                <li>
+                    <span class="credits-label">Google Fonts (Sora):</span>
+                    <a href="https://fonts.googleapis.com/css2?family=Sora">https://fonts.googleapis.com/css2?family=Sora</a>
+                </li>
+                <li>
+                    <span class="credits-label">Font Awesome CDN:</span>
+                    <a href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css</a>
+                </li>
+                <li>
+                    <span class="credits-label">UI Avatars:</span>
+                    <a href="https://ui-avatars.com/">https://ui-avatars.com/</a>
+                </li>
+                <li>
+                    <span class="credits-label">Hawker centre data:</span>
+                    <a href="https://data.gov.sg/">https://data.gov.sg/</a>
+                </li>
+                <li>
+                    <span class="credits-label">Stall mock data:</span>
+                    <a href="https://jsonplaceholder.typicode.com/">https://jsonplaceholder.typicode.com/</a>
+                </li>
+            </ul>
+
+            <h2>Image Sources</h2>
+            <ul class="credits-list" aria-label="Image sources">
+                <li>
+                    <span class="credits-label">nea-logo.png</span> -
+                    <a href="https://www.nea.gov.sg/corporate-functions/who-we-are/our-purpose">https://www.nea.gov.sg/corporate-functions/who-we-are/our-purpose</a>
+                </li>
+                <li>
+                    <span class="credits-label">lau-pa-sat.jpg</span> -
+                    <a href="https://www.laupasat.sg/media-gallery/aerial-view/">https://www.laupasat.sg/media-gallery/aerial-view/</a>
+                </li>
+                <li>
+                    <span class="credits-label">maxwell.jpg</span> -
+                    <a href="https://www.nlb.gov.sg/main/image-detail?cmsUuID=05588669-1f30-48aa-ad2b-8cf948e72985">https://www.nlb.gov.sg/main/image-detail?cmsUuID=05588669-1f30-48aa-ad2b-8cf948e72985</a>
+                </li>
+                <li>
+                    <span class="credits-label">tiong-bahru-market-authentic-hawker-food-wet-market.jpg</span> -
+                    <a href="https://trishawuncle.com.sg/tiong-bahru/tiong-bahru-market.html">https://trishawuncle.com.sg/tiong-bahru/tiong-bahru-market.html</a>
+                </li>
+                <li>
+                    <span class="credits-label">oldairportroadfoodcentre2.jpg</span> -
+                    <a href="https://danielfooddiary.com/oldairportroadfoodcentre2/">https://danielfooddiary.com/oldairportroadfoodcentre2/</a>
+                </li>
+                <li>
+                    <span class="credits-label">tian-tian-chicken-rice.jpg</span> -
+                    <a href="https://www.alamy.com/a-bustling-food-stall-specializing-in-tian-tian-hainanese-chicken-rice-with-customers-waiting-in-line-under-bright-blue-signage-and-chinese-lanterns-image605808229.html">https://www.alamy.com/a-bustling-food-stall-specializing-in-tian-tian-hainanese-chicken-rice-with-customers-waiting-in-line-under-bright-blue-signage-and-chinese-lanterns-image605808229.html</a>
+                </li>
+                <li>
+                    <span class="credits-label">namsinghokkienfriedmee.jpg</span> -
+                    <a href="https://sethlui.com/nam-sing-hokkien-fried-mee-singapore/">https://sethlui.com/nam-sing-hokkien-fried-mee-singapore/</a>
+                </li>
+                <li>
+                    <span class="credits-label">jianboshuikueh.jpg</span> -
+                    <a href="https://eatbook.sg/jian-bo-shui-kueh/">https://eatbook.sg/jian-bo-shui-kueh/</a>
+                </li>
+                <li>
+                    <span class="credits-label">xinmeixianglormee.jpg</span> -
+                    <a href="https://www.umakemehungry.com/2024/11/xin-mei-xiang-lor-mee.html">https://www.umakemehungry.com/2024/11/xin-mei-xiang-lor-mee.html</a>
+                </li>
+                <li>
+                    <span class="credits-label">zhenzhenporridge.jpg</span> -
+                    <a href="https://www.misstamchiak.com/zhen-zhen-porridge/">https://www.misstamchiak.com/zhen-zhen-porridge/</a>
+                </li>
+                <li>
+                    <span class="credits-label">maxwellfuzhouoystercake.jpg</span> -
+                    <a href="https://sg.style.yahoo.com/maxwell-fuzhou-oyster-cake-2-080034276.html">https://sg.style.yahoo.com/maxwell-fuzhou-oyster-cake-2-080034276.html</a>
+                </li>
+                <li>
+                    <span class="credits-label">laofuzifriedkwayteow.jpg</span> -
+                    <a href="https://sg.style.yahoo.com/lao-fu-zi-fried-kway-120027298.html">https://sg.style.yahoo.com/lao-fu-zi-fried-kway-120027298.html</a>
+                </li>
+                <li>
+                    <span class="credits-label">hokkiensataybeehoon.jpg</span> -
+                    <a href="https://www.umakemehungry.com/2014/05/old-airport-road-satay-bee-hoon-bbq.html">https://www.umakemehungry.com/2014/05/old-airport-road-satay-bee-hoon-bbq.html</a>
+                </li>
+                <li>
+                    <span class="credits-label">hainanesebonelesschickenrice.jpg</span> -
+                    <a href="https://www.burpple.com/hainanese-boneless-chicken-rice/reviews">https://www.burpple.com/hainanese-boneless-chicken-rice/reviews</a>
+                </li>
+                <li>
+                    <span class="credits-label">menu-signature.jpg</span> -
+                    <a href="https://www.facebook.com/ginkyosg/posts/a-close-up-of-our-signature-dish-okonomi-rosti-a-sizzling-hot-plate-of-potato-ro/122196092660025001/">https://www.facebook.com/ginkyosg/posts/a-close-up-of-our-signature-dish-okonomi-rosti-a-sizzling-hot-plate-of-potato-ro/122196092660025001/</a>
+                </li>
+                <li>
+                    <span class="credits-label">menu-classic-set.jpg</span> -
+                    <a href="https://www.scmp.com/lifestyle/100-top-tables/article/3316598/your-hong-kong-weekend-food-guide-july-4-6">https://www.scmp.com/lifestyle/100-top-tables/article/3316598/your-hong-kong-weekend-food-guide-july-4-6</a>
+                </li>
+                <li>
+                    <span class="credits-label">menu-add-on.jpg</span> -
+                    <a href="https://insimoneskitchen.com/easy-celeriac-fries/">https://insimoneskitchen.com/easy-celeriac-fries/</a>
+                </li>
+                <li>
+                    <span class="credits-label">menu-house-drink.jpg</span> -
+                    <a href="https://www.bbcgoodfood.com/recipes/iced-caramel-macchiato">https://www.bbcgoodfood.com/recipes/iced-caramel-macchiato</a>
+                </li>
+                <li>
+                    <span class="credits-label">menu-light-bite.jpg</span> -
+                    <a href="https://www.ourmodernkitchen.com/courgette-smoked-mozzarella-quesadillas/">https://www.ourmodernkitchen.com/courgette-smoked-mozzarella-quesadillas/</a>
+                </li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
+

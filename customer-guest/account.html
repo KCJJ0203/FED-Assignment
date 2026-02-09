@@ -1,71 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Guest - Account</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
     <link rel="stylesheet" href="../css/customer-guest.css">
 </head>
-<body>
-    <section class="app-shell" aria-label="Guest layout">
-        <main class="guest-main">
-            <h1 class="sr-only">Account</h1>
-        </main>
 
-        <footer class="bottom-nav">
-            <nav aria-label="Primary">
-                <ul class="nav-list">
-                    <li>
-                        <a class="nav-link" href="index.html">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 10.8L12 3l9 7.8"></path>
-                                    <path d="M5 9.8v10a1.8 1.8 0 0 0 1.8 1.8h10.4A1.8 1.8 0 0 0 19 19.8v-10"></path>
-                                    <path d="M10 21v-6h4v6"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Browse</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="cart.html">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 5h2l2.2 10.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6l1.2-6.8H7.2"></path>
-                                    <circle cx="10" cy="20" r="1.6"></circle>
-                                    <circle cx="18" cy="20" r="1.6"></circle>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Cart</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="orders.html">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="6" y="4" width="12" height="16" rx="2"></rect>
-                                    <path d="M9 3h6"></path>
-                                    <path d="M9 10h6"></path>
-                                    <path d="M9 14h6"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Orders</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link is-active" href="account.html" aria-current="page">
-                            <span class="nav-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="8" r="3.4"></circle>
-                                    <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-label">Account</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </footer>
+<body class="cg-body">
+  <div class="cg-shell">
+
+    <main class="cg-main">
+      <header class="cg-header">
+        <h1 class="cg-h1">Account Page</h1>
+        <div class="cg-meta">Account page for your info</div>
+      </header>
+
+      <div class="acc-tabs" role="tablist" aria-label="Account sections">
+        <button class="acc-tab active" data-view="info" role="tab" type="button">Account Information</button>
+        <button class="acc-tab" data-view="cards" role="tab" type="button">Credit/Debit Cards</button>
+        <button class="acc-tab" data-view="fav" role="tab" type="button">My Favorites</button>
+        <button class="acc-tab" data-view="prefs" role="tab" type="button">User Preferences</button>
+        <button class="acc-tab" data-view="fb" role="tab" type="button">Feedback Form</button>
+
+        <button class="acc-tab" data-view="myreviews" role="tab" type="button">My Reviews</button>
+
+      </div>
+
+      <section class="acc-view show" id="view-info" aria-label="Account Information">
+        <div class="acc-card">
+          <div class="acc-title-row">
+            <h2 class="acc-title">Account Information</h2>
+            <div class="acc-actions">
+              <button id="openPwModal" class="btn btn-white" type="button">Change Password</button>
+              <button id="logoutBtn" class="btn btn-outline" type="button">Logout</button>
+            </div>
+          </div>
+
+          <div class="profile-grid">
+            <div class="profile-photo">
+
+                <div class="photo-box" id="pfpBox">
+                    <img id="pfpImg" alt="Profile photo" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;" />
+                    <div id="pfpPlaceholder">Profile<br/>Photo</div>
+                </div>
+
+                <label for="pfpInput" class="muted" style="display:block; margin-top:10px; font-size:12px;">Upload profile image</label>
+                <input id="pfpInput" type="file" accept="image/*" style="margin-top:6px; font-size:12px;">
+                <button id="uploadPfpBtn" class="btn btn-white" type="button" style="margin-top:10px;">UPLOAD</button>
+
+                <div id="pfpMsg" class="muted" style="margin-top:8px; min-height:16px;"></div>
+                </div>
+
+            <div class="profile-info">
+              <div class="info-row">
+                <div class="info-label">Name</div>
+                <div class="info-value" id="profileName">Loading...</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Email</div>
+                <div class="info-value" id="profileEmail">Loading...</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">Phone</div>
+                <div class="info-value" id="profilePhone">-</div>
+              </div>
+
+              <div class="save-row">
+                <button id="openEditModal2" class="btn btn-white" type="button">EDIT PROFILE</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <section class="acc-view" id="view-cards" aria-label="Credit Debit Cards">
+    <div class="acc-card">
+        <div class="acc-title-row">
+        <h2 class="acc-title">Credit/Debit Cards</h2>
+        <div class="acc-actions">
+            <button id="openCardModal" class="btn btn-white" type="button">ADD A CARD</button>
+        </div>
+        </div>
+
+        <div id="cardsEmpty" class="muted">No cards added</div>
+        <div id="cardsList" class="orders-list" style="margin-top:12px;"></div>
+    </div>
     </section>
+
+      <section class="acc-view" id="view-fav" aria-label="My Favorites">
+        <div class="acc-card">
+          <h2 class="acc-title">My Favorites</h2>
+
+          <div class="fav-tabs" role="tablist" aria-label="Favorite type">
+            <button class="fav-tab active" data-fav="hawker" type="button">Hawker</button>
+            <button class="fav-tab" data-fav="stall" type="button">Stall</button>
+            <button class="fav-tab" data-fav="dish" type="button">Dish</button>
+          </div>
+
+          <div class="fav-panel show" id="fav-hawker"></div>
+          <div class="fav-panel" id="fav-stall"></div>
+          <div class="fav-panel" id="fav-dish"></div>
+        </div>
+      </section>
+
+      <section class="acc-view" id="view-prefs" aria-label="User Preferences">
+        <div class="acc-card">
+          <h2 class="acc-title">User Preferences</h2>
+
+          <div class="prefs-grid">
+            <div class="prefs-box">
+              <div class="prefs-head">Dietary Preferences</div>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefHalal"> Halal</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefNoPork"> No Pork</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefVeg"> Vegetarian</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefNoBeef"> No Beef</label>
+            </div>
+
+            <div class="prefs-box">
+              <div class="prefs-head">Allergy</div>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefNuts"> Nuts</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefDairy"> Dairy</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefSeafood"> Seafood</label>
+            </div>
+
+            <div class="prefs-box">
+              <div class="prefs-head">How strict are you?</div>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefStrict"> Only show safe food</label>
+              <label class="pref-line"><input class="pref-check" type="checkbox" id="prefWarn"> Show warning labels</label>
+            </div>
+          </div>
+
+          <div class="notif">
+            <div class="notif-title">NOTIFICATIONS</div>
+
+            <div class="toggle-row">
+              <div class="toggle-text">
+                <div class="toggle-main">Promo alerts</div>
+                <div class="toggle-sub">Get notified about discounts</div>
+              </div>
+              <label class="switch">
+                <input class="pref-toggle" type="checkbox" id="notifPromos">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-text">
+                <div class="toggle-main">Order updates</div>
+                <div class="toggle-sub">Delivery status notifications</div>
+              </div>
+              <label class="switch">
+                <input class="pref-toggle" type="checkbox" id="notifOrders">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="acc-view" id="view-fb" aria-label="Feedback Form">
+        <div class="acc-card">
+          <h2 class="acc-title">Feedback Form</h2>
+
+          <form id="feedbackForm" class="fb-form" style="margin:0 auto;">
+            <label for="fbTitle" class="fb-label">Feedback title</label>
+            <input id="fbTitle" class="fb-input" type="text" placeholder="Title" required>
+
+            <div class="fb-label">Rate your experience</div>
+            <div class="stars" aria-label="Rating">
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star" data-value="4">&#9733;</span>
+              <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input id="ratingValue" type="hidden" value="0">
+
+            <label for="fbMsg" class="fb-label">Feedback message</label>
+            <textarea id="fbMsg" class="fb-textarea" placeholder="Your feedback..." required></textarea>
+
+            <div class="fb-actions">
+              <button class="btn btn-outline" type="reset">CANCEL</button>
+              <button class="btn btn-white" type="submit">SUBMIT</button>
+            </div>
+          </form>
+
+          <div style="margin-top:18px;">
+            <h3 class="acc-title" style="font-size:14px; margin-bottom:10px;">Past Feedback</h3>
+            <div id="fbEmpty" class="muted">No feedback yet.</div>
+            <div id="pastFeedbackList" class="orders-list" style="gap:10px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="acc-view" id="view-loyalty" aria-label="Loyalty Coins">
+        <div class="acc-card">
+          <h2 class="acc-title">Loyalty Coins</h2>
+
+          <div class="coins-grid">
+            <div class="coin-box"><div class="coin-top">First purchase</div><div class="coin-badge">+10</div></div>
+            <div class="coin-box"><div class="coin-top">Leave review</div><div class="coin-badge">+20</div></div>
+            <div class="coin-box"><div class="coin-top">Pay with coins</div><div class="coin-badge">Use</div></div>
+            <div class="coin-box"><div class="coin-top">Invite friend</div><div class="coin-badge">+50</div></div>
+            <div class="coin-box"><div class="coin-top">Every 5 orders</div><div class="coin-badge">+30</div></div>
+            <div class="coin-box"><div class="coin-top">Birthday bonus</div><div class="coin-badge">+50</div></div>
+            <div class="coin-box"><div class="coin-top">Streak bonus</div><div class="coin-badge">+40</div></div>
+            <div class="coin-box"><div class="coin-top">Special events</div><div class="coin-badge">+?</div></div>
+          </div>
+
+          <div class="level-card">
+            <div class="level-head">UNLOCK EXCLUSIVE PERKS &bull; <b>LEVEL UP</b></div>
+
+            <div class="level-table">
+              <div class="lt-row lt-head">
+                <div>Perks</div><div>Bronze</div><div>Silver</div><div>Gold</div>
+              </div>
+
+              <div class="lt-row">
+                <div>Double point days</div><div>&#10003;</div><div>&#10003;</div><div>&#10003;</div>
+              </div>
+              <div class="lt-row">
+                <div>Birthday bonus</div><div>&mdash;</div><div>&#10003;</div><div>&#10003;</div>
+              </div>
+              <div class="lt-row">
+                <div>Free delivery (monthly)</div><div>&mdash;</div><div>&mdash;</div><div>&#10003;</div>
+              </div>
+              <div class="lt-row">
+                <div>Access to limited edition products</div><div>&mdash;</div><div>&#10003;</div><div>&#10003;</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="acc-view" id="view-myreviews" aria-label="My Reviews">
+        <div class="acc-card">
+            <h2 class="acc-title">My Order Reviews</h2>
+
+            <div id="myreviews-empty" class="muted">No reviews yet.</div>
+            <div id="myreviews-list" class="myreviews-list"></div>
+        </div>
+       </section>
+
+      <div id="editModal" class="modal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Edit profile dialog">
+          <div class="modal-head">
+            <h3>Edit Profile</h3>
+            <button id="closeEditModal" class="x" type="button">&times;</button>
+          </div>
+
+          <form id="editForm" class="modal-body">
+            <label for="editName">Name</label>
+            <input id="editName" type="text" placeholder="Your name" required>
+
+            <label for="editUsername">Username</label>
+            <input id="editUsername" type="text" placeholder="Username (optional)">
+
+            <label for="editEmail">Email</label>
+            <input id="editEmail" type="email" placeholder="Email" required>
+
+            <label for="editPhone">Phone</label>
+            <input id="editPhone" type="text" placeholder="Phone (optional)">
+
+            <div id="editMsg" style="font-size:12px; color:#ef4444; min-height:16px;"></div>
+
+            <button class="btn btn-blue" type="submit">SAVE CHANGES</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="cardModal" class="modal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Add card dialog">
+          <div class="modal-head">
+            <h3>Add Card</h3>
+            <button id="closeCardModal" class="x" type="button">&times;</button>
+          </div>
+          <form id="cardForm" class="modal-body">
+            <label for="cardName">Cardholder Name</label>
+            <input id="cardName" type="text" placeholder="e.g. Htet Myat" required>
+
+            <label for="cardNumber">Card Number</label>
+            <input id="cardNumber" type="text" inputmode="numeric" placeholder="1234 5678 9012 3456" required>
+
+            <label for="cardExp">Expiry (MM/YY)</label>
+            <input id="cardExp" type="text" placeholder="MM/YY" required>
+
+            <label for="cardCvv">CVV</label>
+            <input id="cardCvv" type="password" inputmode="numeric" placeholder="***" required>
+
+            <div id="cardMsg" style="font-size:12px; color:#ef4444; min-height:16px;"></div>
+
+            <button class="btn btn-blue" type="submit">SAVE CARD</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="pwModal" class="modal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Change password dialog">
+          <div class="modal-head">
+            <h3>Change Password</h3>
+            <button id="closePwModal" class="x" type="button">&times;</button>
+          </div>
+            <form id="pwForm" class="modal-form">
+              <div class="form-group">
+                <label for="curPw">Current Password</label>
+                <input id="curPw" class="input" type="password" required>
+              </div>
+
+              <div class="form-group">
+                <label for="newPw">New Password</label>
+                <input id="newPw" class="input" type="password" required>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPw">Confirm New Password</label>
+                <input id="confirmPw" class="input" type="password" required>
+              </div>
+
+              <button class="btn btn-blue" type="submit">CHANGE PASSWORD</button>
+              <p id="pwMsg" class="muted"></p>
+            </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="bottom-nav">
+    <nav aria-label="Primary">
+      <ul class="nav-list">
+        <li>
+          <a class="nav-link" href="index.html">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10.8L12 3l9 7.8"></path>
+                <path d="M5 9.8v10a1.8 1.8 0 0 0 1.8 1.8h10.4A1.8 1.8 0 0 0 19 19.8v-10"></path>
+                <path d="M10 21v-6h4v6"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Browse</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-link" href="cart.html">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 5h2l2.2 10.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6l1.2-6.8H7.2"></path>
+                <circle cx="10" cy="20" r="1.6"></circle>
+                <circle cx="18" cy="20" r="1.6"></circle>
+              </svg>
+            </span>
+            <span class="nav-label">Cart</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-link" href="orders.html">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="12" height="16" rx="2"></rect>
+                <path d="M9 3h6"></path>
+                <path d="M9 10h6"></path>
+                <path d="M9 14h6"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-link is-active" href="account.html" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="3.4"></circle>
+                <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Account</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </footer>
+
+  <script src="../js/app-firebase.js" defer></script>
+    <script src="../js/app-storage.js" defer></script>
+  <script type="module" src="../js/customer-guest-account.js"></script>
 </body>
 </html>

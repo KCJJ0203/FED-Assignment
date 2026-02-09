@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inspect Stall</title>
+  <link rel="stylesheet" href="../css/design-tokens.css">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --green-900: #006b55;
+      --green-800: #008a6e;
+      --green-700: #009977;
+      --green-100: #e6f7f3;
+      --green-50: #f2fbf8;
+      --text-dark: #0f172a;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --card-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+      --page-bg: #f4fbf8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--text-dark);
+    }
+
+    .header {
+      background: linear-gradient(180deg, var(--green-800), var(--green-900));
+      color: #fff;
+      padding: 28px 40px 34px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-bottom: 18px;
+      color: #e6fffa;
+      text-decoration: none;
+    }
+
+    .header-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header-sub {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 15px;
+      opacity: 0.92;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .inspector-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.14);
+      padding: 14px 18px;
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 28px 40px 50px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 24px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .criteria-card {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .criteria-card h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .criteria-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 90px auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .score-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5f5;
+      font-size: 16px;
+      text-align: center;
+      font-weight: 600;
+      background: #f9fafb;
+    }
+
+    .score-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .score-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .score-bar span {
+      display: block;
+      height: 100%;
+      background: var(--green-700);
+      width: 0;
+      transition: width 0.2s ease;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5f5;
+      font-size: 14px;
+      resize: none;
+      min-height: 120px;
+      background: #f9fafb;
+    }
+
+    .summary-card {
+      background: linear-gradient(180deg, var(--green-800), var(--green-900));
+      color: #fff;
+      border-radius: 22px;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.16);
+      height: fit-content;
+      position: sticky;
+      top: 24px;
+    }
+
+    .summary-score {
+      text-align: center;
+    }
+
+    .summary-score h2 {
+      font-size: 44px;
+      margin-bottom: 4px;
+    }
+
+    .summary-score span {
+      font-size: 16px;
+    }
+
+    .summary-bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .summary-bar span {
+      display: block;
+      height: 100%;
+      background: #fff;
+      width: 0;
+      transition: width 0.2s ease;
+    }
+
+    .grade-select {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .grade-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 14px;
+      padding: 14px 0;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 18px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .grade-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .grade-btn.active {
+      background: #fff;
+      color: var(--green-900);
+    }
+
+    .save-btn {
+      margin-top: 6px;
+      background: #fff;
+      color: var(--green-900);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1100px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        padding: 24px 20px 30px;
+      }
+
+      .content {
+        padding: 24px 20px 36px;
+      }
+    }
+
+@media (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .header {
+    padding: 20px 16px 28px;
+  }
+
+  .content {
+    padding: 20px 16px 32px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  h3 {
+    font-size: 17px !important;
+  }
+
+  .back {
+    font-size: 14px;
+  }
+
+  button, .card, .stall-card {
+    touch-action: manipulation;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <nav aria-label="NEA Navigation" hidden></nav>
+  <main>
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <a class="back" href="inspection.html">
+          <i class="fas fa-chevron-left"></i> Back to Dashboard
+        </a>
+        <div class="header-title" id="stallTitle">#01-01 - Stall</div>
+        <div class="header-sub">
+          <div id="centreName">Hawker Centre</div>
+          <div class="meta-chip">
+            <i class="far fa-calendar"></i>
+            <span id="scheduleMeta">Not scheduled</span>
+          </div>
+        </div>
+      </div>
+      <div class="inspector-card">
+        <i class="fas fa-user"></i>
+        <div>
+          <div style="font-size: 13px; opacity: 0.9;">Inspector</div>
+          <strong>Officer NEA-12345</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div>
+      <div class="section-title">Inspection Criteria</div>
+
+      <div class="criteria-card" data-max="25">
+        <h3>Food Hygiene <i class="fas fa-pen"></i></h3>
+        <p>Proper food storage, temperature control, and handling</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="25" min="0" id="foodHygiene" value="0" />
+          <div class="score-meta">
+            <span>/ 25 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="20">
+        <h3>Premises Cleanliness <i class="fas fa-pen"></i></h3>
+        <p>Overall cleanliness of cooking and dining areas</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="20" min="0" id="cleanliness" value="0" />
+          <div class="score-meta">
+            <span>/ 20 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="15">
+        <h3>Food Handler Hygiene <i class="fas fa-pen"></i></h3>
+        <p>Personal hygiene and food handler certification</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="15" min="0" id="handlerHygiene" value="0" />
+          <div class="score-meta">
+            <span>/ 15 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="15">
+        <h3>Pest Control <i class="fas fa-pen"></i></h3>
+        <p>Evidence of pest control and safe practices</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="15" min="0" id="pestControl" value="0" />
+          <div class="score-meta">
+            <span>/ 15 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="10">
+        <h3>Waste Management <i class="fas fa-pen"></i></h3>
+        <p>Waste disposal practices and bins management</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="10" min="0" id="wasteManagement" value="0" />
+          <div class="score-meta">
+            <span>/ 10 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="10">
+        <h3>Equipment & Facilities <i class="fas fa-pen"></i></h3>
+        <p>Equipment hygiene and maintenance</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="10" min="0" id="equipment" value="0" />
+          <div class="score-meta">
+            <span>/ 10 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card" data-max="5">
+        <h3>Licensing & Documentation <i class="fas fa-pen"></i></h3>
+        <p>Licensing, documentation, and compliance checks</p>
+        <div class="score-row">
+          <input class="score-input" type="number" max="5" min="0" id="licensing" value="0" />
+          <div class="score-meta">
+            <span>/ 5 points</span>
+            <div class="score-bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <h3>Remarks</h3>
+        <textarea id="remarks" placeholder="Enter remarks..."></textarea>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div style="text-align: center; font-weight: 600;">TOTAL INSPECTION SCORE</div>
+      <div class="summary-score">
+        <h2 id="totalScore">0</h2>
+        <span>/ 100</span>
+      </div>
+      <div class="summary-bar">
+        <span id="totalProgress"></span>
+      </div>
+      <div style="text-align: center; font-size: 20px; font-weight: 700;">
+        <span id="totalPercent">0%</span>
+      </div>
+      <div style="text-align: center; font-weight: 600;">HYGIENE GRADE</div>
+      <div class="grade-select">
+        <button class="grade-btn" data-grade="A">A</button>
+        <button class="grade-btn" data-grade="B">B</button>
+        <button class="grade-btn" data-grade="C">C</button>
+        <button class="grade-btn" data-grade="D">D</button>
+      </div>
+      <button class="save-btn">SAVE INSPECTION</button>
+    </div>
+  </div>
+
+  <script src="../js/app-firebase.js"></script>
+  <script src="../js/app-storage.js"></script>
+  <script type="module">
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    const { auth, onAuthStateChanged } = await window.AppFirebase.getAuth();
+    const db = await window.AppFirebase.getFirestoreDb();
+    const storageApi = window.AppStorage || null;
+    const storageKeys = storageApi ? storageApi.KEYS : {};
+    const STORAGE = {
+      stallId: storageKeys.NEA_SELECTED_STALL_ID || "selectedStallId",
+      centreId: storageKeys.NEA_SELECTED_CENTRE_ID || "selectedHawkerCentreId",
+      inspections: storageKeys.NEA_INSPECTIONS || "neaInspections",
+      scheduleDate: storageKeys.NEA_SCHEDULE_DATE || "scheduleDate",
+      scheduleTime: storageKeys.NEA_SCHEDULE_TIME || "scheduleTime",
+      thisWeek: storageKeys.NEA_THIS_WEEK_INSPECTIONS || "thisWeekInspections",
+      draftPrefix: storageKeys.NEA_DRAFT_PREFIX || "inspectionDraft_"
+    };
+
+    const readLocalJson = (key, fallback) => {
+      if (storageApi && typeof storageApi.readJSON === "function") {
+        return storageApi.readJSON(localStorage, key, fallback);
+      }
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch (error) {
+        return fallback;
+      }
+    };
+
+    const writeLocalJson = (key, value) => {
+      if (storageApi && typeof storageApi.writeJSON === "function") {
+        storageApi.writeJSON(localStorage, key, value);
+        return;
+      }
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    const removeLocalKey = (key) => {
+      if (storageApi && typeof storageApi.remove === "function") {
+        storageApi.remove(localStorage, key);
+      } else {
+        localStorage.removeItem(key);
+      }
+    };
+
+    onAuthStateChanged(auth, user => {
+      if (!user) window.location.href = "../login.html";
+    });
+
+    const stallId = localStorage.getItem(STORAGE.stallId);
+    if (!stallId) window.location.href = "index.html";
+
+    const draftKey = `${STORAGE.draftPrefix}${stallId}`;
+    const inspectionsKey = STORAGE.inspections;
+
+    const scheduleDate = localStorage.getItem(STORAGE.scheduleDate);
+    const scheduleTime = localStorage.getItem(STORAGE.scheduleTime);
+    const scheduleMeta = document.getElementById("scheduleMeta");
+
+    if (scheduleDate && scheduleTime) {
+      const formatted = new Date(`${scheduleDate}T${scheduleTime}`);
+      scheduleMeta.textContent = `${formatted.toLocaleDateString("en-SG", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      })} � ${scheduleTime}`;
+    }
+
+    const stallSnap = await getDoc(doc(db, "stalls", stallId));
+    if (stallSnap.exists()) {
+      const s = stallSnap.data();
+      const stallName = s.name || s.hawkerName || "Stall";
+      const stallLocation = s.location || "";
+      document.getElementById("stallTitle").textContent = stallLocation
+        ? `${stallLocation} - ${stallName}`
+        : stallName;
+    }
+
+    const centreId = localStorage.getItem(STORAGE.centreId);
+    if (centreId) {
+      const centreSnap = await getDoc(doc(db, "hawkers", centreId));
+      if (centreSnap.exists()) {
+        document.getElementById("centreName").textContent =
+          centreSnap.data().name;
+      }
+    }
+
+    const inputs = Array.from(document.querySelectorAll(".score-input"));
+    const totalScoreEl = document.getElementById("totalScore");
+    const totalPercentEl = document.getElementById("totalPercent");
+    const totalProgress = document.getElementById("totalProgress");
+
+    function updateTotals() {
+      let total = 0;
+      let maxTotal = 0;
+
+      document.querySelectorAll(".criteria-card[data-max]").forEach(card => {
+        const max = Number(card.dataset.max);
+        const input = card.querySelector(".score-input");
+        const value = Math.max(0, Math.min(max, Number(input.value || 0)));
+        input.value = value;
+        total += value;
+        maxTotal += max;
+
+        const bar = card.querySelector(".score-bar span");
+        if (bar) {
+          bar.style.width = `${(value / max) * 100}%`;
+        }
+      });
+
+      totalScoreEl.textContent = total;
+      const percent = maxTotal ? Math.round((total / maxTotal) * 100) : 0;
+      totalPercentEl.textContent = `${percent}%`;
+      totalProgress.style.width = `${percent}%`;
+      return { total, percent };
+    }
+
+    inputs.forEach(input => input.addEventListener("input", updateTotals));
+    updateTotals();
+
+    function saveDraft() {
+      const draft = {
+        grade: document.querySelector(".grade-btn.active")?.dataset.grade || "",
+        foodHygiene: foodHygiene.value,
+        cleanliness: cleanliness.value,
+        handlerHygiene: handlerHygiene.value,
+        pestControl: pestControl.value,
+        wasteManagement: wasteManagement.value,
+        equipment: equipment.value,
+        licensing: licensing.value,
+        remarks: remarks.value
+      };
+      writeLocalJson(draftKey, draft);
+    }
+
+    document.querySelectorAll("input, textarea").forEach(el =>
+      el.addEventListener("input", saveDraft)
+    );
+
+    document.querySelectorAll(".grade-btn").forEach(btn =>
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".grade-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        btn.classList.add("active", btn.dataset.grade.toLowerCase());
+        saveDraft();
+      })
+    );
+
+    const savedDraft = readLocalJson(draftKey, null);
+    if (savedDraft) {
+      const d = savedDraft;
+      if (d.grade) document.querySelector(`[data-grade="${d.grade}"]`)?.click();
+      foodHygiene.value = d.foodHygiene || "0";
+      cleanliness.value = d.cleanliness || "0";
+      handlerHygiene.value = d.handlerHygiene || "0";
+      pestControl.value = d.pestControl || "0";
+      wasteManagement.value = d.wasteManagement || "0";
+      equipment.value = d.equipment || "0";
+      licensing.value = d.licensing || "0";
+      remarks.value = d.remarks || "";
+      updateTotals();
+    }
+
+    function loadInspections() {
+      return readLocalJson(inspectionsKey, []);
+    }
+
+    function saveInspection(entry) {
+      const inspections = loadInspections();
+      inspections.unshift(entry);
+      writeLocalJson(inspectionsKey, inspections);
+    }
+
+    document.querySelector(".save-btn").addEventListener("click", async () => {
+      const grade =
+        document.querySelector(".grade-btn.active")?.dataset.grade || "C";
+
+      const totals = updateTotals();
+
+      await updateDoc(doc(db, "stalls", stallId), {
+        grade,
+        lastInspectedAt: new Date()
+      });
+
+      const centreName = document.getElementById("centreName").textContent;
+      const stallTitle = document.getElementById("stallTitle").textContent;
+      const completedAt = new Date();
+
+      saveInspection({
+        id: `${stallId}-${Date.now()}`,
+        stallId,
+        stallTitle,
+        centreId: centreId || "",
+        centreName,
+        grade,
+        score: totals.total,
+        percent: totals.percent,
+        completedAt: completedAt.toISOString(),
+        completedDate: completedAt.toLocaleDateString("en-SG", {
+          day: "numeric",
+          month: "short",
+          year: "numeric"
+        }),
+        completedTime: completedAt.toLocaleTimeString("en-SG", {
+          hour: "2-digit",
+          minute: "2-digit"
+        }),
+        scheduleDate,
+        scheduleTime,
+        inspectorId: "NEA-12345",
+        criteria: {
+          foodHygiene: Number(foodHygiene.value || 0),
+          cleanliness: Number(cleanliness.value || 0),
+          handlerHygiene: Number(handlerHygiene.value || 0),
+          pestControl: Number(pestControl.value || 0),
+          wasteManagement: Number(wasteManagement.value || 0),
+          equipment: Number(equipment.value || 0),
+          licensing: Number(licensing.value || 0)
+        },
+        remarks: remarks.value || ""
+      });
+
+      removeLocalKey(draftKey);
+      removeLocalKey(STORAGE.stallId);
+
+      const count = Number(localStorage.getItem(STORAGE.thisWeek) || 0);
+      localStorage.setItem(STORAGE.thisWeek, String(count + 1));
+
+      alert("Inspection saved");
+      window.location.href = "index.html";
+    });
+  </script>
+  </main>
+</body>
+</html>

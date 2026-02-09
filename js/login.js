@@ -1,20 +1,12 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+﻿import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getFirebaseApp } from "./firebase-config.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBc5jOMf7hfbWa_65JFcdAMwSKyxtLSCvs",
-  authDomain: "fed-assignment-9c219.firebaseapp.com",
-  projectId: "fed-assignment-9c219",
-  storageBucket: "fed-assignment-9c219.firebasestorage.app",
-  messagingSenderId: "287410844855",
-  appId: "1:287410844855:web:8c15e5cbe42c321b1e0932",
-  measurementId: "G-CJBDRY9RQ5"
-};
-
-const app = initializeApp(firebaseConfig);
+const app = getFirebaseApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storageApi = window.AppStorage || null;
+const USER_TYPE_KEY = storageApi?.KEYS?.USER_TYPE || "userType";
 
 const form = document.querySelector(".login-form");
 const emailInput = form.querySelector('input[name="email"]');
@@ -52,12 +44,17 @@ form.addEventListener("submit", async (e) => {
     const snap = await getDoc(doc(db, "users", uid));
 
     if (!snap.exists()) {
+      try {
+        await signOut(auth);
+      } catch (signOutError) {
+        console.warn("Sign-out after missing profile failed:", signOutError);
+      }
       setError("No account profile found for this account.");
       return;
     }
 
     const userType = snap.data().userType;
-    localStorage.setItem("userType", userType);
+    localStorage.setItem(USER_TYPE_KEY, userType);
 
     if (userType === "customer") {
       window.location.href = "customer-guest/index.html";
@@ -66,7 +63,7 @@ form.addEventListener("submit", async (e) => {
     } else if (userType === "nea") {
       window.location.href = "nea/index.html";
     } else if (userType === "admin") {
-      window.location.href = "admin/index.html";
+      window.location.href = "admin/home.html";
     } else {
       setError("User type missing or not recognized. Please contact support.");
     }
@@ -75,3 +72,5 @@ form.addEventListener("submit", async (e) => {
     console.error(err);
   }
 });
+
+

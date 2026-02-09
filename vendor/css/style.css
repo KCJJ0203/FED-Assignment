@@ -73,7 +73,38 @@ body {
     font-weight: bold;
 }
 
+.nav-links a span {
+    font-size: 14px;
+}
+
 .nav-links a:hover { background-color: #f0f0f0; }
+
+.mobile-nav {
+    display: none;
+}
+
+.mobile-nav-link {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-grey);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 100%;
+}
+
+.mobile-nav-link i {
+    font-size: 18px;
+}
+
+.mobile-nav-link.active {
+    color: var(--primary-blue);
+}
 
 .user-profile {
     display: flex;
@@ -1423,39 +1454,19 @@ input:checked + .slider:before {
 @media (max-width: 900px) {
     body {
         flex-direction: column;
-        overflow: visible;
+        min-height: 100vh;
+        overflow: auto;
     }
     .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #eee;
-        padding: 16px;
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
+        display: none;
     }
-    .nav-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    .nav-links li {
-        flex: 1 1 45%;
-    }
-    .nav-links a {
-        justify-content: center;
-        padding: 10px 12px;
-    }
-    .user-profile {
-        width: 100%;
-        justify-content: space-between;
-        border-top: none;
-        padding-top: 0;
+    .main-content {
+        padding-bottom: 84px;
+        min-height: calc(100vh - 84px);
     }
     header {
         flex-direction: column;
         align-items: flex-start;
-        height: auto;
         padding: 20px;
         gap: 12px;
     }
@@ -1466,7 +1477,11 @@ input:checked + .slider:before {
     }
     .dashboard-container,
     .pos-menu-area {
-        padding: 20px;
+        padding: 22px 20px 90px;
+    }
+    .grid-layout,
+    .kanban-board {
+        grid-template-columns: 1fr;
     }
     .orders-toolbar {
         flex-wrap: wrap;
@@ -1479,25 +1494,34 @@ input:checked + .slider:before {
         flex: 1 1 calc(50% - 8px);
         text-align: center;
     }
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        min-height: auto;
-    }
-    .kanban-board {
-        grid-template-columns: 1fr;
-    }
     .pos-layout {
         flex-direction: column;
     }
     .pos-menu-area,
     .pos-cart-sidebar {
+        width: 100%;
         height: auto;
     }
     .pos-cart-sidebar {
         border-left: none;
         border-top: 1px solid #eee;
+    }
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 72px;
+        background: var(--white);
+        border-top: 1px solid #eee;
+        z-index: 1100;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding-bottom: 96px;
     }
     .search-bar {
         width: 100%;
@@ -1509,5 +1533,75 @@ input:checked + .slider:before {
     .account-actions {
         justify-content: flex-end;
         width: 100%;
+    }
+    .mobile-nav-link i {
+        font-size: 20px;
+    }
+    .mobile-nav-link span {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px 20px;
+    }
+    header .header-title strong {
+        font-size: 18px;
+    }
+    .header-icons {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    .header-icons .store-status-pill {
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .header-icons .store-status-pill span {
+        flex: 1;
+        text-align: left;
+    }
+    .header-icons .fas.fa-bell {
+        align-self: flex-start;
+        margin: 0;
+    }
+    .header-icons .user-avatar {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard-container {
+        padding: 20px 16px 110px;
+    }
+    #settings-form .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    #settings-form .card {
+        padding: 18px;
+    }
+    #settings-form .card > div[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 12px;
+    }
+    #settings-form .card input,
+    #settings-form .card .toggle-btn {
+        width: 100%;
+    }
+    #settings-form .btn-green,
+    #settings-form .btn-grey,
+    #settings-form .btn-outline {
+        width: 100%;
+    }
+    #settings-form .card-header,
+    #settings-form .card > div {
+        gap: 12px;
     }
 }
